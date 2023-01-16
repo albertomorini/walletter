@@ -41,7 +41,6 @@ function insertRegister(objReg){
             if (err){
                 console.log(err);
             }
-            console.log("1 document inserted");
             db.close();
         });
     });
@@ -59,12 +58,12 @@ function getRegister(UserID){
     });
 }
 
-/////      USERS
-
+//////////      USERS
 function insertUser(objUsr){
-    MongoClient.connect(url,(err,db)=>{
+    MongoClient.connect(url, async (err,db)=>{
         let dbo = db.db("Walletter");
-        if(getUser(objUsr.email,objUsr.psw)!= null){ //if user doesn't exists
+        let usr = await getUser(objUsr.email,objUsr.psw);
+        if (usr == null){ //if user doesn't exists
             dbo.collection(Collection_Users).insertOne(objUsr, (err, res) => {
                 if (err) {
                     console.log(err);
@@ -80,65 +79,70 @@ function insertUser(objUsr){
 }
 
 function getUser(email,psw){
-    MongoClient.connect(url,(err,db)=>{
-        let dbo = db.db("Walletter");
-        dbo.collection(Collection_Users).find({"email":email, "psw":psw}).toArray((err,res)=>{
-            if(err){
-                console.log(err);
-            }
-            if(res.length==0){
-                db.close();
-                return null;
-            }else{
-                db.close();
-                return res[0]; //TODO: return undefined, not ready --> da vedere se usare promiseee
-            }
+    return new Promise((resolve,reject)=>{
+        MongoClient.connect(url,(err,db)=>{
+            let dbo = db.db("Walletter");
+            dbo.collection(Collection_Users).find({"email":email, "psw":psw}).toArray((err,res)=>{
+                if(err){
+                    reject(err);
+                }
+                if(res.length==0){
+                    db.close();
+                    resolve(null);
+                }else{
+                    db.close();
+                    resolve(res[0]);
+                }
+            });
         });
-    });
+    })
 }
 
 function deleteUser(objUsr){
     MongoClient.connect(url,(err,db)=>{
         let dbo= db.db("Walletter");
         dbo.collection(Collection_Users).deleteOne(objUsr).toArray((err,res)=>{
-            console.log(res);
+            if(err){
+                return false;
+            }
+            return true;
         })
     })
 }
 
-//////////////
-let regTmp ={
-    "import":23,
-    "date":"11/02/22",
-    "type": "out",
-    "causale":"cadoro",
-    "idUtente":3
-}
+//////////////////////////////////////////
 
 
-let usrTmp={
-    "email": "alby@alby",
-    "psw":"2md5",
-    "premium":true
-} //Id || _id
 
-//insertUser(usrTmp)
-console.log(
-    getUser("alby@alby","2md5") // return [] if not found, else array
-
-)
-
-//insertRegister(regTmp);
-//getRegister();
-
-/*
 http.createServer((req,res)=>{
     let body="";
-    req.on("data",(raw)=>{
-        body+=raw
+    req.on("data",(chunk)=>{
+        body+=chunk;
     });
     req.on("end",()=>{
-        //TODO: JSON.parse(body)
+        let bodyDict = JSON.parse(body);
+        if (req.url=="/getUser"){
+            let usr = await = getUser(bodyDict.email,bodyDict.psw);
+            usr.then(usrRes=>{
+                if(usrRes!=null){
+                    res.writeHead(200,{"Content-type":"Application/JSON"});
+                    res.write(JSON.stringify({"msg":"OK"}));
+                    res.end();
+                }else{
+                    res.writeHead(400,{"Content-type":"Application/JSON"});
+                    res.write(JSON.stringify({"msg":"KO"}));
+                    res.end();
+                }
+            })            
+
+        }else if(req.url=="/insertUser"){
+
+        }else if(req.url=="/deleteUser"){
+
+        }
+
+
+
     });
 }).listen(port);
-*/
+
