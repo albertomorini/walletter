@@ -60,21 +60,24 @@ function getRegister(UserID){
 
 //////////      USERS
 function insertUser(objUsr){
-    MongoClient.connect(url, async (err,db)=>{
-        let dbo = db.db("Walletter");
-        let usr = await getUser(objUsr.email,objUsr.psw);
-        if (usr == null){ //if user doesn't exists
-            dbo.collection(Collection_Users).insertOne(objUsr, (err, res) => {
-                if (err) {
-                    console.log(err);
-                }
+    return new Promise((resolve,reject)=>{
+        MongoClient.connect(url, async (err,db)=>{
+            let dbo = db.db("Walletter");
+            let usr = await getUser(objUsr.email,objUsr.psw);
+            if (usr == null){ //if user doesn't exists
+                dbo.collection(Collection_Users).insertOne(objUsr, (err, res) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    db.close();
+                    resolve(true);
+                });
+            }else{
                 db.close();
-                return true;
-            });
-        }else{
-            db.close();
-            return false;
-        }
+                reject(false);
+            }
+        });
     });
 }
 
@@ -98,6 +101,23 @@ function getUser(email,psw){
     })
 }
 
+function getAllUsers(email,psw){
+    return new Promise((resolve,reject)=>{
+        MongoClient.connect(url,(err,db)=>{
+            let dbo = db.db("Walletter");
+            dbo.collection(Collection_Users).find().toArray((err,res)=>{
+                if(err){
+                    reject(err);
+                }
+                console.log(res);
+
+                db.close();
+                
+            });
+        });
+    })
+}
+
 function deleteUser(objUsr){
     MongoClient.connect(url,(err,db)=>{
         let dbo= db.db("Walletter");
@@ -112,8 +132,6 @@ function deleteUser(objUsr){
 
 //////////////////////////////////////////
 
-
-
 http.createServer((req,res)=>{
     let body="";
     req.on("data",(chunk)=>{
@@ -122,21 +140,45 @@ http.createServer((req,res)=>{
     req.on("end",()=>{
         let bodyDict = JSON.parse(body);
         if (req.url=="/getUser"){
-            let usr = await = getUser(bodyDict.email,bodyDict.psw);
+            let usr = await = getUser(bodyDict.Email, bodyDict.Password);
             usr.then(usrRes=>{
                 if(usrRes!=null){
                     res.writeHead(200,{"Content-type":"Application/JSON"});
-                    res.write(JSON.stringify({"msg":"OK"}));
+                    res.write(JSON.stringify({
+                        "usr":usrRes
+                    }));
                     res.end();
                 }else{
-                    res.writeHead(400,{"Content-type":"Application/JSON"});
-                    res.write(JSON.stringify({"msg":"KO"}));
+                    res.writeHead(404,{"Content-type":"Application/JSON"});
+                    res.write(JSON.stringify({
+                        "usr": null
+                    }));
                     res.end();
                 }
             })            
 
         }else if(req.url=="/insertUser"){
-
+            insertUser({
+                "email": bodyDict.Email,
+                "psw": bodyDict.Password,
+                "premium": false
+            }).then(resInsert=>{
+                res.writeHead(200, { "Content-type": "Application/JSON" });
+                res.write(JSON.stringify({
+                    "usr": {
+                        "email": bodyDict.Email,
+                        "psw": bodyDict.Password,
+                        "premium": false
+                    }
+                }));
+                res.end();
+            }).catch(err=>{
+                res.writeHead(404, { "Content-type": "Application/JSON" });
+                res.write(JSON.stringify({
+                    "usr": null
+                }));
+                res.end();
+            })
         }else if(req.url=="/deleteUser"){
 
         }
