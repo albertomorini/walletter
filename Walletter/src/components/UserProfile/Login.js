@@ -26,7 +26,6 @@ export default function Login(props){
                     props.setEmail(Email);
                     props.okAuth();
                 }).catch(err => {
-                    //TODO:
                     console.log(err);
                     alert("Error, user not found!")
                 })

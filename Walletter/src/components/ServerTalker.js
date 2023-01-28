@@ -6,24 +6,19 @@ const socket = "http://"+urlSever+":"+port
 //JUST FOR DEV MODE
 
 
-
-export const SrvDoLogin = (Email,Password) =>{
-
-    return new Promise((resolve,reject)=>{
-        fetch(socket +"/getUser",{
+function doRequest(endpoint,body){
+    return new Promise((resolve, reject) => {
+        fetch(socket + "/" + endpoint, {
             method: "POST",
             mode: "cors",
-            body: JSON.stringify({
-                "Email": Email,
-                "Password": MD5(Password).toString() 
-            })
+            body: JSON.stringify(body)
         }).then(res => {
             if (res.status == 200) {
                 resolve(res.json());
             } else {
                 reject(null);
             }
-        }).catch(err=>{
+        }).catch(err => {
             console.log(err);
             reject(err);
         })
@@ -31,24 +26,23 @@ export const SrvDoLogin = (Email,Password) =>{
 }
 
 
-export const SrvDoSignUp = (Email,Password) =>{
-    return new Promise((resolve,reject)=>{
-        fetch(socket +"/insertUser",{
-            method: "POST",
-            mode: "cors",
-            body: JSON.stringify({
-                "Email": Email,
-                "Password": MD5(Password).toString() 
-            })
-        }).then(res => {
-            if(res.status==200){
-                resolve(res.json());
-            }else{
-                reject(null);
-            }
-        }).catch(err=>{
-            console.log(err);
-            reject(err);
-        })
+
+export const SrvDoLogin = (Email,Password) =>{
+    return doRequest("getUser",{
+        "Email": Email,
+        "Password": MD5(Password).toString() 
     });
+}
+
+
+export const SrvDoSignUp = (Email,Password) =>{
+    return doRequest("insertUser",{
+        "Email": Email,
+        "Password": MD5(Password).toString() 
+    });
+}
+
+
+export const SrvSaveTransaction = (Transaction) =>{
+    return doRequest("saveTransaction", Transaction);
 }

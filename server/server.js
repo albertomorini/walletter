@@ -31,10 +31,10 @@ function createCollection(){
 }
 
 /**
- * Insert a new transaction/registration
+ * Insert a new transaction
  * @param {Object} objReg 
  */
-function insertRegister(objReg){
+function saveTransaction(objReg){
     MongoClient.connect(url, (err, db) => {
         let dbo = db.db("Walletter");
         dbo.collection(Collection_Register).insertOne(objReg, (err, res) => {
@@ -46,15 +46,19 @@ function insertRegister(objReg){
     });
 }
 /**
- * Return all registers of a user
+ * Return all transactions of a user
  * @param {Int} UserID 
  */
-function getRegister(UserID){
-    MongoClient.connect(url, (err,db)=>{
-        let dbo= db.db("Walletter");
-        dbo.collection(Collection_Register).find({"UserID":UserID}).toArray((err,res)=>{
-            console.log(res);
-        })
+function getTransaction(UserID){
+    getUser(Email,Password).then(res=>{ //TODO: test, think if is okay
+        if(res!=null){
+            MongoClient.connect(url, (err,db)=>{
+                let dbo= db.db("Walletter");
+                dbo.collection(Collection_Register).find({"Email":UserID}).toArray((err,res)=>{
+                    console.log(res);
+                })
+            });
+        }
     });
 }
 
@@ -132,6 +136,15 @@ function deleteUser(objUsr){
 
 //////////////////////////////////////////
 
+
+
+function doResponse(res,status, body){
+    res.writeHead(status, { "Content-type": "Application/JSON" });
+    res.write(JSON.stringify(body));
+    res.end();
+}
+
+
 http.createServer((req,res)=>{
     let body="";
     req.on("data",(chunk)=>{
@@ -142,45 +155,43 @@ http.createServer((req,res)=>{
         if (req.url=="/getUser"){
             let usr = await = getUser(bodyDict.Email, bodyDict.Password);
             usr.then(usrRes=>{
-                if(usrRes!=null){
-                    res.writeHead(200,{"Content-type":"Application/JSON"});
-                    res.write(JSON.stringify({
-                        "usr":usrRes
-                    }));
-                    res.end();
-                }else{
-                    res.writeHead(404,{"Content-type":"Application/JSON"});
-                    res.write(JSON.stringify({
-                        "usr": null
-                    }));
-                    res.end();
-                }
+                (usrRes!=null)? doResponse(res,200,{"usr": usrRes}) : doResponse(res, 404,{"usr": null})
             })            
-
         }else if(req.url=="/insertUser"){
             insertUser({
                 "email": bodyDict.Email,
                 "psw": bodyDict.Password,
                 "premium": false
             }).then(resInsert=>{
-                res.writeHead(200, { "Content-type": "Application/JSON" });
-                res.write(JSON.stringify({
+                doResponse(res,200,{
                     "usr": {
                         "email": bodyDict.Email,
                         "psw": bodyDict.Password,
                         "premium": false
                     }
-                }));
-                res.end();
+                })
             }).catch(err=>{
-                res.writeHead(404, { "Content-type": "Application/JSON" });
-                res.write(JSON.stringify({
+                doResponse(res, 500, {
                     "usr": null
-                }));
-                res.end();
-            })
+                });
+            });
         }else if(req.url=="/deleteUser"){
+        }
 
+
+        //TRANSACTIONS
+
+        if(req.url=="/saveTransaction"){
+            saveTransaction(bodyDict).then(resSave=>{
+                doResponse(res,200,{"transaction":resSave})
+            }).catch(err=>{ //TODO: logging error?
+                doResponse(res,500,{"transaction":null})
+            })
+        }else if(req.url=="/getAllTransaction"){
+            getTransaction("a@a"); //works!, check to-do, ask psw
+        }else if(req.url=="/getTransaction"){
+        }else if(req.url=="/deleteTransaction"){
+        }else if(req.url=="/updateTransaction"){
         }
 
 

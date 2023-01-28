@@ -8,38 +8,41 @@ import {
     IonContent,
     IonToolbar,
     IonTitle,
-    IonPage,
     IonItem,
     IonLabel,
     IonInput,
 } from '@ionic/react';
-
+import moment from "moment"
+import { SrvSaveTransaction } from "../ServerTalker";
 
 export default function Dashboard(props){
 
     let [Amount,setAmount] = useState();
-    let [Date,setDate] = useState(); //TODO: default to today w/o moment
+    let [Date,setDate] = useState(moment().format("YYYY-MM-DD"));
     let [IsOutcome, setIsOutcome] = useState(true); //false is an income
-    let [Causale,setCausale] = useState();
+    let [Reference,setReference] = useState();
 
     const modal = useRef();
     useEffect(()=>{
         console.log(props);
+        console.log(Date);
     },[]);
 
     function insertTransaction(){
-        console.log(Amount);
-        console.log(Date);
-        console.log(IsOutcome);
-        console.log(Causale);
-        console.log(props.UserEmail);
+        SrvSaveTransaction({
+            "Email": props.UserEmail,
+            "Amount": Amount,
+            "Date": Date,
+            "IsOutcome": IsOutcome,
+            "Reference": Reference,
+        });
         modal.current?.dismiss()
     }
 
     return(
         <div>
             <IonModal ref={modal} trigger="open-modal" onWillDismiss={(ev) => { }} mode="ios">
-                <IonHeader>
+                <IonHeader mode="ios">
                     <IonToolbar>
                         <IonButtons slot="start">
                             <IonButton id="closeModal" onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
@@ -55,19 +58,19 @@ export default function Dashboard(props){
                 <IonContent className="ion-padding">
                     <IonItem>
                         <IonLabel position="stacked">Amount</IonLabel>
-                        <IonInput type="number" min={0} onIonChange={(ev)=>setAmount(ev.target.value)}></IonInput>
+                        <IonInput type="number" min={1} onIonChange={(ev) => setAmount(ev.target.value)} mode="ios"></IonInput>
                     </IonItem>
                     <IonItem>
                         <IonLabel position="stacked">Date</IonLabel>
-                        <IonInput type="date" mode="ios" onIonChange={(ev)=>setDate(ev.target.value)}></IonInput>
+                        <IonInput data-date-format="DD MM YYYY" type="date"  value={Date} placeholder={Date} onIonChange={(ev)=>setDate(ev.target.value)} mode="ios"></IonInput>
                     </IonItem>
                     <IonItem>
                         <IonLabel position="stacked">Type</IonLabel>
-                        <IonToggle enableOnOffLabels={true} slot="end" value={IsOutcome} onIonChange={(ev)=>setIsOutcome(!IsOutcome)}></IonToggle>
+                        <IonToggle enableOnOffLabels={true} slot="end" value={IsOutcome} onIonChange={(ev) => setIsOutcome(!IsOutcome)} mode="ios"></IonToggle>
                     </IonItem>
                     <IonItem>
-                        <IonLabel position="stacked">Causale</IonLabel>
-                        <IonInput type="text" onIonChange={(ev)=>setCausale(ev.target.value)}></IonInput>
+                        <IonLabel position="stacked">Reference</IonLabel>
+                        <IonInput type="text" onIonChange={(ev) => setReference(ev.target.value)} mode="ios"></IonInput>
                     </IonItem>
                 </IonContent>
             </IonModal>
