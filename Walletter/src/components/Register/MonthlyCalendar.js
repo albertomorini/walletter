@@ -1,6 +1,7 @@
 import { IonDatetime } from '@ionic/react';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
+import "../../theme/MonthlyCalendar.css"
 
 export default function MonthlyCalendar(props){
     
@@ -22,6 +23,7 @@ export default function MonthlyCalendar(props){
     return(
         <>
             <IonDatetime 
+                className='myCalendar'
                 mode='ios'
                 presentation="date"
                 size='large'

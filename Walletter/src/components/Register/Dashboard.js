@@ -18,6 +18,7 @@ import { SrvGetAllTransactions } from "../ServerTalker";
 export default function Dashboard(props){
 
     let [AllTransactions,setAllTransactions] = useState([]);
+   
 
     function loadAllTransactions(Email, Password) {
         SrvGetAllTransactions(Email, Password).then(res => {
@@ -29,18 +30,16 @@ export default function Dashboard(props){
         }).catch(err => {
             console.log(err);
         })
-
     }
 
     useEffect(()=>{
         loadAllTransactions(props.User.Email,props.User.Password);
-    },[])
+    },[props])
 
     return(
         <>
             Welcome back {props.User.Email}
-            <TransactionsWidget AllTransactions={AllTransactions}></TransactionsWidget>
-            <TransactionModal User={props.User}></TransactionModal>
+            <TransactionsWidget AllTransactions={AllTransactions} User={props.User}></TransactionsWidget>
         </>
     )
 }

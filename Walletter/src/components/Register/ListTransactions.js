@@ -1,14 +1,14 @@
-import { IonList,IonItem, IonRow, IonCol, IonGrid} from "@ionic/react";
+import { IonList,IonItem, IonRow, IonCol, IonGrid, IonLabel} from "@ionic/react";
 import { useEffect, useState } from "react";
-import { SrvGetAllTransactions } from "../ServerTalker";
 import "../../theme/ListTransactions.css"
 import moment from "moment";
 
 export default function ListTransactions(props){
     let [transactionList,setTransactionList] = useState([]);
 
-    function createList(AllTransactions){
+    function createList(AllTransactions,Limit){
         let tmp=[]
+        //header
         tmp.push(
             <IonItem color="light" className="itemList">
                 <IonGrid>
@@ -20,47 +20,68 @@ export default function ListTransactions(props){
                 </IonGrid>
             </IonItem>
         )
+        //order by last ones
         AllTransactions =  AllTransactions.sort((a,b)=>{
             if(a.Date>b.Date){
                 return -1
             }else{
                 return 1
             }
-            return 0
-        })
-        //TODO: limit to 10 + resume at the end
-        AllTransactions.forEach(s => {
-            if(s.IsOutcome){ //red
+        });
+
+        //compute the transactions
+        let total = 0;
+        for (let i = 0; i < ((Limit==null)? 10 : Math.min(Limit,AllTransactions.length) ); i++) {
+            if(AllTransactions[i].IsOutcome){
+                total -= AllTransactions[i].Amount
                 tmp.push(
                     <IonItem color="danger" className="itemList">
                         <IonGrid>
                             <IonRow>
-                                <IonCol>-{s.Amount}€</IonCol>
-                                <IonCol>{s.Reference}</IonCol>
-                                <IonCol>{moment(s.Date).format("DD/MM/YYYY")}</IonCol>
+                                <IonCol>-{AllTransactions[i].Amount}€</IonCol>
+                                <IonCol>{AllTransactions[i].Reference}</IonCol>
+                                <IonCol>{moment(AllTransactions[i].Date).format("DD/MM/YYYY")}</IonCol>
                             </IonRow>
                         </IonGrid>
                     </IonItem>
                 )
-            }else{ //green
+            }else{
+                total += AllTransactions[i].Amount
                 tmp.push(
                     <IonItem color="success" className="itemList">
                         <IonGrid>
-                            <IonRow color="green">
-                                <IonCol>+{s.Amount}€</IonCol>
-                                <IonCol>{s.Reference}</IonCol>
-                                <IonCol>{moment(s.Date).format("DD/MM/YYYY")}</IonCol>
+                            <IonRow>
+                                <IonCol>+{AllTransactions[i].Amount}€</IonCol>
+                                <IonCol>{AllTransactions[i].Reference}</IonCol>
+                                <IonCol>{moment(AllTransactions[i].Date).format("DD/MM/YYYY")}</IonCol>
                             </IonRow>
                         </IonGrid>
                     </IonItem>
                 )
             }
-        });
+        }
+        //footer
+        tmp.push(
+            <IonItem color="dark" className="itemList">
+                <IonGrid>
+                    <IonRow >
+                        <IonCol>Total: </IonCol>
+                        <IonCol></IonCol>
+                        <IonCol>
+                            <IonLabel color={(total>0)?"success":"danger"}>
+                                €{total}
+                            </IonLabel>
+                        </IonCol>
+                    </IonRow>
+                </IonGrid>
+            </IonItem>
+        )
         setTransactionList(tmp)
     }
    
     useEffect(()=>{
-        createList(props.AllTransactions)
+        console.log(props);
+        createList(props.AllTransactions,props.Limit)
     },[props])
     return(
         <IonList>

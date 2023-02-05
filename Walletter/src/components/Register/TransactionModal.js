@@ -27,6 +27,7 @@ export default function TransactionModal(props){
 
 
     function insertTransaction() {
+        console.log(props);
         SrvSaveTransaction({
             "Email": props.User.Email,
             "Amount": Amount,
@@ -41,6 +42,7 @@ export default function TransactionModal(props){
     return (
         <div>
             <IonModal ref={modal} trigger="open-modal" onWillDismiss={(ev) => { }} mode="ios">
+                
                 <IonHeader mode="ios">
                     <IonToolbar>
                         <IonButtons slot="start">
