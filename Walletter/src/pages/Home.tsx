@@ -6,8 +6,8 @@ import './Home.css';
 
 const Home: React.FC = () => {
 
-  let [OkAuth, setOkAuth] = useState(false);
-  let [Email, setEmail] = useState(null);
+  let [OkAuth, setOkAuth] = useState(true);
+  let [User, setUser] = useState(null);
   
   return (
     <IonPage>
@@ -18,7 +18,7 @@ const Home: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         
-        {(!OkAuth)?<Login okAuth={()=>setOkAuth(true)} setEmail={(ev:any)=>setEmail(ev)}/> : <Dashboard UserEmail={Email}/>}
+        {(!OkAuth) ? <Login okAuth={() => setOkAuth(true)} setUser={(ev:any)=>setUser(ev)}/> : <Dashboard User={{"Email":"a@a","Password":"a"}}/>}
       </IonContent>
     </IonPage>
   );

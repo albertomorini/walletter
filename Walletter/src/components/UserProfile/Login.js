@@ -15,7 +15,10 @@ export default function Login(props){
 
             if(Login){
                 SrvDoLogin(Email,Password).then(res=>{
-                    props.setEmail(Email);
+                    props.setUser({
+                        "Email":Email,
+                        "Password": Password
+                    });
                     props.okAuth();
                 }).catch(err=>{
                     console.log(err);
@@ -23,7 +26,10 @@ export default function Login(props){
                 })
             }else{
                 SrvDoSignUp(Email, Password).then(res => {
-                    props.setEmail(Email);
+                    props.setUser({
+                        "Email":Email,
+                        "Password": Password
+                    });
                     props.okAuth();
                 }).catch(err => {
                     console.log(err);
@@ -42,8 +48,9 @@ export default function Login(props){
 
     return(
         <div>
-
-            <IonSegment value={ValueSegment} onClick={(ev) => { (Login) ? setLogin(false) : setLogin(true); setValueSegment(ev.target.value) }} mode="ios">
+            <IonSegment value={ValueSegment} onClick={(ev) => { 
+                (ev.target.value!="Login")? setLogin(false) : setLogin(true); setValueSegment(ev.target.value) 
+                }} mode="ios">
                 <IonSegmentButton value="Login">
                     <IonLabel>Login</IonLabel>
                 </IonSegmentButton>

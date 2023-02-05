@@ -1,4 +1,5 @@
 // SERVER
+const { ObjectId } = require("bson");
 const http = require("http");
 const port = 1999;
 // MONGODB
@@ -35,33 +36,51 @@ function createCollection(){
  * @param {Object} objReg 
  */
 function saveTransaction(objReg){
-    MongoClient.connect(url, (err, db) => {
-        let dbo = db.db("Walletter");
-        dbo.collection(Collection_Register).insertOne(objReg, (err, res) => {
-            if (err){
-                console.log(err);
-            }
-            db.close();
+    return new Promise((resolve,reject)=>{
+        MongoClient.connect(url, (err, db) => {
+            let dbo = db.db("Walletter");
+            dbo.collection(Collection_Register).insertOne(objReg, (err, res) => {
+                if (err){
+                    reject(err);
+                }
+                console.log(objReg);
+                resolve("Saving ok");
+                db.close();
+            });
         });
     });
 }
 /**
  * Return all transactions of a user
- * @param {Int} UserID 
  */
-function getTransaction(UserID){
-    getUser(Email,Password).then(res=>{ //TODO: test, think if is okay
-        if(res!=null){
+function getAllTransaction(res,Email,Password){
+    getUser(Email,Password).then(resAuth=>{ 
+        if(resAuth!=null){
             MongoClient.connect(url, (err,db)=>{
                 let dbo= db.db("Walletter");
-                dbo.collection(Collection_Register).find({"Email":UserID}).toArray((err,res)=>{
-                    console.log(res);
-                })
+                dbo.collection(Collection_Register).find({ "Email": Email }).toArray((err,resTransactions)=>{
+                    doResponse(res, 200, { "transactions": resTransactions });
+                });
             });
+        }else{
+            doResponse(res, 500, { "transactions": null });
         }
     });
 }
 
+function deleteTransaction(res,idTransaction){
+    MongoClient.connect(url,(err,db)=>{
+        let dbo = db.db("Walletter");
+        dbo.collection(Collection_Register).deleteOne({ "_id": ObjectId(idTransaction) }, (err,resDelte)=>{
+            if(err){
+                console.log(myquery);
+                console.log(err);
+                doResponse(res,500,{"deleteTransaction":err})
+            }
+            doResponse(res,200,{"deleteTransaction":resDelte})
+        })
+    })
+}
 //////////      USERS
 function insertUser(objUsr){
     return new Promise((resolve,reject)=>{
@@ -105,45 +124,47 @@ function getUser(email,psw){
     })
 }
 
-function getAllUsers(email,psw){
-    return new Promise((resolve,reject)=>{
-        MongoClient.connect(url,(err,db)=>{
-            let dbo = db.db("Walletter");
-            dbo.collection(Collection_Users).find().toArray((err,res)=>{
-                if(err){
-                    reject(err);
-                }
-                console.log(res);
 
-                db.close();
+
+// function getAllUsers(email,psw){
+//     return new Promise((resolve,reject)=>{
+//         MongoClient.connect(url,(err,db)=>{
+//             let dbo = db.db("Walletter");
+//             dbo.collection(Collection_Users).find().toArray((err,res)=>{
+//                 if(err){
+//                     reject(err);
+//                 }
+//                 console.log(res);
+
+//                 db.close();
                 
-            });
-        });
-    })
-}
+//             });
+//         });
+//     })
+// }
 
-function deleteUser(objUsr){
-    MongoClient.connect(url,(err,db)=>{
-        let dbo= db.db("Walletter");
-        dbo.collection(Collection_Users).deleteOne(objUsr).toArray((err,res)=>{
-            if(err){
-                return false;
-            }
-            return true;
-        })
-    })
-}
+// function deleteUser(objUsr){
+//     MongoClient.connect(url,(err,db)=>{
+//         let dbo= db.db("Walletter");
+//         dbo.collection(Collection_Users).deleteOne(objUsr).toArray((err,res)=>{
+//             if(err){
+//                 return false;
+//             }
+//             return true;
+//         })
+//     })
+// }
+
+
+
 
 //////////////////////////////////////////
-
-
 
 function doResponse(res,status, body){
     res.writeHead(status, { "Content-type": "Application/JSON" });
     res.write(JSON.stringify(body));
     res.end();
 }
-
 
 http.createServer((req,res)=>{
     let body="";
@@ -187,10 +208,10 @@ http.createServer((req,res)=>{
             }).catch(err=>{ //TODO: logging error?
                 doResponse(res,500,{"transaction":null})
             })
-        }else if(req.url=="/getAllTransaction"){
-            getTransaction("a@a"); //works!, check to-do, ask psw
-        }else if(req.url=="/getTransaction"){
+        } else if (req.url =="/getAllTransaction"){
+            getAllTransaction(res,bodyDict.Email,bodyDict.Password)
         }else if(req.url=="/deleteTransaction"){
+            deleteTransaction(res,bodyDict.idTransaction)
         }else if(req.url=="/updateTransaction"){
         }
 

@@ -42,7 +42,21 @@ export const SrvDoSignUp = (Email,Password) =>{
     });
 }
 
-
+/////////////////////////////////////////////
 export const SrvSaveTransaction = (Transaction) =>{
+    console.log(Transaction);
     return doRequest("saveTransaction", Transaction);
+}
+
+export const SrvGetAllTransactions = (Email,Password) =>{
+    return doRequest("getAllTransaction",{
+        "Email": Email,
+        "Password": MD5(Password).toString() 
+    });
+}
+
+export const SrvDeleteTransaction = (idTransaction) =>{
+    return doRequest("deleteTransaction",{
+        "idTransaction": idTransaction
+    })
 }
