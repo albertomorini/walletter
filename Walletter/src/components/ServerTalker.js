@@ -1,6 +1,6 @@
 import MD5 from "crypto-js/md5";
 //JUST FOR DEV MODE
-const urlSever= "localhost";
+const urlSever= "10.0.0.3";
 const port = 1999;
 const socket = "http://"+urlSever+":"+port
 //JUST FOR DEV MODE
@@ -43,6 +43,13 @@ export const SrvDoSignUp = (Email,Password) =>{
 }
 
 /////////////////////////////////////////////
+export const SrvGetExistingReferences = (Email, Password) =>{
+    return doRequest("getExistingReferences",{
+        "Email": Email,
+        "Password": MD5(Password).toString()
+    })
+}
+
 export const SrvSaveTransaction = (Transaction) =>{
     console.log(Transaction);
     return doRequest("saveTransaction", Transaction);
@@ -60,3 +67,4 @@ export const SrvDeleteTransaction = (idTransaction) =>{
         "idTransaction": idTransaction
     })
 }
+

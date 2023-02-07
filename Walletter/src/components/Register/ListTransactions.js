@@ -33,7 +33,7 @@ export default function ListTransactions(props){
         let total = 0;
         for (let i = 0; i < ((Limit==null)? 10 : Math.min(Limit,AllTransactions.length) ); i++) {
             if(AllTransactions[i].IsOutcome){
-                total -= AllTransactions[i].Amount
+                total -=parseFloat(AllTransactions[i].Amount)
                 tmp.push(
                     <IonItem color="danger" className="itemList">
                         <IonGrid>
@@ -46,7 +46,7 @@ export default function ListTransactions(props){
                     </IonItem>
                 )
             }else{
-                total += AllTransactions[i].Amount
+                total += parseFloat(AllTransactions[i].Amount)
                 tmp.push(
                     <IonItem color="success" className="itemList">
                         <IonGrid>

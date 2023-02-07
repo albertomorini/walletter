@@ -12,7 +12,7 @@ import {
     IonLabel,
     IonInput,
 } from '@ionic/react';
-import TransactionModal from "./TransactionModal";
+import TransactionModal from "./Modals/InsertModal";
 import TransactionsWidget from "./TransactionsWidget";
 import { SrvGetAllTransactions } from "../ServerTalker";
 export default function Dashboard(props){

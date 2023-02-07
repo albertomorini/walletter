@@ -50,6 +50,32 @@ function saveTransaction(objReg){
         });
     });
 }
+
+function getExistingReferences(res,Email,Password){
+    getUser(Email,Password).then(resAuth=>{
+        if(resAuth!=null){
+            MongoClient.connect(url,(err,db)=>{
+                if(err){
+                    doResponse(res,403,{"err":"unauthorized"})
+                }
+                let dbo = db.db("Walletter");
+                dbo.collection(Collection_Register).find({"Email":Email}).toArray((err,resReferences)=>{
+                    if(err){
+                        doResponse(res,500,{"err":err});
+                    }
+                    let singleReferences = [];
+                    resReferences.forEach(s=>{
+                        if(singleReferences.indexOf(s.Reference)==-1){ //we need a unique array
+                            singleReferences.push(s.Reference)
+                        }
+                    });
+                    doResponse(res,200,{"singleReferences":singleReferences})
+                })
+            });
+        }
+    })
+}
+
 /**
  * Return all transactions of a user
  */
@@ -208,6 +234,8 @@ http.createServer((req,res)=>{
             }).catch(err=>{ //TODO: logging error?
                 doResponse(res,500,{"transaction":null})
             })
+        } else if (req.url =="/getExistingReferences"){
+            getExistingReferences(res,bodyDict.Email,bodyDict.Password);
         } else if (req.url =="/getAllTransaction"){
             getAllTransaction(res,bodyDict.Email,bodyDict.Password)
         }else if(req.url=="/deleteTransaction"){

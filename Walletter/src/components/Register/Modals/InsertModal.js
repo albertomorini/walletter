@@ -11,9 +11,11 @@ import {
     IonItem,
     IonLabel,
     IonInput,
+    IonSelectOption,
+    IonSelect,
 } from '@ionic/react';
 import moment from "moment"
-import { SrvSaveTransaction } from "../ServerTalker";
+import { SrvGetExistingReferences, SrvSaveTransaction } from "../../ServerTalker";
 
 
 export default function TransactionModal(props){
@@ -22,9 +24,30 @@ export default function TransactionModal(props){
     let [Date, setDate] = useState(moment().format("YYYY-MM-DD"));
     let [IsOutcome, setIsOutcome] = useState(true); //false is an income
     let [Reference, setReference] = useState();
+    //
+    let [ExistingReferences,setExistingReferences] = useState([]);
 
     const modal = useRef();
+    const sel = useRef();
 
+    function getExistingReferences(search=null){
+        SrvGetExistingReferences(props.User.Email,props.User.Password).then(res=>{
+            let tmp=[]
+            setExistingReferences([])
+            res.singleReferences.forEach(s=>{
+                if(s.includes(search)){
+                    tmp.push(
+                        <IonSelectOption value={s}>{s}</IonSelectOption>
+                    );
+                }else if(search==null || search==" "){ //default
+                    tmp.push(
+                        <IonSelectOption value={s}>{s}</IonSelectOption>
+                    );
+                }
+            });
+            setExistingReferences(tmp);
+        })
+    }
 
     function insertTransaction() {
         console.log(props);
@@ -38,7 +61,10 @@ export default function TransactionModal(props){
             modal.current?.dismiss()
         })
     }
+    useEffect(()=>{
 
+        getExistingReferences()
+    },[])
     return (
         <div>
             <IonModal ref={modal} trigger="open-modal" onWillDismiss={(ev) => { }} mode="ios">
@@ -71,8 +97,28 @@ export default function TransactionModal(props){
                     </IonItem>
                     <IonItem>
                         <IonLabel position="stacked">Reference</IonLabel>
-                        <IonInput type="text" onIonChange={(ev) => setReference(ev.target.value)} mode="ios"></IonInput>
+                        <IonInput type="text" 
+                            onIonChange={(ev) => {
+                                    getExistingReferences(ev.target.value);
+                                    setReference(ev.target.value);
+                                    //document.getElementById("select").open()
+                            }} 
+                            mode="ios"
+                            placeholder="Reference"
+                            value={Reference}
+                        />
+                                    
+                        <IonButton onClick={() => { sel.current.open(); }}>Search</IonButton>
+
+                        <IonSelect ref={sel} interface="popover" id="select" mode="ios" 
+                        onIonChange={(ev)=>{
+                            document.getElementById("select").style.display = 'none'
+                            setReference(ev.target.value)
+                        }}>
+                            {ExistingReferences}
+                        </IonSelect>
                     </IonItem>
+                  
                 </IonContent>
             </IonModal>
             

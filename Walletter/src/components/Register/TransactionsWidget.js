@@ -2,7 +2,7 @@ import { IonGrid, IonRow,IonCol, IonLabel } from "@ionic/react";
 import { useEffect } from "react";
 import ListTransactions from "./ListTransactions";
 import MonthlyCalendar from "./MonthlyCalendar";
-import TransactionModal from "./TransactionModal";
+import InsertModal from "./Modals/InsertModal";
 
 
 export default function TransactionsWidget(props){
@@ -24,7 +24,7 @@ export default function TransactionsWidget(props){
                     <IonCol>Andamento </IonCol>
                 </IonRow>
             </IonGrid>
-            <TransactionModal User={props.User}></TransactionModal>
+            <InsertModal User={props.User}></InsertModal>
 
         </div>
     )
