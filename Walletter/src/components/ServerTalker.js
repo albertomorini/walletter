@@ -1,6 +1,6 @@
 import MD5 from "crypto-js/md5";
 //JUST FOR DEV MODE
-const urlSever= "10.0.0.3";
+const urlSever= "localhost";
 const port = 1999;
 const socket = "http://"+urlSever+":"+port
 //JUST FOR DEV MODE

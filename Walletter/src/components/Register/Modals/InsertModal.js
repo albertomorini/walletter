@@ -13,6 +13,8 @@ import {
     IonInput,
     IonSelectOption,
     IonSelect,
+    IonSearchbar,
+    IonList,
 } from '@ionic/react';
 import moment from "moment"
 import { SrvGetExistingReferences, SrvSaveTransaction } from "../../ServerTalker";
@@ -26,26 +28,22 @@ export default function TransactionModal(props){
     let [Reference, setReference] = useState();
     //
     let [ExistingReferences,setExistingReferences] = useState([]);
+    let [ResResearch,setResResearch] = useState([...ExistingReferences]);
+
 
     const modal = useRef();
     const sel = useRef();
 
-    function getExistingReferences(search=null){
+    function getExistingReferences(){
         SrvGetExistingReferences(props.User.Email,props.User.Password).then(res=>{
             let tmp=[]
-            setExistingReferences([])
             res.singleReferences.forEach(s=>{
-                if(s.includes(search)){
-                    tmp.push(
-                        <IonSelectOption value={s}>{s}</IonSelectOption>
-                    );
-                }else if(search==null || search==" "){ //default
-                    tmp.push(
-                        <IonSelectOption value={s}>{s}</IonSelectOption>
-                    );
-                }
+                tmp.push(
+                    s
+                );
             });
             setExistingReferences(tmp);
+            setResResearch(tmp)
         })
     }
 
@@ -62,9 +60,16 @@ export default function TransactionModal(props){
         })
     }
     useEffect(()=>{
-
         getExistingReferences()
-    },[])
+    },[]);
+
+    const searchReferences = (query) =>{
+        let tmp = ExistingReferences;
+        tmp.push(query)
+        //if zero results then add the query
+        setResResearch(tmp.filter(s=>s.toLowerCase().indexOf(query)>-1));
+    }
+
     return (
         <div>
             <IonModal ref={modal} trigger="open-modal" onWillDismiss={(ev) => { }} mode="ios">
@@ -97,26 +102,18 @@ export default function TransactionModal(props){
                     </IonItem>
                     <IonItem>
                         <IonLabel position="stacked">Reference</IonLabel>
-                        <IonInput type="text" 
-                            onIonChange={(ev) => {
-                                    getExistingReferences(ev.target.value);
-                                    setReference(ev.target.value);
-                                    //document.getElementById("select").open()
-                            }} 
+                        <IonSearchbar
+                            onIonChange={(ev) => searchReferences(ev.target.value)}
                             mode="ios"
                             placeholder="Reference"
-                            value={Reference}
                         />
-                                    
-                        <IonButton onClick={() => { sel.current.open(); }}>Search</IonButton>
+                        <IonList>
+                            {ResResearch.map(result => (
+                                <IonItem onClick={()=>setReference(result)}>{result}</IonItem>
+                            ))}
+                        </IonList>
 
-                        <IonSelect ref={sel} interface="popover" id="select" mode="ios" 
-                        onIonChange={(ev)=>{
-                            document.getElementById("select").style.display = 'none'
-                            setReference(ev.target.value)
-                        }}>
-                            {ExistingReferences}
-                        </IonSelect>
+                        
                     </IonItem>
                   
                 </IonContent>
