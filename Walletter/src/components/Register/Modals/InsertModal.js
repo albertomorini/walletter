@@ -53,7 +53,7 @@ export default function TransactionModal(props){
             "IsOutcome": IsOutcome,
             "Reference": Reference,
         }).then(res=>{
-            props.reloadTransactions()
+            props.loadAllTransactions()
             modal.current?.dismiss()
         })
     }
