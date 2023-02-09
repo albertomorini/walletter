@@ -24,7 +24,7 @@ export default function TransactionsWidget(props){
                     <IonCol>Andamento </IonCol>
                 </IonRow>
             </IonGrid>
-            <InsertModal User={props.User}></InsertModal>
+            <InsertModal User={props.User} loadAllTransactions={() => props.loadAllTransactions()}></InsertModal>
 
         </div>
     )

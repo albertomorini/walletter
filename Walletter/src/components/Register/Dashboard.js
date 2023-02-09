@@ -39,7 +39,7 @@ export default function Dashboard(props){
     return(
         <>
             Welcome back {props.User.Email}
-            <TransactionsWidget AllTransactions={AllTransactions} User={props.User}></TransactionsWidget>
+            <TransactionsWidget AllTransactions={AllTransactions} User={props.User} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}></TransactionsWidget>
         </>
     )
 }

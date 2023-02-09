@@ -18,7 +18,7 @@ import {
 } from '@ionic/react';
 import moment from "moment"
 import { SrvGetExistingReferences, SrvSaveTransaction } from "../../ServerTalker";
-
+import {checkmarkCircleOutline,searchSharp} from "ionicons/icons"
 
 export default function TransactionModal(props){
 
@@ -29,18 +29,16 @@ export default function TransactionModal(props){
     //
     let [ExistingReferences,setExistingReferences] = useState([]);
     let [ResResearch,setResResearch] = useState([...ExistingReferences]);
+    let [SearchIcon, setSearchIcon] = useState(searchSharp)
 
 
     const modal = useRef();
-    const sel = useRef();
 
     function getExistingReferences(){
         SrvGetExistingReferences(props.User.Email,props.User.Password).then(res=>{
             let tmp=[]
             res.singleReferences.forEach(s=>{
-                tmp.push(
-                    s
-                );
+                tmp.push(s);
             });
             setExistingReferences(tmp);
             setResResearch(tmp)
@@ -48,7 +46,6 @@ export default function TransactionModal(props){
     }
 
     function insertTransaction() {
-        console.log(props);
         SrvSaveTransaction({
             "Email": props.User.Email,
             "Amount": Amount,
@@ -56,24 +53,25 @@ export default function TransactionModal(props){
             "IsOutcome": IsOutcome,
             "Reference": Reference,
         }).then(res=>{
+            props.reloadTransactions()
             modal.current?.dismiss()
         })
+    }
+    const searchReferences = (query) =>{
+        let results = ExistingReferences.filter(s=>s.toLowerCase().indexOf(query)>-1);
+        if(results.length==0){
+            results.push(query) //OPT: optimize, if the query is a substring doesn't show the new element
+        }
+        setResResearch(results);
     }
     useEffect(()=>{
         getExistingReferences()
     },[]);
 
-    const searchReferences = (query) =>{
-        let tmp = ExistingReferences;
-        tmp.push(query)
-        //if zero results then add the query
-        setResResearch(tmp.filter(s=>s.toLowerCase().indexOf(query)>-1));
-    }
 
     return (
         <div>
             <IonModal ref={modal} trigger="open-modal" onWillDismiss={(ev) => { }} mode="ios">
-                
                 <IonHeader mode="ios">
                     <IonToolbar>
                         <IonButtons slot="start">
@@ -103,13 +101,26 @@ export default function TransactionModal(props){
                     <IonItem>
                         <IonLabel position="stacked">Reference</IonLabel>
                         <IonSearchbar
-                            onIonChange={(ev) => searchReferences(ev.target.value)}
+                            searchIcon={SearchIcon}
+                            onIonChange={(ev) => {
+                                setReference(ev.target.value); 
+                                setSearchIcon(searchSharp);
+
+                                searchReferences(ev.target.value)
+                            }}
                             mode="ios"
                             placeholder="Reference"
+                            value={Reference}
                         />
-                        <IonList>
+                        <IonList style={{width: "100%"}}>
                             {ResResearch.map(result => (
-                                <IonItem onClick={()=>setReference(result)}>{result}</IonItem>
+                                <IonItem onClick={()=>{ 
+                                    setTimeout(() => {
+                                        setSearchIcon(checkmarkCircleOutline);
+                                        setResResearch([]);
+                                    }, 400);
+                                    setReference(result)
+                                }}>{result}</IonItem>
                             ))}
                         </IonList>
 

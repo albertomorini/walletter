@@ -1,7 +1,8 @@
-import { IonList,IonItem, IonRow, IonCol, IonGrid, IonLabel} from "@ionic/react";
+import { IonList,IonItem, IonRow, IonCol, IonGrid, IonLabel, IonButton} from "@ionic/react";
 import { useEffect, useState } from "react";
 import "../../theme/ListTransactions.css"
 import moment from "moment";
+import { SrvDeleteTransaction } from "../ServerTalker";
 
 export default function ListTransactions(props){
     let [transactionList,setTransactionList] = useState([]);
@@ -32,6 +33,7 @@ export default function ListTransactions(props){
         //compute the transactions
         let total = 0;
         for (let i = 0; i < ((Limit==null)? 10 : Math.min(Limit,AllTransactions.length) ); i++) {
+            console.log(AllTransactions[i]);
             if(AllTransactions[i].IsOutcome){
                 total -=parseFloat(AllTransactions[i].Amount)
                 tmp.push(
@@ -41,6 +43,7 @@ export default function ListTransactions(props){
                                 <IonCol>-{AllTransactions[i].Amount}€</IonCol>
                                 <IonCol>{AllTransactions[i].Reference}</IonCol>
                                 <IonCol>{moment(AllTransactions[i].Date).format("DD/MM/YYYY")}</IonCol>
+                                <IonButton onClick={()=>SrvDeleteTransaction(AllTransactions[i]._id)} >Elimina</IonButton>
                             </IonRow>
                         </IonGrid>
                     </IonItem>
@@ -54,6 +57,7 @@ export default function ListTransactions(props){
                                 <IonCol>+{AllTransactions[i].Amount}€</IonCol>
                                 <IonCol>{AllTransactions[i].Reference}</IonCol>
                                 <IonCol>{moment(AllTransactions[i].Date).format("DD/MM/YYYY")}</IonCol>
+                                <IonButton onClick={()=>SrvDeleteTransaction(AllTransactions[i]._id)} >Elimina</IonButton>
                             </IonRow>
                         </IonGrid>
                     </IonItem>
@@ -80,7 +84,6 @@ export default function ListTransactions(props){
     }
    
     useEffect(()=>{
-        console.log(props);
         createList(props.AllTransactions,props.Limit)
     },[props])
     return(

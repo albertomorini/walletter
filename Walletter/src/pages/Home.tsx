@@ -1,8 +1,9 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { useState } from 'react';
 import Dashboard from '../components/Register/Dashboard';
 import Login from "../components/UserProfile/Login"
 import './Home.css';
+import { personCircleSharp } from 'ionicons/icons';
 
 const Home: React.FC = () => {
 
@@ -14,6 +15,7 @@ const Home: React.FC = () => {
       <IonHeader mode='ios'>
         <IonToolbar>
           <IonTitle>Walletter</IonTitle>
+          <IonIcon icon={personCircleSharp} size="large" />
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
