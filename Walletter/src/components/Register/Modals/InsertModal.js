@@ -130,7 +130,7 @@ export default function TransactionModal(props){
                 </IonContent>
             </IonModal>
             
-            <IonButton id="open-modal">Insert a transaction</IonButton>
+            <IonButton id="open-modal" expand="block" mode="ios">Insert a transaction</IonButton>
 
         </div>
     )

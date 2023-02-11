@@ -152,22 +152,23 @@ function getUser(email,psw){
 
 
 
-// function getAllUsers(email,psw){
-//     return new Promise((resolve,reject)=>{
-//         MongoClient.connect(url,(err,db)=>{
-//             let dbo = db.db("Walletter");
-//             dbo.collection(Collection_Users).find().toArray((err,res)=>{
-//                 if(err){
-//                     reject(err);
-//                 }
-//                 console.log(res);
+function getAllUsers(){
+    return new Promise((resolve,reject)=>{
+        MongoClient.connect(url,(err,db)=>{
+            let dbo = db.db("Walletter");
+            dbo.collection(Collection_Users).find().toArray((err,res)=>{
+                if(err){
+                    reject(err);
+                }
+                console.log(res);
 
-//                 db.close();
+                db.close();
                 
-//             });
-//         });
-//     })
-// }
+            });
+        });
+    })
+}
+getAllUsers();
 
 // function deleteUser(objUsr){
 //     MongoClient.connect(url,(err,db)=>{

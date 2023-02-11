@@ -10,8 +10,8 @@ export default function TransactionsWidget(props){
         <div>
             <IonGrid>
                 <IonRow>
-                    <IonCol className="ion-text-center" onClick={() => console.log("Enter full size mode")}>
-                        <IonLabel >Last transactions</IonLabel>
+                    <IonCol className="ion-text-center" >
+                        <IonLabel onClick={() => console.log("Enter full size mode")}>Last transactions</IonLabel>
                         <ListTransactions AllTransactions={props.AllTransactions} Limit={10}/>
                     </IonCol>
                     <IonCol className="ion-text-center">

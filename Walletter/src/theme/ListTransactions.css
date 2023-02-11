@@ -1,3 +1,10 @@
 .itemList{
     border-radius: 20px;
+
+}
+.outcomeElement{
+    background-color: darkred;
+}
+.incomeElement{
+    background-color: blue;
 }

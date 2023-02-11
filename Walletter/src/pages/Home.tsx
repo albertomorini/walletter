@@ -7,7 +7,7 @@ import { personCircleSharp } from 'ionicons/icons';
 
 const Home: React.FC = () => {
 
-  let [OkAuth, setOkAuth] = useState(false);
+  let [OkAuth, setOkAuth] = useState(true); //TODO: put false in depl
   let [User, setUser] = useState(null);
   
   return (
@@ -19,12 +19,12 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
+        {(!OkAuth) ? <Login okAuth={() => setOkAuth(true)} setUser={(ev:any)=>setUser(ev)}/> : <Dashboard User={{"Email":"a@a","Password":"a"}}/>}
         
-        {(!OkAuth) ? <Login okAuth={() => setOkAuth(true)} setUser={(ev:any)=>setUser(ev)}/> : <Dashboard User={User}/>}
       </IonContent>
     </IonPage>
   );
 };
+//{ (!OkAuth) ? <Login okAuth={() => setOkAuth(true)} setUser={(ev: any) => setUser(ev)} /> : <Dashboard User={User} /> }
 
-//{(!OkAuth) ? <Login okAuth={() => setOkAuth(true)} setUser={(ev:any)=>setUser(ev)}/> : <Dashboard User={{"Email":"a@a","Password":"a"}}/>}
 export default Home;

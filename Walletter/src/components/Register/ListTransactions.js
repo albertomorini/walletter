@@ -1,14 +1,40 @@
-import { IonList,IonItem, IonRow, IonCol, IonGrid, IonLabel, IonButton} from "@ionic/react";
-import { useEffect, useState } from "react";
+import { IonList,IonItem, IonRow,useIonAlert, IonCol, IonGrid, IonLabel, IonButton, IonItemSliding, IonItemOptions, IonItemOption, IonIcon} from "@ionic/react";
+import { useEffect, useState} from "react";
 import "../../theme/ListTransactions.css"
 import moment from "moment";
 import { SrvDeleteTransaction } from "../ServerTalker";
+import { heart,trash, createOutline } from "ionicons/icons";
 
 export default function ListTransactions(props){
     let [transactionList,setTransactionList] = useState([]);
+    const [deleteConfirm] = useIonAlert(); 
 
+
+    function deleteTransaction(idTransaction){
+        deleteConfirm({
+            header: 'Delete transaction',
+            message: "Confirm the deletion?",
+            mode: "ios",
+            buttons: [
+              {
+                text: 'Cancel',
+                role: 'cancel',
+              },
+              {
+                text: 'OK',
+                role: 'confirm',
+                handler: () => {
+                    SrvDeleteTransaction(idTransaction).then(res=>{
+                        //TODO: reload list
+                    })
+                },
+              },
+            ],
+        });
+    }
+   
     function createList(AllTransactions,Limit){
-        let tmp=[]
+        let tmp = []
         //header
         tmp.push(
             <IonItem color="light" className="itemList">
@@ -21,46 +47,67 @@ export default function ListTransactions(props){
                 </IonGrid>
             </IonItem>
         )
-        //order by last ones
-        AllTransactions =  AllTransactions.sort((a,b)=>{
-            if(a.Date>b.Date){
+        AllTransactions = AllTransactions.sort((a, b) => {
+            if (a.Date > b.Date) {
                 return -1
-            }else{
+            } else {
                 return 1
             }
         });
-
         //compute the transactions
         let total = 0;
-        for (let i = 0; i < ((Limit==null)? 10 : Math.min(Limit,AllTransactions.length) ); i++) {
-            console.log(AllTransactions[i]);
-            if(AllTransactions[i].IsOutcome){
-                total -=parseFloat(AllTransactions[i].Amount)
+        for (let i = 0; i < ((Limit == null) ? 10 : Math.min(Limit, AllTransactions.length)); i++) {
+            if (AllTransactions[i].IsOutcome) {
+                total -= parseFloat(AllTransactions[i].Amount)
                 tmp.push(
-                    <IonItem color="danger" className="itemList">
-                        <IonGrid>
+                    <IonItemSliding>
+                        <IonItem color="danger" className="itemList outcomeElement">
+                            <IonGrid>
+
                             <IonRow>
                                 <IonCol>-{AllTransactions[i].Amount}€</IonCol>
                                 <IonCol>{AllTransactions[i].Reference}</IonCol>
                                 <IonCol>{moment(AllTransactions[i].Date).format("DD/MM/YYYY")}</IonCol>
-                                <IonButton onClick={()=>SrvDeleteTransaction(AllTransactions[i]._id)} >Elimina</IonButton>
                             </IonRow>
-                        </IonGrid>
-                    </IonItem>
+                            </IonGrid>
+
+                        </IonItem>
+                        <IonItemOptions>
+                        <IonItemOption color="warning">
+                            <IonIcon slot="bottom" icon={createOutline}></IonIcon>
+                            Edit
+                        </IonItemOption>
+                        <IonItemOption color="danger" onClick={()=>deleteTransaction(AllTransactions[i]._id)} expandable>
+                            <IonIcon slot="bottom" icon={trash}></IonIcon>
+                            Delete
+                        </IonItemOption>
+                        </IonItemOptions>
+                    </IonItemSliding>
                 )
-            }else{
+            } else {
                 total += parseFloat(AllTransactions[i].Amount)
                 tmp.push(
-                    <IonItem color="success" className="itemList">
-                        <IonGrid>
-                            <IonRow>
-                                <IonCol>+{AllTransactions[i].Amount}€</IonCol>
-                                <IonCol>{AllTransactions[i].Reference}</IonCol>
-                                <IonCol>{moment(AllTransactions[i].Date).format("DD/MM/YYYY")}</IonCol>
-                                <IonButton onClick={()=>SrvDeleteTransaction(AllTransactions[i]._id)} >Elimina</IonButton>
-                            </IonRow>
-                        </IonGrid>
-                    </IonItem>
+                    <IonItemSliding>
+                        <IonItem color="success" className="itemList incomeElement">
+                            <IonGrid>
+                                <IonRow>
+                                    <IonCol>+{AllTransactions[i].Amount}€</IonCol>
+                                    <IonCol>{AllTransactions[i].Reference}</IonCol>
+                                    <IonCol>{moment(AllTransactions[i].Date).format("DD/MM/YYYY")}</IonCol>
+                                </IonRow>
+                            </IonGrid>
+                        </IonItem>
+                        <IonItemOptions>
+                        <IonItemOption color="warning">
+                            <IonIcon slot="bottom" icon={createOutline}></IonIcon>
+                            Edit
+                        </IonItemOption>
+                        <IonItemOption color="danger" onClick={()=>deleteTransaction(AllTransactions[i]._id)} expandable >
+                            <IonIcon slot="bottom" icon={trash}></IonIcon>
+                            Delete
+                        </IonItemOption>
+                        </IonItemOptions>
+                    </IonItemSliding>
                 )
             }
         }
@@ -72,7 +119,7 @@ export default function ListTransactions(props){
                         <IonCol>Total: </IonCol>
                         <IonCol></IonCol>
                         <IonCol>
-                            <IonLabel color={(total>0)?"success":"danger"}>
+                            <IonLabel color={(total > 0) ? "success" : "danger"}>
                                 €{total}
                             </IonLabel>
                         </IonCol>
@@ -86,9 +133,10 @@ export default function ListTransactions(props){
     useEffect(()=>{
         createList(props.AllTransactions,props.Limit)
     },[props])
+    
     return(
         <IonList>
-            {transactionList}
+                {transactionList}
         </IonList>
     )
 }
