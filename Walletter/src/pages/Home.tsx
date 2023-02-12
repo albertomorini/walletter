@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonIcon, IonPopover, IonButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { useState } from 'react';
 import Dashboard from '../components/Register/Dashboard';
 import Login from "../components/UserProfile/Login"
@@ -15,7 +15,15 @@ const Home: React.FC = () => {
       <IonHeader mode='ios'>
         <IonToolbar>
           <IonTitle>Walletter</IonTitle>
-          <IonIcon icon={personCircleSharp} size="large" />
+          <IonIcon icon={personCircleSharp} id="AccountIcon" size="large" style={{float: "right",marginRight:'5px'}}/>
+          <IonPopover trigger="AccountIcon" triggerAction="click">
+            <IonButton color="warning" size="small" onClick={()=>console.log("TODO:")}>
+              Edit
+            </IonButton><IonButton color="danger" size="small" onClick={()=>setUser(null)}>
+              Log out
+            </IonButton>
+          </IonPopover>
+
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>

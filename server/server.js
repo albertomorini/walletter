@@ -99,7 +99,6 @@ function deleteTransaction(res,idTransaction){
         let dbo = db.db("Walletter");
         dbo.collection(Collection_Register).deleteOne({ "_id": ObjectId(idTransaction) }, (err,resDelte)=>{
             if(err){
-                console.log(myquery);
                 console.log(err);
                 doResponse(res,500,{"deleteTransaction":err})
             }
@@ -168,7 +167,7 @@ function getAllUsers(){
         });
     })
 }
-getAllUsers();
+//getAllUsers();
 
 // function deleteUser(objUsr){
 //     MongoClient.connect(url,(err,db)=>{
