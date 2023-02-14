@@ -131,6 +131,7 @@ export default function ListTransactions(props){
     }
    
     useEffect(()=>{
+        console.log("qualcosa è cambiato")
         createList(props.AllTransactions,props.Limit)
     },[props])
     

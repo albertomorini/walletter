@@ -4,6 +4,9 @@
 A simple personal finance tool.
 
 ## The idea
+You can do two things with money: earn it or spend it.
+
+Every 
 
 ## Structure
 
@@ -28,3 +31,7 @@ let usrTmp={
     "psw":"2md5",
     "premium":true
 } //Id || _id
+
+## TODO
+
+- reload list on insert/delete/edit

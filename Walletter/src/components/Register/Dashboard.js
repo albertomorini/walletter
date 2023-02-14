@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react"
-import { IonGrid, IonRow, IonCol, IonItem, IonLabel} from '@ionic/react';
+import { IonGrid, IonRow, IonButton, IonCol, IonIcon, IonItem, IonLabel} from '@ionic/react';
 
 import { SrvGetAllTransactions } from "../ServerTalker";
 import ListTransactions from "./ListTransactions.js"
 import MonthlyCalendar from "./MonthlyCalendar.js"
 import InsertModal from "./Modals/InsertModal.js"
 import TransactionModal from "./Modals/InsertModal";
+import { arrowBack } from "ionicons/icons";
 
 
 export default function Dashboard(props){
@@ -58,7 +59,13 @@ export default function Dashboard(props){
             </div>
         :
         <>
-            {MyView}
+            <div>
+                <IonButton mode="ios" onClick={()=>setMyView(null)} color="dark" size="small">
+                    <IonIcon mode="ios" icon={arrowBack} />
+                    Back
+                </IonButton>
+                {MyView}
+            </div>
         </>
         }
         </>

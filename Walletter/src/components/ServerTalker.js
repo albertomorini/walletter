@@ -6,10 +6,10 @@ const socket = "http://"+urlSever+":"+port
 //JUST FOR DEV MODE
 
 
-function doRequest(endpoint,body){
+function doRequest(endpoint,body,method){
     return new Promise((resolve, reject) => {
         fetch(socket + "/" + endpoint, {
-            method: "POST",
+            method: method,
             mode: "cors",
             body: JSON.stringify(body)
         }).then(res => {
@@ -28,18 +28,18 @@ function doRequest(endpoint,body){
 
 
 export const SrvDoLogin = (Email,Password) =>{
-    return doRequest("getUser",{
+    return doRequest("getAuth",{
         "Email": Email,
         "Password": MD5(Password).toString() 
-    });
+    },"POST");
 }
 
 
 export const SrvDoSignUp = (Email,Password) =>{
-    return doRequest("insertUser",{
+    return doRequest("user",{
         "Email": Email,
         "Password": MD5(Password).toString() 
-    });
+    },"POST");
 }
 
 /////////////////////////////////////////////
@@ -47,24 +47,25 @@ export const SrvGetExistingReferences = (Email, Password) =>{
     return doRequest("getExistingReferences",{
         "Email": Email,
         "Password": MD5(Password).toString()
-    })
+    },"POST")
 }
 
-export const SrvSaveTransaction = (Transaction) =>{
-    console.log(Transaction);
-    return doRequest("saveTransaction", Transaction);
-}
 
 export const SrvGetAllTransactions = (Email,Password) =>{
     return doRequest("getAllTransaction",{
         "Email": Email,
         "Password": MD5(Password).toString() 
-    });
+    },"POST");
+}
+
+
+export const SrvSaveTransaction = (Transaction) =>{
+    return doRequest("transaction", Transaction,"POST");
 }
 
 export const SrvDeleteTransaction = (idTransaction) =>{
-    return doRequest("deleteTransaction",{
+    return doRequest("transaction",{
         "idTransaction": idTransaction
-    })
+    },"DELETE")
 }
 

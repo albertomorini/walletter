@@ -1,7 +1,10 @@
+const http = require("http");
 
 
-fetch("http://localhost:1999/getUser",{
-    method: "POST",
+setTimeout(()=>{
+
+fetch("http://localhost:7771/user",{
+    method: "PUT",
     mode:"cors",
     body: JSON.stringify({
         "email": "22@alby",
@@ -13,3 +16,22 @@ fetch("http://localhost:1999/getUser",{
 }).catch(err=>{
     console.log(err);
 })
+},2000);
+
+http.createServer((req,res)=>{
+    let body="";
+    req.on("data",(chunk)=>{
+        body+=chunk;
+    })
+    req.on("end",()=>{
+
+        if(req.url=="/user"){
+            if(req.method=="PUT"){
+                console.log(JSON.parse(body));
+
+            }
+
+        }
+
+    })
+}).listen(7771);
