@@ -19,7 +19,8 @@ export default function MonthlyCalendar(props){
     
     useEffect(()=>{
         displayDays(props.AllTransactions)
-    },[props])
+    },[props]);
+    
     return(
         <>
             <IonDatetime 

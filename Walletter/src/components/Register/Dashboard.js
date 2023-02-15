@@ -16,6 +16,8 @@ export default function Dashboard(props){
 
     function loadAllTransactions(Email, Password) {
         SrvGetAllTransactions(Email, Password).then(res => {
+            console.log(res)
+            //TODO: fix autorefresh on insert of record
             let tmp = [];
             res.transactions.forEach(s => {
                 tmp.push(s)
@@ -39,9 +41,9 @@ export default function Dashboard(props){
                         <IonCol className="ion-text-center" >
                             <IonItem className="ion-text-center">
                                 <IonLabel onClick={() => 
-                                setMyView(<ListTransactions AllTransactions={AllTransactions} Limit={AllTransactions.length}/>)}>Last transactions</IonLabel>
+                                setMyView(<ListTransactions AllTransactions={AllTransactions} Limit={null}/>)}>Last transactions</IonLabel>
                             </IonItem>
-                            <ListTransactions AllTransactions={AllTransactions} Limit={10}/>
+                            <ListTransactions AllTransactions={AllTransactions} Limit={5}/>
                         </IonCol>
                         <IonCol className="ion-text-center">
                             <IonItem className="ion-text-center">

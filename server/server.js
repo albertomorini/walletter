@@ -57,11 +57,7 @@ http.createServer((req,res)=>{
                     doResponse(res,500,{"transaction":err})
                 })
             }else if(req.method=="DELETE"){
-                QueryExecutor.deleteTransaction(res,bodyDict.idTransaction).then(resDelete=>{
-                    doResponse(res,200,{"transaction":resSave})
-                }).catch(err=>{
-                    doResponse(res,500,{"transaction":err})
-                })
+                QueryExecutor.deleteTransaction(res,bodyDict.idTransaction);
             }else if(req.method=="PUT"){
                 //TODO: update transaction
             }

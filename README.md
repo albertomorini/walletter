@@ -2,6 +2,7 @@
 # Walletter
 
 A simple personal finance tool.
+
 Made in my free time with NodeJS, ReactJS/Ionic, MongoDB.
 
 ## The idea
@@ -19,6 +20,7 @@ So the database goes along.
 ## Database
 
 Made with Mongo, why? Why not.
+
 Two collections, that's all we need.
 
 WT_REGISTER
@@ -28,15 +30,15 @@ WT_REGISTER
     "date":"11/02/22",
     "type": "out",
     "causale":"cadoro",
-    "idUtente": $Email
+    "idUtente": "user@email"
 }
 ```
 WT_USERS
 
 ```JSON
 {
-    "Email": $Email,
-    "Password": md5($Password)
+    "Email": "user@email",
+    "Password": md5("superUserPassword")
     "Premium": false
 }
 ```
@@ -47,3 +49,11 @@ TODO
 ## TODO
 
 - reload list on insert/delete/edit
+- calendar => pick date and shows transactions
+- list => css buttons
+
+new ones
+
+- sankey
+- global chart
+- edit transaction
