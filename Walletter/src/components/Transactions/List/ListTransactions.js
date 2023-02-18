@@ -1,6 +1,6 @@
 import { IonList,IonItem, IonRow,useIonAlert, IonCol, IonGrid, IonLabel, IonButton, IonItemSliding, IonItemOptions, IonItemOption, IonIcon} from "@ionic/react";
 import { useEffect, useState} from "react";
-import "../../theme/ListTransactions.css"
+import "../../../theme/ListTransactions.css"
 import moment from "moment";
 import ListItem from "./ListItem.js"
 import { arrowBack,arrowForward } from "ionicons/icons";

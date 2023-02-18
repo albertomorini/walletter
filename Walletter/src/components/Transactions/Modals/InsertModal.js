@@ -45,6 +45,15 @@ export default function TransactionModal(props){
         })
     }
 
+    const searchReferences = (query) =>{
+        let results = ExistingReferences.filter(s=>s.toLowerCase().indexOf(query)>-1);
+        if(results.length==0){
+            results.push(query) //OPT: optimize, if the query is a substring doesn't show the new element
+        }
+        setResResearch(results);
+    }
+
+    
     function insertTransaction() {
         SrvSaveTransaction({
             "Email": props.User.Email,
@@ -56,13 +65,6 @@ export default function TransactionModal(props){
             props.loadAllTransactions()
             modal.current?.dismiss()
         })
-    }
-    const searchReferences = (query) =>{
-        let results = ExistingReferences.filter(s=>s.toLowerCase().indexOf(query)>-1);
-        if(results.length==0){
-            results.push(query) //OPT: optimize, if the query is a substring doesn't show the new element
-        }
-        setResResearch(results);
     }
     useEffect(()=>{
         getExistingReferences()

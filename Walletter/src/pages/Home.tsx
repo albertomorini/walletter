@@ -1,6 +1,6 @@
 import { IonContent, IonHeader, IonIcon, IonPopover, IonButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { useState } from 'react';
-import Dashboard from '../components/Register/Dashboard';
+import Dashboard from '../components/Transactions/Dashboard';
 import Login from "../components/UserProfile/Login"
 import './Home.css';
 import { personCircleSharp } from 'ionicons/icons';

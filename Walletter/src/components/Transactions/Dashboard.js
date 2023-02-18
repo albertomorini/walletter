@@ -2,12 +2,11 @@ import { useEffect, useRef, useState } from "react"
 import { IonGrid, IonRow, IonButton, IonCol, IonIcon, IonItem, IonLabel} from '@ionic/react';
 
 import { SrvGetAllTransactions } from "../ServerTalker";
-import ListTransactions from "./ListTransactions.js"
-import MonthlyCalendar from "./MonthlyCalendar.js"
+import ListTransactions from "./List/ListTransactions.js"
+import MonthlyCalendar from "./Calendar/MonthlyCalendar.js"
 import InsertModal from "./Modals/InsertModal.js"
 import TransactionModal from "./Modals/InsertModal";
-import { arrowBack } from "ionicons/icons";
-
+import { arrowBack, chevronForwardOutline } from "ionicons/icons";
 
 export default function Dashboard(props){
 
@@ -16,8 +15,6 @@ export default function Dashboard(props){
 
     function loadAllTransactions(Email, Password) {
         SrvGetAllTransactions(Email, Password).then(res => {
-            console.log(res)
-            //TODO: fix autorefresh on insert of record
             let tmp = [];
             res.transactions.forEach(s => {
                 tmp.push(s)
@@ -41,13 +38,19 @@ export default function Dashboard(props){
                         <IonCol className="ion-text-center" >
                             <IonItem className="ion-text-center">
                                 <IonLabel onClick={() => 
-                                setMyView(<ListTransactions AllTransactions={AllTransactions} Limit={null}/>)}>Last transactions</IonLabel>
+                                setMyView(<ListTransactions AllTransactions={AllTransactions} Limit={null}/>)}>
+                                        Last transactions
+                                        <IonIcon icon={chevronForwardOutline} />
+                                    </IonLabel>
                             </IonItem>
                             <ListTransactions AllTransactions={AllTransactions} Limit={5}/>
                         </IonCol>
                         <IonCol className="ion-text-center">
-                            <IonItem className="ion-text-center">
-                                <IonLabel onClick={() => setMyView(<MonthlyCalendar AllTransactions={AllTransactions} />)}>Monthly overview</IonLabel>
+                            <IonItem className="ion-text-center" onClick={() => setMyView(<MonthlyCalendar AllTransactions={AllTransactions} />)}>
+                                <IonLabel >
+                                    Monthly overview
+                                    <IonIcon icon={chevronForwardOutline} />
+                                </IonLabel>
                             </IonItem>
                             <MonthlyCalendar AllTransactions={AllTransactions} />
                         </IonCol>
@@ -57,7 +60,7 @@ export default function Dashboard(props){
                         <IonCol>Andamento </IonCol>
                     </IonRow>
                 </IonGrid>
-                <InsertModal User={props.User} loadAllTransactions={() => loadAllTransactions()}></InsertModal>
+                <InsertModal User={props.User} loadAllTransactions={() => loadAllTransactions(props.User.Email,props.User.Password)}></InsertModal>
             </div>
         :
         <>

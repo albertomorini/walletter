@@ -46,8 +46,7 @@ function saveTransaction(objReg){
                 if (err){
                     reject(err);
                 }
-                console.log(objReg);
-                resolve("Saving ok");
+                resolve(objReg);
                 db.close();
             });
         });
