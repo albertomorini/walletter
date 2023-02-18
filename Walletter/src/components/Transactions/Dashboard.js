@@ -38,12 +38,12 @@ export default function Dashboard(props){
                         <IonCol className="ion-text-center" >
                             <IonItem className="ion-text-center">
                                 <IonLabel onClick={() => 
-                                setMyView(<ListTransactions AllTransactions={AllTransactions} Limit={null}/>)}>
+                                setMyView(<ListTransactions AllTransactions={AllTransactions} Limit={null} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>)}>
                                         Last transactions
                                         <IonIcon icon={chevronForwardOutline} />
                                     </IonLabel>
                             </IonItem>
-                            <ListTransactions AllTransactions={AllTransactions} Limit={5}/>
+                            <ListTransactions AllTransactions={AllTransactions} Limit={5} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>
                         </IonCol>
                         <IonCol className="ion-text-center">
                             <IonItem className="ion-text-center" onClick={() => setMyView(<MonthlyCalendar AllTransactions={AllTransactions} />)}>

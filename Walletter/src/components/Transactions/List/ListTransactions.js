@@ -30,7 +30,7 @@ export default function ListTransactions(props){
             if(Limit==null || AllTransactions.indexOf(s)<Limit){
                 monthTotal += (s.IsOutcome)? (parseFloat(s.Amount) * -1) : parseFloat(s.Amount)
                 tmp.push(
-                    <ListItem sTransaction={s} />
+                    <ListItem sTransaction={s} loadAllTransactions={()=>props.loadAllTransactions()}/>
                 );
             }
         })
@@ -77,7 +77,7 @@ export default function ListTransactions(props){
                     <IonButton 
                         color="dark"
                         onClick={()=>{
-                             setMonthSelected(parseInt(MonthSelected)+1);
+                            setMonthSelected(parseInt(MonthSelected)+1);
                             createMonthList(props.AllTransactions,props.Limit,(moment(MonthSelected,"MM").add(1,'months').format("MM")))
                         }}
                         disabled={(MonthSelected==12)?true:false}

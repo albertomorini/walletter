@@ -4,7 +4,6 @@ import { heart,trash, createOutline } from "ionicons/icons";
 import { SrvDeleteTransaction } from "../../ServerTalker";
 import moment from "moment";
 
-
 export default function ListItem(props){
     const [deleteConfirm] = useIonAlert(); 
 	
@@ -23,7 +22,9 @@ export default function ListItem(props){
                 role: 'confirm',
                 handler: () => {
                     SrvDeleteTransaction(idTransaction).then(res=>{
-                        //TODO: reload list
+                        props.loadAllTransactions()
+                    }).catch(err=>{
+                        console.log(err)
                     })
                 },
               },

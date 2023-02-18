@@ -16,6 +16,8 @@ import {
     IonSearchbar,
     IonList,
 } from '@ionic/react';
+import ListItem from "../List/ListItem.js"
+import moment from "moment"
 
 export default function DayTransactionsModal(props){
   	const modal = useRef();
@@ -28,7 +30,7 @@ export default function DayTransactionsModal(props){
                         <IonButtons slot="start">
                             <IonButton id="closeModal" onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
                         </IonButtons>
-                        <IonTitle>Add a transaction</IonTitle>
+                        <IonTitle>{moment(props.TransactionsDaySelected.Date).format("DD MMMM YYYY")}</IonTitle>
                         <IonButtons slot="end">
                             <IonButton strong={true} onClick={() =>{}}>
                                 Confirm
@@ -37,7 +39,11 @@ export default function DayTransactionsModal(props){
                     </IonToolbar>
                 </IonHeader>
                 <IonContent className="ion-padding">
-                    
+                    {props.TransactionsDaySelected.map(s=>{
+                        return(
+                            <ListItem sTransaction={s}/>
+                        )
+                    })}
                 </IonContent>
             </IonModal>
 

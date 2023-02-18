@@ -20,16 +20,17 @@ export default function MonthlyCalendar(props){
     }
 
     function daySelected(CalendarValues){
-      
-        console.log(CalendarValues)
-        console.log(props.AllTransactions)
-        let w = CalendarValues.filter(s=>!props.AllTransactions.includes(s)).concat(props.AllTransactions.filter(x => !CalendarValues.includes(x)))
-        console.log(w)
 
+        let daySelected;
+        if(CalendarValues.length>props.AllTransactions.length){
+            daySelected = CalendarValues.filter(s=>!props.AllTransactions.map(item =>item.Date).includes(s));
+        }else{
+            daySelected = props.AllTransactions.map(item =>item.Date).filter(s=>!CalendarValues.includes(s));
+        }
+        daySelected=daySelected.pop(); //remove possibly duplicates and get a single string
+        setTransactionsDaySelected(props.AllTransactions.filter(s=>( s.Date == daySelected))); //save it
 
-
-        //displayDays(props.AllTransactions);
-        //setTransactionsDays(CalendarValues.pop())
+        displayDays(props.AllTransactions);
     }
     
     useEffect(()=>{
@@ -38,7 +39,7 @@ export default function MonthlyCalendar(props){
     
     return(
         <>
-            <DayTransacionsModal />
+            <DayTransacionsModal TransactionsDaySelected={TransactionsDaySelected}/>
             <IonDatetime 
                 className='myCalendar'
                 mode='ios'
@@ -49,9 +50,9 @@ export default function MonthlyCalendar(props){
                 firstDayOfWeek={1}
                 preferWheel="false"
                 value={TransactionsDays}
+                id="MonthlyCalendar"
                 onClick={(ev)=>daySelected(ev.target.value)}
             ></IonDatetime>
         </>
     )
 }
-                //id="MonthlyCalendar"
