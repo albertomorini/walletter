@@ -5,6 +5,8 @@ import {
     IonModal,
     IonHeader,
     IonToggle,
+    IonSegment,
+    IonSegmentButton,
     IonContent,
     IonToolbar,
     IonTitle,
@@ -31,8 +33,6 @@ export default function TransactionModal(props){
     let [ResResearch,setResResearch] = useState([...ExistingReferences]);
     let [SearchIcon, setSearchIcon] = useState(searchSharp)
 
-
-
     function getExistingReferences(){
         SrvGetExistingReferences(props.User.Email,props.User.Password).then(res=>{
             let tmp=[]
@@ -58,7 +58,7 @@ export default function TransactionModal(props){
             "Email": props.User.Email,
             "Amount": Amount,
             "Date": Date,
-            "IsOutcome": IsOutcome,
+            "IsOutcome": (IsOutcome=='false')?false:true,
             "Reference": Reference,
         }).then(res=>{
             props.loadAllTransactions()
@@ -96,8 +96,18 @@ export default function TransactionModal(props){
                         <IonInput type="date" locale="it_IT" value={Date} placeholder={Date} onIonChange={(ev) => setDate(ev.target.value)} mode="ios"></IonInput>
                     </IonItem>
                     <IonItem>
-                        <IonLabel position="stacked">Type</IonLabel>
-                        <IonToggle enableOnOffLabels={true} slot="end" value={IsOutcome} onIonChange={(ev) => setIsOutcome(!IsOutcome)} mode="ios"></IonToggle>
+
+                        <IonSegment value={IsOutcome} onIonChange={(ev) => setIsOutcome(ev.target.value) //this returns a string...
+                            } mode="ios">
+                            <IonSegmentButton value={true}>
+                                <IonLabel color="danger" style={{fontWeight :'bold'}}>Outcome</IonLabel>
+                            </IonSegmentButton>
+                            <IonSegmentButton value={false} >
+                                <IonLabel color="success" style={{fontWeight :'bold'}}>Income</IonLabel>
+                            </IonSegmentButton>
+                        </IonSegment>
+
+                      
                     </IonItem>
                     <IonItem>
                         <IonLabel position="stacked">Reference</IonLabel>
