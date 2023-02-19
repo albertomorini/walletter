@@ -18,7 +18,12 @@ http.createServer((req,res)=>{
         body+=chunk;
     });
     req.on("end",()=>{
-        let bodyDict = JSON.parse(body);
+        let bodyDict;
+        try {
+            bodyDict = JSON.parse(body);
+        } catch(e) {
+            console.log(e);
+        }
         if (req.url=="/getAuth"){
             let usr = await = QueryExecutor.getUser(bodyDict.Email, bodyDict.Password);
             usr.then(usrRes=>{
@@ -26,6 +31,8 @@ http.createServer((req,res)=>{
             })            
         }
 
+
+        //USER
         if(req.url=="/user"){
             if(req.method=="POST"){
                 QueryExecutor.insertUser({"email": bodyDict.Email,"psw": bodyDict.Password,"premium": false}).then(resInsert=>{
@@ -47,6 +54,12 @@ http.createServer((req,res)=>{
         }
 
 
+        //EXPORT-IMPORT
+        if(req.url=="/getExport"){
+            QueryExecutor.doExport(res,bodyDict.Email,bodyDict.Password)
+        }
+
+
         //TRANSACTIONS
 
         if(req.url=="/transaction"){
@@ -57,7 +70,7 @@ http.createServer((req,res)=>{
                     doResponse(res,500,{"transaction":err})
                 })
             }else if(req.method=="DELETE"){
-                QueryExecutor.deleteTransaction(res,bodyDict.idTransaction);
+                QueryExecutor.deleteTransaction(res,bodyDict.idTransaction,bodyDict.Email,bodyDict.Password);
             }else if(req.method=="PUT"){
                 //TODO: update transaction
             }

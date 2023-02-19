@@ -49,14 +49,6 @@ TODO
 ## TODO
 
 - edit a transaction
-- check to pass props in an efficient way + ItemList on MontlyCalendar
-- list => css buttons
-- check causali -> che vengano prese dal solo utente
-
-
-
-new ones
-
 - sankey
 - global chart
-- edit transaction
+- backup

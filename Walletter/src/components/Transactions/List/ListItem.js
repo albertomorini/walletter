@@ -3,6 +3,8 @@ import { IonList,IonItem, IonRow,useIonAlert, IonCol, IonGrid, IonLabel, IonButt
 import { heart,trash, createOutline } from "ionicons/icons";
 import { SrvDeleteTransaction } from "../../ServerTalker";
 import moment from "moment";
+import InsertModal from "../Modals/InsertModal.js"
+import {useState,useRef} from "react"
 
 export default function ListItem(props){
     const [deleteConfirm] = useIonAlert(); 
@@ -21,7 +23,8 @@ export default function ListItem(props){
                 text: 'OK',
                 role: 'confirm',
                 handler: () => {
-                    SrvDeleteTransaction(idTransaction).then(res=>{
+                    //TODO: add user auth
+                    SrvDeleteTransaction(idTransaction,props.User.Email,props.User.Password).then(res=>{
                         props.loadAllTransactions()
                     }).catch(err=>{
                         console.log(err)
@@ -32,31 +35,49 @@ export default function ListItem(props){
         });
     }
 
-	return(
-		<IonItemSliding>
-            <IonItem color={(props.sTransaction.IsOutcome)?"danger":"success"} className="itemList outcomeElement">
-                <IonGrid>
-                <IonRow>
-                    <IonCol>
-                    {(props.sTransaction.IsOutcome)?"-":"+"}
-                    {props.sTransaction.Amount}€
-                    </IonCol>
-                    <IonCol>{props.sTransaction.Reference}</IonCol>
-                    <IonCol>{moment(props.sTransaction.Date).format("DD/MM/YYYY")}</IonCol>
-                </IonRow>
-                </IonGrid>
+    let [Amount,setAmount]=useState()
+    let modalEdit = useRef()
 
-            </IonItem>
-            <IonItemOptions>
-            <IonItemOption color="warning">
-                <IonIcon slot="bottom" icon={createOutline}></IonIcon>
-                Edit
-            </IonItemOption>
-            <IonItemOption color="danger" onClick={()=>deleteTransaction(props.sTransaction._id)} expandable>
-                <IonIcon slot="bottom" icon={trash}></IonIcon>
-                Delete
-            </IonItemOption>
-            </IonItemOptions>
-        </IonItemSliding>
+	return(
+        <div>
+            <InsertModal User={props.User} loadAllTransactions={props.loadAllTransactions} Amount={Amount} modalInsert={modalEdit}/>
+
+    		<IonItemSliding>
+                <IonItem color={(props.sTransaction.IsOutcome)?"danger":"success"} className="itemList outcomeElement">
+                    <IonGrid>
+                    <IonRow>
+                        <IonCol>
+                        {(props.sTransaction.IsOutcome)?"-":"+"}
+                        {props.sTransaction.Amount}€
+                        </IonCol>
+                        <IonCol>{props.sTransaction.Reference}</IonCol>
+                        <IonCol>{moment(props.sTransaction.Date).format("DD/MM/YYYY")}</IonCol>
+                    </IonRow>
+                    </IonGrid>
+
+                </IonItem>
+                <IonItemOptions>
+                <IonItemOption color="warning" onClick={()=>{
+                    modalEdit.current?.present();
+                    setAmount(props.sTransaction.Amount)
+                }}
+                className="buttonList"
+                >
+                    <IonIcon slot="bottom" icon={createOutline}></IonIcon>
+                    Edit
+                </IonItemOption>
+                <IonItemOption color="danger" 
+                    onClick={()=>deleteTransaction(props.sTransaction._id)
+                    }
+                    expandable
+                 
+                    className="buttonList"
+                 >
+                    <IonIcon slot="bottom" icon={trash}></IonIcon>
+                    Delete
+                </IonItemOption>
+                </IonItemOptions>
+            </IonItemSliding>
+        </div>
     );	
 }

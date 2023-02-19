@@ -1,6 +1,6 @@
 import { IonDatetime } from '@ionic/react';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import "../../../theme/MonthlyCalendar.css"
 import DayTransacionsModal from "../Modals/DayTransactionsModal.js"
 
@@ -8,6 +8,7 @@ export default function MonthlyCalendar(props){
     
     let [TransactionsDays,setTransactionsDays] = useState([moment().format("YYYY-MM-DD")]);
     let [TransactionsDaySelected,setTransactionsDaySelected] = useState([]);
+    let modalDayRecap = useRef();
 
     function displayDays(AllTransactions){
         let tmp=[]
@@ -20,17 +21,18 @@ export default function MonthlyCalendar(props){
     }
 
     function daySelected(CalendarValues){
-
-        let daySelected;
-        if(CalendarValues.length>props.AllTransactions.length){
-            daySelected = CalendarValues.filter(s=>!props.AllTransactions.map(item =>item.Date).includes(s));
-        }else{
-            daySelected = props.AllTransactions.map(item =>item.Date).filter(s=>!CalendarValues.includes(s));
+        if(CalendarValues.length!=props.AllTransactions.length){ //trigger the modal just when a date is selected, not if change month
+            let daySelected;
+            if(CalendarValues.length>props.AllTransactions.length){
+                daySelected = CalendarValues.filter(s=>!props.AllTransactions.map(item =>item.Date).includes(s));
+            }else{
+                daySelected = props.AllTransactions.map(item =>item.Date).filter(s=>!CalendarValues.includes(s));
+            }
+            daySelected=daySelected.pop(); //remove possibly duplicates and get a single string
+            setTransactionsDaySelected(props.AllTransactions.filter(s=>( s.Date == daySelected))); //save it
+            displayDays(props.AllTransactions);
+            modalDayRecap.current?.present();
         }
-        daySelected=daySelected.pop(); //remove possibly duplicates and get a single string
-        setTransactionsDaySelected(props.AllTransactions.filter(s=>( s.Date == daySelected))); //save it
-
-        displayDays(props.AllTransactions);
     }
     
     useEffect(()=>{
@@ -39,9 +41,9 @@ export default function MonthlyCalendar(props){
     
     return(
         <>
-            <DayTransacionsModal TransactionsDaySelected={TransactionsDaySelected}/>
+            <DayTransacionsModal TransactionsDaySelected={TransactionsDaySelected} User={props.User} loadAllTransactions={()=>props.loadAllTransactions()} modalDayRecap={modalDayRecap}/>
             <IonDatetime 
-                className='myCalendar'
+                className="myCalendar"
                 mode='ios'
                 presentation="date"
                 size='large'
@@ -50,7 +52,6 @@ export default function MonthlyCalendar(props){
                 firstDayOfWeek={1}
                 preferWheel="false"
                 value={TransactionsDays}
-                id="MonthlyCalendar"
                 onClick={(ev)=>daySelected(ev.target.value)}
             ></IonDatetime>
         </>

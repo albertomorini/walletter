@@ -30,7 +30,7 @@ export default function ListTransactions(props){
             if(Limit==null || AllTransactions.indexOf(s)<Limit){
                 monthTotal += (s.IsOutcome)? (parseFloat(s.Amount) * -1) : parseFloat(s.Amount)
                 tmp.push(
-                    <ListItem sTransaction={s} loadAllTransactions={()=>props.loadAllTransactions()}/>
+                    <ListItem sTransaction={s} loadAllTransactions={()=>props.loadAllTransactions()} User={props.User}/>
                 );
             }
         })

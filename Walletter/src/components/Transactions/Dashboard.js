@@ -12,6 +12,7 @@ export default function Dashboard(props){
 
     let [AllTransactions,setAllTransactions] = useState([]);
     let [MyView, setMyView] = useState(null);
+    const refModalInsert = useRef();
 
     function loadAllTransactions(Email, Password) {
         SrvGetAllTransactions(Email, Password).then(res => {
@@ -38,21 +39,21 @@ export default function Dashboard(props){
                         <IonCol className="ion-text-center" >
                             <IonItem className="ion-text-center">
                                 <IonLabel onClick={() => 
-                                setMyView(<ListTransactions AllTransactions={AllTransactions} Limit={null} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>)}>
+                                setMyView(<ListTransactions AllTransactions={AllTransactions} Limit={null} User={props.User} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>)}>
                                         Last transactions
                                         <IonIcon icon={chevronForwardOutline} />
                                     </IonLabel>
                             </IonItem>
-                            <ListTransactions AllTransactions={AllTransactions} Limit={5} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>
+                            <ListTransactions AllTransactions={AllTransactions} Limit={5} User={props.User} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>
                         </IonCol>
                         <IonCol className="ion-text-center">
-                            <IonItem className="ion-text-center" onClick={() => setMyView(<MonthlyCalendar AllTransactions={AllTransactions} />)}>
+                            <IonItem className="ion-text-center" onClick={() => setMyView(<MonthlyCalendar AllTransactions={AllTransactions} User={props.User} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>)}>
                                 <IonLabel >
                                     Monthly overview
                                     <IonIcon icon={chevronForwardOutline} />
                                 </IonLabel>
                             </IonItem>
-                            <MonthlyCalendar AllTransactions={AllTransactions} />
+                            <MonthlyCalendar AllTransactions={AllTransactions} User={props.User} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>
                         </IonCol>
                     </IonRow>
                     <IonRow>
@@ -60,7 +61,9 @@ export default function Dashboard(props){
                         <IonCol>Andamento </IonCol>
                     </IonRow>
                 </IonGrid>
-                <InsertModal User={props.User} loadAllTransactions={() => loadAllTransactions(props.User.Email,props.User.Password)}></InsertModal>
+                <InsertModal User={props.User} loadAllTransactions={() => loadAllTransactions(props.User.Email,props.User.Password)} modalInsert={refModalInsert}></InsertModal>
+              <IonButton onClick={()=>{refModalInsert.current?.present()}} expand="block" mode="ios">Insert a transaction</IonButton>
+
             </div>
         :
         <>

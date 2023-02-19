@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const url = "mongodb://localhost:27017/Walletter";
 var ObjectId = require('mongodb').ObjectID;
-
+const fs = require("fs");
 
 const Collection_Register = "WT_REGISTER";
 const Collection_Users= "WT_USERS";
@@ -96,18 +96,55 @@ function getAllTransaction(res,Email,Password){
     });
 }
 
-function deleteTransaction(res,idTransaction){
-    MongoClient.connect(url,(err,db)=>{
-        let dbo = db.db("Walletter");
-        dbo.collection(Collection_Register).deleteOne({ "_id": ObjectId(idTransaction) }, (err,resDelte)=>{
-            if(err){
-                console.log(err);
-                doResponse(res,500,{"deleteTransaction":err})
-            }
-            doResponse(res,200,{"deleteTransaction":resDelte})
-        })
+function deleteTransaction(res,idTransaction,Email,Password){
+     getUser(Email,Password).then(resAuth=>{
+        if(resAuth!=null){
+            MongoClient.connect(url,(err,db)=>{
+                let dbo = db.db("Walletter");
+                dbo.collection(Collection_Register).deleteOne({ "_id": ObjectId(idTransaction), "Email":Email }, (err,resDelte)=>{
+                    if(err){
+                        console.log(err);
+                        doResponse(res,500,{"deleteTransaction":err})
+                    }
+                    doResponse(res,200,{"deleteTransaction":resDelte})
+                })
+            })
+        }else{
+            doResponse(res,403,{"err":"unauthorized"})
+        }
+    }).catch(err=>{
+            doResponse(res,403,{"err":"unauthorized"})
     })
 }
+
+
+//// EXPORT-IMPORT
+function doExport(res,Email,Password){
+    console.log(Email)
+    console.log(Password)
+    getUser(Email,Password).then(resAuth=>{
+        if(resAuth!=null){
+            MongoClient.connect(url,(err,db)=>{
+                let dbo= db.db("Walletter");
+                dbo.collection(Collection_Register).find({"Email":Email}).toArray((err,resAll)=>{
+                    if(err){
+                        console.log(err);
+                        doResponse(res,500,{"export":null})
+                    }
+                    fs.writeFileSync("./tmpExpoImpo/expo"+Email+".json",JSON.stringify({"transactions":resAll}));
+                    doResponse(res,200,fs.readFileSync("./tmpExpoImpo/expo"+Email+".json"))
+                })
+            });
+        }else{
+            doResponse(res,403,{"err":"unauthorized"})
+        }
+    }).catch(err=>{
+        doResponse(res,500,{"export":null})
+
+    })
+}
+
+
 //////////      USERS
 function insertUser(objUsr){
     return new Promise((resolve,reject)=>{
@@ -179,8 +216,8 @@ module.exports={
 	getAllTransaction:getAllTransaction,
 	getExistingReferences: getExistingReferences,
 	saveTransaction: saveTransaction,
-	createCollection:createCollection
-
+	createCollection:createCollection,
+    doExport: doExport
 }
 
 // function deleteUser(objUsr){

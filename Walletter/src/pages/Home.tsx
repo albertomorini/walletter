@@ -4,6 +4,7 @@ import Dashboard from '../components/Transactions/Dashboard';
 import Login from "../components/UserProfile/Login"
 import './Home.css';
 import { personCircleSharp } from 'ionicons/icons';
+import {SrvDoExport} from "../components/ServerTalker.js"
 
 const Home: React.FC = () => {
 
@@ -17,9 +18,21 @@ const Home: React.FC = () => {
           <IonTitle>Walletter</IonTitle>
           <IonIcon icon={personCircleSharp} id="AccountIcon" size="large" style={{float: "right",marginRight:'5px'}}/>
           <IonPopover trigger="AccountIcon" triggerAction="click">
+           
+            <IonButton color="medium" size="small" onClick={()=>{
+                SrvDoExport("a@a","a").then(res=>{
+                  const objectURL = URL.createObjectURL(res);
+                  let tab = window.open(window.URL.createObjectURL(res));
+                  //TODO: download json
+                })
+              }}>
+              Export
+            </IonButton>
+
             <IonButton color="warning" size="small" onClick={()=>console.log("TODO:")}>
               Edit
-            </IonButton><IonButton color="danger" size="small" onClick={()=>setUser(null)}>
+            </IonButton>
+            <IonButton color="danger" size="small" onClick={()=>setUser(null)}>
               Log out
             </IonButton>
           </IonPopover>

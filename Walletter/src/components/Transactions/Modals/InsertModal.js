@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import {
     IonButtons,
     IonButton,
@@ -22,7 +22,7 @@ import {checkmarkCircleOutline,searchSharp} from "ionicons/icons"
 
 export default function TransactionModal(props){
 
-    let [Amount, setAmount] = useState();
+    let [Amount, setAmount] = useState((props.Amount==undefined)?0:props.Amount);
     let [Date, setDate] = useState(moment().format("YYYY-MM-DD"));
     let [IsOutcome, setIsOutcome] = useState(true); //false is an income
     let [Reference, setReference] = useState();
@@ -32,7 +32,6 @@ export default function TransactionModal(props){
     let [SearchIcon, setSearchIcon] = useState(searchSharp)
 
 
-    const modal = useRef();
 
     function getExistingReferences(){
         SrvGetExistingReferences(props.User.Email,props.User.Password).then(res=>{
@@ -63,7 +62,7 @@ export default function TransactionModal(props){
             "Reference": Reference,
         }).then(res=>{
             props.loadAllTransactions()
-            modal.current?.dismiss()
+            props.modalInsert.current?.dismiss()
         })
     }
     useEffect(()=>{
@@ -73,11 +72,11 @@ export default function TransactionModal(props){
 
     return (
         <div>
-            <IonModal ref={modal} trigger="open-modal" onWillDismiss={(ev) => { }} mode="ios">
+            <IonModal ref={props.modalInsert} trigger="modalInsert" onWillDismiss={(ev) => { }} mode="ios">
                 <IonHeader mode="ios">
                     <IonToolbar>
                         <IonButtons slot="start">
-                            <IonButton id="closeModal" onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
+                            <IonButton id="closeModal" onClick={() => props.modalInsert.current?.dismiss()}>Cancel</IonButton>
                         </IonButtons>
                         <IonTitle>Add a transaction</IonTitle>
                         <IonButtons slot="end">
@@ -94,7 +93,7 @@ export default function TransactionModal(props){
                     </IonItem>
                     <IonItem>
                         <IonLabel position="stacked">Date</IonLabel>
-                        <IonInput data-date-format="DD MM YYYY" type="date" value={Date} placeholder={Date} onIonChange={(ev) => setDate(ev.target.value)} mode="ios"></IonInput>
+                        <IonInput type="date" locale="it_IT" value={Date} placeholder={Date} onIonChange={(ev) => setDate(ev.target.value)} mode="ios"></IonInput>
                     </IonItem>
                     <IonItem>
                         <IonLabel position="stacked">Type</IonLabel>
@@ -132,7 +131,6 @@ export default function TransactionModal(props){
                 </IonContent>
             </IonModal>
             
-            <IonButton id="open-modal" expand="block" mode="ios">Insert a transaction</IonButton>
 
         </div>
     )

@@ -42,6 +42,14 @@ export const SrvDoSignUp = (Email,Password) =>{
     },"POST");
 }
 
+export const SrvDoExport = (Email,Password)=>{
+    return doRequest("getExport",{
+        "Email": Email,
+        "Password": MD5(Password).toString() 
+    },"POST");
+}
+
+
 /////////////////////////////////////////////
 export const SrvGetExistingReferences = (Email, Password) =>{
     return doRequest("getExistingReferences",{
@@ -63,8 +71,10 @@ export const SrvSaveTransaction = (Transaction) =>{
     return doRequest("transaction", Transaction,"POST");
 }
 
-export const SrvDeleteTransaction = (idTransaction) =>{
+export const SrvDeleteTransaction = (idTransaction,Email,Password) =>{
     return doRequest("transaction",{
+        "Email": Email,
+        "Password": MD5(Password).toString(),
         "idTransaction": idTransaction
     },"DELETE")
 }
