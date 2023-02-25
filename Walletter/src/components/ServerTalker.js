@@ -11,6 +11,10 @@ function doRequest(endpoint,body,method){
         fetch(socket + "/" + endpoint, {
             method: method,
             mode: "cors",
+            headers: {
+                "Content-type": "Application/JSON",
+                "Access-Control-Allow-Origin": "*"
+            },
             body: JSON.stringify(body)
         }).then(res => {
             if (res.status == 200) {
@@ -43,10 +47,30 @@ export const SrvDoSignUp = (Email,Password) =>{
 }
 
 export const SrvDoExport = (Email,Password)=>{
-    return doRequest("getExport",{
-        "Email": Email,
-        "Password": MD5(Password).toString() 
-    },"POST");
+
+    return new Promise((resolve, reject) => {
+        fetch(socket + "/" + "getExport", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-type": "Application/JSON",
+                "Access-Control-Allow-Origin": "*"
+            },
+            body: JSON.stringify({
+                "Email": Email,
+                "Password": MD5(Password).toString() 
+            })
+        }).then(res => {
+            if (res.status == 200) {
+                resolve(res.blob());
+            } else {
+                reject(null);
+            }
+        }).catch(err => {
+            console.log(err);
+            reject(err);
+        })
+    });
 }
 
 
@@ -54,7 +78,7 @@ export const SrvDoExport = (Email,Password)=>{
 export const SrvGetExistingReferences = (Email, Password) =>{
     return doRequest("getExistingReferences",{
         "Email": Email,
-        "Password": MD5(Password).toString()
+        "Password": MD5(Password).toString() 
     },"POST")
 }
 

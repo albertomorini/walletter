@@ -7,7 +7,7 @@ const QueryExecutor = require("./queryExecutor.js")
 //////////////////////////////////////////
 
 function doResponse(res,status, body){
-    res.writeHead(status, { "Content-type": "Application/JSON" });
+    res.writeHead(status,{"Content-type":"application/json","Access-Control-Allow-Origin":"*"})
     res.write(JSON.stringify(body));
     res.end();
 }
@@ -18,12 +18,8 @@ http.createServer((req,res)=>{
         body+=chunk;
     });
     req.on("end",()=>{
-        let bodyDict;
-        try {
-            bodyDict = JSON.parse(body);
-        } catch(e) {
-            console.log(e);
-        }
+        let bodyDict = JSON.parse(body);
+
         if (req.url=="/getAuth"){
             let usr = await = QueryExecutor.getUser(bodyDict.Email, bodyDict.Password);
             usr.then(usrRes=>{

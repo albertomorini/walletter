@@ -27,8 +27,16 @@ export default function ListTransactions(props){
         
         let monthTotal=0;
         AllTransactions.forEach(s=>{
+            if(s.IsOutcome){
+                monthTotal-=parseFloat(s.Amount);
+            }else{
+                monthTotal+=parseFloat(s.Amount);
+            }
+        });
+
+
+        AllTransactions.forEach(s=>{
             if(Limit==null || AllTransactions.indexOf(s)<Limit){
-                monthTotal += (s.IsOutcome)? (parseFloat(s.Amount) * -1) : parseFloat(s.Amount)
                 tmp.push(
                     <ListItem sTransaction={s} loadAllTransactions={()=>props.loadAllTransactions()} User={props.User}/>
                 );

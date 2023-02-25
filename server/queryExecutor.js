@@ -8,7 +8,7 @@ const Collection_Users= "WT_USERS";
 
 //TODO: chose where to replay
 function doResponse(res,status, body){
-    res.writeHead(status, { "Content-type": "Application/JSON" });
+    res.writeHead(status, { "Content-type": "Application/JSON", "Access-Control-Allow-Origin":"*" });
     res.write(JSON.stringify(body));
     res.end();
 }
@@ -120,8 +120,6 @@ function deleteTransaction(res,idTransaction,Email,Password){
 
 //// EXPORT-IMPORT
 function doExport(res,Email,Password){
-    console.log(Email)
-    console.log(Password)
     getUser(Email,Password).then(resAuth=>{
         if(resAuth!=null){
             MongoClient.connect(url,(err,db)=>{
@@ -132,7 +130,9 @@ function doExport(res,Email,Password){
                         doResponse(res,500,{"export":null})
                     }
                     fs.writeFileSync("./tmpExpoImpo/expo"+Email+".json",JSON.stringify({"transactions":resAll}));
-                    doResponse(res,200,fs.readFileSync("./tmpExpoImpo/expo"+Email+".json"))
+                    res.writeHead(200, { "Content-type": "File" });
+                    res.write(fs.readFileSync("./tmpExpoImpo/expo"+Email+".json"));
+                    res.end();
                 })
             });
         }else{
