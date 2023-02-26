@@ -1,16 +1,10 @@
 // SERVER
-const { ObjectId } = require("bson");
 const http = require("http");
 const port = 1999;
-const QueryExecutor = require("./queryExecutor.js")
+const queryResponder = require("./queryResponder.js")
 
 //////////////////////////////////////////
 
-function doResponse(res,status, body){
-    res.writeHead(status,{"Content-type":"application/json","Access-Control-Allow-Origin":"*"})
-    res.write(JSON.stringify(body));
-    res.end();
-}
 
 http.createServer((req,res)=>{
     let body="";
@@ -21,29 +15,14 @@ http.createServer((req,res)=>{
         let bodyDict = JSON.parse(body);
 
         if (req.url=="/getAuth"){
-            let usr = await = QueryExecutor.getUser(bodyDict.Email, bodyDict.Password);
-            usr.then(usrRes=>{
-                (usrRes!=null)? doResponse(res,200,{"usr": usrRes}) : doResponse(res, 404,{"usr": null})
-            })            
+            queryResponder.getAuth(res,bodyDict.Email, bodyDict.Password);          
         }
 
 
         //USER
         if(req.url=="/user"){
             if(req.method=="POST"){
-                QueryExecutor.insertUser({"email": bodyDict.Email,"psw": bodyDict.Password,"premium": false}).then(resInsert=>{
-                    doResponse(res,200,{
-                        "usr": {
-                            "email": bodyDict.Email,
-                            "psw": bodyDict.Password,
-                            "premium": false
-                        }
-                    })
-                }).catch(err=>{
-                    doResponse(res, 500, {
-                        "usr": null
-                    });
-                });
+                queryResponder.insertUser(res,{"email": bodyDict.Email,"psw": bodyDict.Password,"premium": false})
             }else if(req.method=="DELETE"){
                 //TODO: delete user
             }
@@ -52,21 +31,18 @@ http.createServer((req,res)=>{
 
         //EXPORT-IMPORT
         if(req.url=="/getExport"){
-            QueryExecutor.doExport(res,bodyDict.Email,bodyDict.Password)
+            queryResponder.doExport(res,bodyDict.Email,bodyDict.Password)
+        }else if(req.url=="/importBackup"){
+            //TODO:
+            queryResponder.doImport(res,bodyDict.Email,bodyDict.Password,body);
         }
 
-
         //TRANSACTIONS
-
         if(req.url=="/transaction"){
             if(req.method=="POST"){
-                QueryExecutor.saveTransaction(bodyDict).then(resSave=>{
-                    doResponse(res,200,{"transaction":resSave})
-                }).catch(err=>{ //TODO: logging error?
-                    doResponse(res,500,{"transaction":err})
-                })
+                queryResponder.saveTransaction(res,bodyDict)
             }else if(req.method=="DELETE"){
-                QueryExecutor.deleteTransaction(res,bodyDict.idTransaction,bodyDict.Email,bodyDict.Password);
+                queryResponder.deleteTransaction(res,bodyDict.idTransaction,bodyDict.Email,bodyDict.Password);
             }else if(req.method=="PUT"){
                 //TODO: update transaction
             }
@@ -74,12 +50,11 @@ http.createServer((req,res)=>{
 
         //SUGGESTIONS
         if (req.url =="/getExistingReferences"){
-            QueryExecutor.getExistingReferences(res,bodyDict.Email,bodyDict.Password);
+            queryResponder.getExistingReferences(res,bodyDict.Email,bodyDict.Password);
         } else if (req.url =="/getAllTransaction"){
-            QueryExecutor.getAllTransaction(res,bodyDict.Email,bodyDict.Password)
+            queryResponder.getAllTransaction(res,bodyDict.Email,bodyDict.Password)
         }
-
-
 
     });
 }).listen(port);
+

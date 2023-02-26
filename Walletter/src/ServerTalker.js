@@ -6,7 +6,7 @@ const socket = "http://"+urlSever+":"+port
 //JUST FOR DEV MODE
 
 
-function doRequest(endpoint,body,method){
+function doRequest(endpoint,body,method,responseType="JSON"){
     return new Promise((resolve, reject) => {
         fetch(socket + "/" + endpoint, {
             method: method,
@@ -17,10 +17,13 @@ function doRequest(endpoint,body,method){
             },
             body: JSON.stringify(body)
         }).then(res => {
+            if(responseType!="JSON" && res.status==200){
+                resolve(res.blob()); //for export function
+            }
             if (res.status == 200) {
                 resolve(res.json());
             } else {
-                reject(null);
+                reject(res.json()); //TODO: check
             }
         }).catch(err => {
             console.log(err);
@@ -47,30 +50,10 @@ export const SrvDoSignUp = (Email,Password) =>{
 }
 
 export const SrvDoExport = (Email,Password)=>{
-
-    return new Promise((resolve, reject) => {
-        fetch(socket + "/" + "getExport", {
-            method: "POST",
-            mode: "cors",
-            headers: {
-                "Content-type": "Application/JSON",
-                "Access-Control-Allow-Origin": "*"
-            },
-            body: JSON.stringify({
-                "Email": Email,
-                "Password": MD5(Password).toString() 
-            })
-        }).then(res => {
-            if (res.status == 200) {
-                resolve(res.blob());
-            } else {
-                reject(null);
-            }
-        }).catch(err => {
-            console.log(err);
-            reject(err);
-        })
-    });
+    return doRequest("getExport",{
+        "Email": Email,
+        "Password": MD5(Password).toString() 
+    },"POST","FILE");
 }
 
 

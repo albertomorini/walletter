@@ -1,8 +1,8 @@
 import { IonDatetime } from '@ionic/react';
 import moment from 'moment';
 import { useEffect, useState, useRef } from 'react';
-import "../../../theme/MonthlyCalendar.css"
 import DayTransacionsModal from "../Modals/DayTransactionsModal.js"
+import "../../../theme/MonthlyCalendar.css"
 
 export default function MonthlyCalendar(props){
     

@@ -1,18 +1,23 @@
 import { useEffect, useRef, useState } from "react"
 import { IonGrid, IonRow, IonButton, IonCol, IonIcon, IonItem, IonLabel} from '@ionic/react';
 
-import { SrvGetAllTransactions } from "../ServerTalker";
+import { SrvGetAllTransactions } from "../../ServerTalker";
 import ListTransactions from "./List/ListTransactions.js"
 import MonthlyCalendar from "./Calendar/MonthlyCalendar.js"
 import InsertModal from "./Modals/InsertModal.js"
 import TransactionModal from "./Modals/InsertModal";
+import Sankey from "./Sankey/Sankey.js"
+import MyPie from "./Pie/Pie.js"
 import { arrowBack, chevronForwardOutline } from "ionicons/icons";
+
 
 export default function Dashboard(props){
 
     let [AllTransactions,setAllTransactions] = useState([]);
     let [MyView, setMyView] = useState(null);
     const refModalInsert = useRef();
+
+    let [PieComponent, setPieComponet] = useState(<></>)
 
     function loadAllTransactions(Email, Password) {
         SrvGetAllTransactions(Email, Password).then(res => {
@@ -28,6 +33,9 @@ export default function Dashboard(props){
 
     useEffect(()=>{
         loadAllTransactions(props.User.Email,props.User.Password);
+        setTimeout(()=>{ //workaround because the "root" div isn't ready i guess.. i think is a bug of react-chartjs-2
+            setPieComponet(<MyPie />)
+        },500)
     },[props])
 
     return(
@@ -57,8 +65,12 @@ export default function Dashboard(props){
                         </IonCol>
                     </IonRow>
                     <IonRow>
-                        <IonCol>Sankey</IonCol>
-                        <IonCol>Andamento </IonCol>
+                        <IonCol>
+                            <div />
+                        </IonCol>
+                        <IonCol>
+                        {PieComponent}
+                        </IonCol>
                     </IonRow>
                 </IonGrid>
                 <InsertModal User={props.User} loadAllTransactions={() => loadAllTransactions(props.User.Email,props.User.Password)} modalInsert={refModalInsert}></InsertModal>

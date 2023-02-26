@@ -2,15 +2,13 @@ import { IonContent, IonHeader, IonIcon, IonPopover, IonButton, IonPage, IonTitl
 import { useState } from 'react';
 import Dashboard from '../components/Transactions/Dashboard';
 import Login from "../components/UserProfile/Login"
-import './Home.css';
 import { personCircleSharp } from 'ionicons/icons';
-import {SrvDoExport} from "../components/ServerTalker.js"
-import moment from "moment";
-
+import MenuProfile from "../components/UserProfile/MenuProfile.js";
+import './Home.css';
 
 const Home: React.FC = () => {
 
-  let [OkAuth, setOkAuth] = useState(true); //TODO: put false in depl
+  let [OkAuth, setOkAuth] = useState(true); //TODO: put false after test
   let [User, setUser] = useState(null);
   
   return (
@@ -19,34 +17,7 @@ const Home: React.FC = () => {
         <IonToolbar>
           <IonTitle>Walletter</IonTitle>
           <IonIcon icon={personCircleSharp} id="AccountIcon" size="large" style={{float: "right",marginRight:'5px'}}/>
-          <IonPopover trigger="AccountIcon" triggerAction="click">
-           
-            <IonButton color="medium" size="small" onClick={()=>{
-                SrvDoExport("a@a","a").then(blob=>{
-                  console.log(blob.data)
-
-
-                   var url = window.URL.createObjectURL(blob);
-                  var a = document.createElement('a');
-                  a.href = url;
-
-                  a.download = "WalletterExport_"+moment().format("YYYY-MM-DD")+".json";
-                  document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-                  a.click();    
-                  a.remove();
-
-                })
-              }}>
-              Export
-            </IonButton>
-
-            <IonButton color="warning" size="small" onClick={()=>console.log("TODO:")}>
-              Edit
-            </IonButton>
-            <IonButton color="danger" size="small" onClick={()=>setUser(null)}>
-              Log out
-            </IonButton>
-          </IonPopover>
+          <MenuProfile setUser={(obj:any)=>setUser(obj)}/>
 
         </IonToolbar>
       </IonHeader>

@@ -19,7 +19,7 @@ import {
     IonList,
 } from '@ionic/react';
 import moment from "moment"
-import { SrvGetExistingReferences, SrvSaveTransaction } from "../../ServerTalker";
+import { SrvGetExistingReferences, SrvSaveTransaction } from "../../../ServerTalker";
 import {checkmarkCircleOutline,searchSharp} from "ionicons/icons"
 
 export default function TransactionModal(props){
@@ -63,8 +63,18 @@ export default function TransactionModal(props){
         }).then(res=>{
             props.loadAllTransactions()
             props.modalInsert.current?.dismiss()
+            resetInput();
         })
     }
+
+    function resetInput(){
+        setAmount((props.Amount==undefined)?0:props.Amount);
+        setDate(moment().format("YYYY-MM-DD"));
+        setIsOutcome(true);
+        setReference();
+        getExistingReferences()
+    }
+
     useEffect(()=>{
         getExistingReferences()
     },[]);

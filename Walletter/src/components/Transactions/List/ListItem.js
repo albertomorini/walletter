@@ -1,7 +1,7 @@
 
 import { IonList,IonItem, IonRow,useIonAlert, IonCol, IonGrid, IonLabel, IonButton, IonItemSliding, IonItemOptions, IonItemOption, IonIcon} from "@ionic/react";
 import { heart,trash, createOutline } from "ionicons/icons";
-import { SrvDeleteTransaction } from "../../ServerTalker";
+import { SrvDeleteTransaction } from "../../../ServerTalker";
 import moment from "moment";
 import InsertModal from "../Modals/InsertModal.js"
 import {useState,useRef} from "react"

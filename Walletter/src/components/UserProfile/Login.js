@@ -1,6 +1,6 @@
 import { IonLabel, IonItem, IonSegment, IonSegmentButton, IonInput, IonCardSubtitle, IonButton } from "@ionic/react";
 import { useState } from "react";
-import { SrvDoLogin, SrvDoSignUp } from "../ServerTalker";
+import { SrvDoLogin, SrvDoSignUp } from "../../ServerTalker";
 
 
 export default function Login(props){

@@ -1,18 +1,27 @@
+//This class execute queries to mongodb and then, sends the results to the client (so has response function of server.js)
+
+
 const MongoClient = require('mongodb').MongoClient;
 const url = "mongodb://localhost:27017/Walletter";
 var ObjectId = require('mongodb').ObjectID;
-const fs = require("fs");
-
 const Collection_Register = "WT_REGISTER";
 const Collection_Users= "WT_USERS";
 
-//TODO: chose where to replay
-function doResponse(res,status, body){
-    res.writeHead(status, { "Content-type": "Application/JSON", "Access-Control-Allow-Origin":"*" });
-    res.write(JSON.stringify(body));
+const fs = require("fs"); //we need to write the export file before send it
+
+
+function doResponse(res,status, body, contentType="application/json"){ 
+    res.writeHead(status,{"Content-type":contentType,"Access-Control-Allow-Origin":"*"})
+    if(contentType!="application/json"){ //with export operation we send a file
+        res.write(body);
+    }else{
+        res.write(JSON.stringify(body));
+    }
     res.end();
 }
 
+
+//////////////////////////////////////////
 
 function createCollection(){
     MongoClient.connect(url,(err,db)=>{
@@ -38,17 +47,15 @@ function createCollection(){
  * Insert a new transaction
  * @param {Object} objReg 
  */
-function saveTransaction(objReg){
-    return new Promise((resolve,reject)=>{
-        MongoClient.connect(url, (err, db) => {
-            let dbo = db.db("Walletter");
-            dbo.collection(Collection_Register).insertOne(objReg, (err, res) => {
-                if (err){
-                    reject(err);
-                }
-                resolve(objReg);
-                db.close();
-            });
+function saveTransaction(res,objReg){
+    MongoClient.connect(url, (err, db) => {
+        let dbo = db.db("Walletter");
+        dbo.collection(Collection_Register).insertOne(objReg, (err, resReg) => {
+            if (err){
+                doResponse(res,500,{"transaction":err})
+            }
+            doResponse(res,200,{"transaction":objReg})
+            db.close();
         });
     });
 }
@@ -129,10 +136,13 @@ function doExport(res,Email,Password){
                         console.log(err);
                         doResponse(res,500,{"export":null})
                     }
+
                     fs.writeFileSync("./tmpExpoImpo/expo"+Email+".json",JSON.stringify({"transactions":resAll}));
-                    res.writeHead(200, { "Content-type": "File" });
-                    res.write(fs.readFileSync("./tmpExpoImpo/expo"+Email+".json"));
-                    res.end();
+                    doResponse(res,200,fs.readFileSync("./tmpExpoImpo/expo"+Email+".json"),"file");
+                    //after 10sec we can remove the export file from server
+                    setTimeout(()=>{
+                        fs.unlinkSync("./tmpExpoImpo/expo"+Email+".json")
+                    },[10000]);
                 })
             });
         }else{
@@ -145,27 +155,42 @@ function doExport(res,Email,Password){
 }
 
 
-//////////      USERS
-function insertUser(objUsr){
-    return new Promise((resolve,reject)=>{
-        MongoClient.connect(url, async (err,db)=>{
-            let dbo = db.db("Walletter");
-            let usr = await getUser(objUsr.email,objUsr.psw);
-            if (usr == null){ //if user doesn't exists
-                dbo.collection(Collection_Users).insertOne(objUsr, (err, res) => {
-                    if (err) {
-                        console.log(err);
-                        reject(err);
-                    }
-                    db.close();
-                    resolve(true);
-                });
-            }else{
+////////// USERS
+function insertUser(res,objUsr){
+    MongoClient.connect(url, async (err,db)=>{
+        let dbo = db.db("Walletter");
+        let usr = await getUser(objUsr.email,objUsr.psw);
+        if (usr == null){ //if user doesn't exists
+            dbo.collection(Collection_Users).insertOne(objUsr, (err, res) => {
+                if (err) {
+                    console.log(err);
+                    doResponse(res, 500, {
+                        "usr": null
+                    });
+                }
                 db.close();
-                reject(false);
-            }
-        });
+                doResponse(res,200,{
+                    "usr": {
+                        "email": objUsr.Email,
+                        "psw": objUsr.Password,
+                        "premium": false
+                    }
+                })
+            });
+        }else{
+            db.close();
+            doResponse(res, 500, {
+                "usr": null
+            });
+        }
     });
+}
+
+function getAuth(res,email,psw){
+    let usr = await = QueryExecutor.getUser(email,psw);
+    usr.then(usrRes=>{
+        (usrRes!=null)? doResponse(res,200,{"usr": usrRes}) : doResponse(res, 404,{"usr": null})
+    })  
 }
 
 function getUser(email,psw){
@@ -189,8 +214,8 @@ function getUser(email,psw){
 }
 
 
-
 function getAllUsers(){
+//TODO: remove this one
     return new Promise((resolve,reject)=>{
         MongoClient.connect(url,(err,db)=>{
             let dbo = db.db("Walletter");
@@ -212,6 +237,7 @@ module.exports={
 	getAllUsers: getAllUsers,
 	getUser: getUser,
 	insertUser: insertUser,
+    getAuth: getAuth,
 	deleteTransaction:deleteTransaction,
 	getAllTransaction:getAllTransaction,
 	getExistingReferences: getExistingReferences,
