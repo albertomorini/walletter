@@ -4,6 +4,7 @@
 A simple personal finance tool.
 
 Made in my free time with NodeJS, ReactJS/Ionic, MongoDB.
+> I'll use React's hooks and context ;)
 
 ## The idea
 You can do two things with money: earn it or spend it.
@@ -43,6 +44,12 @@ WT_USERS
 }
 ```
 
+## Dependencies
+
+- moment
+- @ionic/storage
+
+
 ## UX
 TODO
 
@@ -51,4 +58,5 @@ TODO
 - edit a transaction
 - sankey
 - global chart
-- backup
+[x] backup
+- fix TODO -> add significant data to exaples
