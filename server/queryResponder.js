@@ -187,7 +187,7 @@ function insertUser(res,objUsr){
 }
 
 function getAuth(res,email,psw){
-    let usr = await = QueryExecutor.getUser(email,psw);
+    let usr = await = getUser(email,psw);
     usr.then(usrRes=>{
         (usrRes!=null)? doResponse(res,200,{"usr": usrRes}) : doResponse(res, 404,{"usr": null})
     })  

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import React,{ useEffect, useRef, useState } from "react"
 import { IonGrid, IonRow, IonButton, IonCol, IonIcon, IonItem, IonLabel} from '@ionic/react';
 
 import { SrvGetAllTransactions } from "../../ServerTalker";
@@ -14,10 +14,9 @@ import { arrowBack, chevronForwardOutline } from "ionicons/icons";
 export default function Dashboard(props){
 
     let [AllTransactions,setAllTransactions] = useState([]);
-    let [MyView, setMyView] = useState(null);
+    let [MyView, setMyView] = useState(props.FullScreen);
     const refModalInsert = useRef();
 
-    let [PieComponent, setPieComponet] = useState(<></>)
 
     function loadAllTransactions(Email, Password) {
         SrvGetAllTransactions(Email, Password).then(res => {
@@ -30,24 +29,29 @@ export default function Dashboard(props){
             console.log(err);
         })
     }
-
     useEffect(()=>{
         loadAllTransactions(props.User.Email,props.User.Password);
-        setTimeout(()=>{ //workaround because the "root" div isn't ready i guess.. i think is a bug of react-chartjs-2
-            setPieComponet(<MyPie />)
-        },500)
+    
     },[props])
 
     return(
+
         <>
-        {(MyView==null)?
+        {(!MyView)?
             <div>
                 <IonGrid>
                     <IonRow>
                         <IonCol className="ion-text-center" >
                             <IonItem className="ion-text-center">
                                 <IonLabel onClick={() => 
-                                setMyView(<ListTransactions AllTransactions={AllTransactions} Limit={null} User={props.User} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>)}>
+                                        {
+                                            setMyView(
+                                                <ListTransactions AllTransactions={AllTransactions} Limit={null} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>)
+                                            props.setFullScreen();
+                                        }
+
+                                     }
+                                 >
                                         Last transactions
                                         <IonIcon icon={chevronForwardOutline} />
                                     </IonLabel>
@@ -64,30 +68,23 @@ export default function Dashboard(props){
                             <MonthlyCalendar AllTransactions={AllTransactions} User={props.User} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>
                         </IonCol>
                     </IonRow>
-                    <IonRow>
-                        <IonCol>
-                            <div />
-                        </IonCol>
-                        <IonCol>
-                        {PieComponent}
-                        </IonCol>
-                    </IonRow>
                 </IonGrid>
-                <InsertModal User={props.User} loadAllTransactions={() => loadAllTransactions(props.User.Email,props.User.Password)} modalInsert={refModalInsert}></InsertModal>
-              <IonButton onClick={()=>{refModalInsert.current?.present()}} expand="block" mode="ios">Insert a transaction</IonButton>
 
+
+                <div>
+                    <InsertModal User={props.User} loadAllTransactions={() => loadAllTransactions(props.User.Email,props.User.Password)} modalInsert={refModalInsert}></InsertModal>
+                  
+                    <IonButton onClick={()=>{refModalInsert.current?.present()}} expand="block" mode="ios">Insert a transaction</IonButton>
+                </div>
             </div>
         :
         <>
             <div>
-                <IonButton mode="ios" onClick={()=>setMyView(null)} color="dark" size="small">
-                    <IonIcon mode="ios" icon={arrowBack} />
-                    Back
-                </IonButton>
                 {MyView}
             </div>
         </>
         }
         </>
+
     )
 }

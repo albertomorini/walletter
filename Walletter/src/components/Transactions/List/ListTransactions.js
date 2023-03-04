@@ -1,14 +1,16 @@
 import { IonList,IonItem, IonRow,useIonAlert, IonCol, IonGrid, IonLabel, IonButton, IonItemSliding, IonItemOptions, IonItemOption, IonIcon} from "@ionic/react";
-import { useEffect, useState} from "react";
+import React,{ useEffect, useState} from "react";
 import "../../../theme/ListTransactions.css"
 import moment from "moment";
 import ListItem from "./ListItem.js"
 import { arrowBack,arrowForward } from "ionicons/icons";
 
+import {MyContext} from '../../../pages/Home';
 
 export default function ListTransactions(props){
     let [transactionList,setTransactionList] = useState([]);
     let [MonthSelected,setMonthSelected] = useState(moment().format("MM"))
+
 
     function createMonthList(AllTransactions,Limit,Month=moment().format("MM")){
         let tmp = []
@@ -61,12 +63,12 @@ export default function ListTransactions(props){
         )
         setTransactionList(tmp)
     }
-   
     useEffect(()=>{
         createMonthList(props.AllTransactions,props.Limit)
     },[props])
     
     return(
+            
         <div>
             {(props.Limit==null)?
                 <div className="ion-text-center">

@@ -1,6 +1,7 @@
 import { IonLabel, IonItem, IonSegment, IonSegmentButton, IonInput, IonCardSubtitle, IonButton } from "@ionic/react";
 import { useState } from "react";
 import { SrvDoLogin, SrvDoSignUp } from "../../ServerTalker";
+import { Storage } from '@ionic/storage';
 
 
 export default function Login(props){
@@ -9,6 +10,16 @@ export default function Login(props){
     let [Password,setPassword] = useState(null);
     let [Login,setLogin] = useState(true); // login, false=> signup
     let [ValueSegment, setValueSegment] = useState("Login");
+    const store = new Storage();
+
+    function storeCredentials(Email,Password){
+        store.create();
+        store.set("User",{
+            "Email":Email,
+            "Password":Password
+        });
+
+    }
 
     function processCredentials(){
         if(Email != null || Email.length!=0 && Password!= null || Password.length!=0){
@@ -19,7 +30,7 @@ export default function Login(props){
                         "Email":Email,
                         "Password": Password
                     });
-                    props.okAuth();
+                    storeCredentials(Email,Password);
                 }).catch(err=>{
                     console.log(err);
                     alert("Error, user not found!")
@@ -30,7 +41,7 @@ export default function Login(props){
                         "Email":Email,
                         "Password": Password
                     });
-                    props.okAuth();
+                    storeCredentials(Email,Password)
                 }).catch(err => {
                     console.log(err);
                     alert("Error, user not found!")
@@ -48,6 +59,8 @@ export default function Login(props){
 
     return(
         <div>
+        <br/>
+        <br/>
             <IonSegment value={ValueSegment} onClick={(ev) => { 
                 (ev.target.value!="Login")? setLogin(false) : setLogin(true); setValueSegment(ev.target.value) 
                 }} mode="ios">
