@@ -4,10 +4,12 @@ import { heart,trash, createOutline } from "ionicons/icons";
 import { SrvDeleteTransaction } from "../../../ServerTalker";
 import moment from "moment";
 import InsertModal from "../Modals/InsertModal.js"
-import {useState,useRef} from "react"
+import {useState,useRef,useContext} from "react"
+import {MyContext} from "../../../pages/Home"
 
 export default function ListItem(props){
     const [deleteConfirm] = useIonAlert(); 
+    let ctx = useContext(MyContext);
 	
 	 function deleteTransaction(idTransaction){
         deleteConfirm({
@@ -24,7 +26,7 @@ export default function ListItem(props){
                 role: 'confirm',
                 handler: () => {
                     //TODO: add user auth
-                    SrvDeleteTransaction(idTransaction,props.User.Email,props.User.Password).then(res=>{
+                    SrvDeleteTransaction(idTransaction,ctx.User.User.Email,ctx.User.User.Password).then(res=>{
                         props.loadAllTransactions()
                     }).catch(err=>{
                         console.log(err)

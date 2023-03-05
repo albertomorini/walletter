@@ -40,9 +40,9 @@ export default function Home(){
             <IonToolbar  color="dark">
               {
                 (FullScreen)?
-                  <IonButton mode="ios" onClick={()=>setFullScreen(false)} color="dark" size="small">
+                  <IonButton slot="start" mode="ios" onClick={()=>setFullScreen(false)} color="light" size="small">
                       <IonIcon mode="ios" icon={arrowBack} />
-                      Back
+
                   </IonButton>
                 :
                 null
@@ -58,7 +58,6 @@ export default function Home(){
                 :
                   null
               }
-
             </IonToolbar>
           </IonHeader>
           <IonContent fullscreen>
@@ -66,8 +65,8 @@ export default function Home(){
             {(User==null)?
                <Login setUser={(ev:any)=>setUser(ev)}/> 
             : 
-                <Dashboard User={User} setFullScreen={()=>setFullScreen(true)} FullScreen={FullScreen}
-            />}
+                <Dashboard/>
+            }
           </IonContent>
         </IonPage>
       </MyContext.Provider>

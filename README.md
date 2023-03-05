@@ -58,5 +58,4 @@ TODO
 - edit a transaction
 - sankey
 - global chart
-[x] backup
 - fix TODO -> add significant data to exaples

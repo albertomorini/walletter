@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState,useContext } from "react"
 import {
     IonButtons,
     IonButton,
@@ -21,6 +21,8 @@ import {
 import moment from "moment"
 import { SrvGetExistingReferences, SrvSaveTransaction } from "../../../ServerTalker";
 import {checkmarkCircleOutline,searchSharp} from "ionicons/icons"
+import {MyContext} from '../../../pages/Home';
+
 
 export default function TransactionModal(props){
 
@@ -32,9 +34,11 @@ export default function TransactionModal(props){
     let [ExistingReferences,setExistingReferences] = useState([]);
     let [ResResearch,setResResearch] = useState([...ExistingReferences]);
     let [SearchIcon, setSearchIcon] = useState(searchSharp)
+    //
+    let ctx = useContext(MyContext);
 
     function getExistingReferences(){
-        SrvGetExistingReferences(props.User.Email,props.User.Password).then(res=>{
+        SrvGetExistingReferences(ctx.User.User.Email,ctx.User.User.Password).then(res=>{
             let tmp=[]
             res.singleReferences.forEach(s=>{
                 tmp.push(s);
@@ -55,7 +59,7 @@ export default function TransactionModal(props){
     
     function insertTransaction() {
         SrvSaveTransaction({
-            "Email": props.User.Email,
+            "Email": ctx.User.User.Email,
             "Amount": Amount,
             "Date": Date,
             "IsOutcome": (IsOutcome=='false')?false:true,

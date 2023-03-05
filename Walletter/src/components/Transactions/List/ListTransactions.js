@@ -40,7 +40,7 @@ export default function ListTransactions(props){
         AllTransactions.forEach(s=>{
             if(Limit==null || AllTransactions.indexOf(s)<Limit){
                 tmp.push(
-                    <ListItem sTransaction={s} loadAllTransactions={()=>props.loadAllTransactions()} User={props.User}/>
+                    <ListItem sTransaction={s} loadAllTransactions={()=>props.loadAllTransactions()}/>
                 );
             }
         })

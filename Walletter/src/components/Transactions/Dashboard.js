@@ -1,4 +1,4 @@
-import React,{ useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useContext } from "react"
 import { IonGrid, IonRow, IonButton, IonCol, IonIcon, IonItem, IonLabel} from '@ionic/react';
 
 import { SrvGetAllTransactions } from "../../ServerTalker";
@@ -9,12 +9,13 @@ import TransactionModal from "./Modals/InsertModal";
 import Sankey from "./Sankey/Sankey.js"
 import MyPie from "./Pie/Pie.js"
 import { arrowBack, chevronForwardOutline } from "ionicons/icons";
+import {MyContext} from "../../pages/Home"
 
+export default function Dashboard(){
 
-export default function Dashboard(props){
-
+    let ctx = useContext(MyContext);
     let [AllTransactions,setAllTransactions] = useState([]);
-    let [MyView, setMyView] = useState(props.FullScreen);
+    let [MyView, setMyView] = useState();
     const refModalInsert = useRef();
 
 
@@ -30,9 +31,12 @@ export default function Dashboard(props){
         })
     }
     useEffect(()=>{
-        loadAllTransactions(props.User.Email,props.User.Password);
-    
-    },[props])
+        loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password);
+        if(!ctx.FullScreen.FullScreen){
+            //break the loop
+            setMyView(ctx.FullScreen.FullScreen)
+        }
+    },[ctx.FullScreen.FullScreen])
 
     return(
 
@@ -41,38 +45,50 @@ export default function Dashboard(props){
             <div>
                 <IonGrid>
                     <IonRow>
+
                         <IonCol className="ion-text-center" >
                             <IonItem className="ion-text-center">
                                 <IonLabel onClick={() => 
                                         {
                                             setMyView(
-                                                <ListTransactions AllTransactions={AllTransactions} Limit={null} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>)
-                                            props.setFullScreen();
+                                                <ListTransactions AllTransactions={AllTransactions} 
+                                                    Limit={null}
+                                                    loadAllTransactions={()=>loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)}
+                                                />)
+                                            ctx.FullScreen.setFullScreen(true);
                                         }
-
                                      }
                                  >
                                         Last transactions
                                         <IonIcon icon={chevronForwardOutline} />
                                     </IonLabel>
                             </IonItem>
-                            <ListTransactions AllTransactions={AllTransactions} Limit={5} User={props.User} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>
+                            <ListTransactions AllTransactions={AllTransactions} Limit={5} loadAllTransactions={()=>loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)}/>
                         </IonCol>
+
+
                         <IonCol className="ion-text-center">
-                            <IonItem className="ion-text-center" onClick={() => setMyView(<MonthlyCalendar AllTransactions={AllTransactions} User={props.User} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>)}>
+                            <IonItem className="ion-text-center" 
+                                onClick={() => {
+                                    setMyView(<MonthlyCalendar AllTransactions={AllTransactions} loadAllTransactions={()=>loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)}/>)
+                                    ctx.FullScreen.setFullScreen(true);
+                                }}
+                            >
                                 <IonLabel >
                                     Monthly overview
                                     <IonIcon icon={chevronForwardOutline} />
                                 </IonLabel>
                             </IonItem>
-                            <MonthlyCalendar AllTransactions={AllTransactions} User={props.User} loadAllTransactions={()=>loadAllTransactions(props.User.Email,props.User.Password)}/>
+                            <MonthlyCalendar AllTransactions={AllTransactions} loadAllTransactions={()=>loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)}/>
                         </IonCol>
                     </IonRow>
                 </IonGrid>
 
 
+
+
                 <div>
-                    <InsertModal User={props.User} loadAllTransactions={() => loadAllTransactions(props.User.Email,props.User.Password)} modalInsert={refModalInsert}></InsertModal>
+                    <InsertModal loadAllTransactions={() => loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)} modalInsert={refModalInsert}></InsertModal>
                   
                     <IonButton onClick={()=>{refModalInsert.current?.present()}} expand="block" mode="ios">Insert a transaction</IonButton>
                 </div>
