@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState, useContext } from "react"
 import { IonGrid, IonRow, IonButton, IonCol, IonIcon, IonItem, IonLabel} from '@ionic/react';
+import { arrowBack, chevronForwardOutline } from "ionicons/icons";
 
 import { SrvGetAllTransactions } from "../../ServerTalker";
+
 import ListTransactions from "./List/ListTransactions.js"
 import MonthlyCalendar from "./Calendar/MonthlyCalendar.js"
 import InsertModal from "./Modals/InsertModal.js"
 import TransactionModal from "./Modals/InsertModal";
-import Sankey from "./Sankey/Sankey.js"
-import MyPie from "./Pie/Pie.js"
-import { arrowBack, chevronForwardOutline } from "ionicons/icons";
+import MonthlyRecap from "./MonthlyRecap/MonthlyRecap.js"
+
+import "../../theme/Dashboard.css"
 import {MyContext} from "../../pages/Home"
 
 export default function Dashboard(){
@@ -42,10 +44,9 @@ export default function Dashboard(){
 
         <>
         {(!MyView)?
-            <div>
+            <div className="Dashboard">
                 <IonGrid>
                     <IonRow>
-
                         <IonCol className="ion-text-center" >
                             <IonItem className="ion-text-center">
                                 <IonLabel onClick={() => 
@@ -76,10 +77,25 @@ export default function Dashboard(){
                             >
                                 <IonLabel >
                                     Monthly overview
+                                    
                                     <IonIcon icon={chevronForwardOutline} />
                                 </IonLabel>
                             </IonItem>
                             <MonthlyCalendar AllTransactions={AllTransactions} loadAllTransactions={()=>loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)}/>
+                        </IonCol>
+                    </IonRow>
+
+                    <IonRow>
+                        <IonCol>
+                            <IonItem className="ion-text-center">
+                                <IonLabel >Total</IonLabel>
+                            </IonItem>
+                            <MonthlyRecap AllTransactions={AllTransactions}/>
+                        </IonCol>
+                        <IonCol>
+                            <IonItem className="ion-text-center">
+                                <IonLabel >Some graph</IonLabel>
+                            </IonItem>
                         </IonCol>
                     </IonRow>
                 </IonGrid>
@@ -90,7 +106,7 @@ export default function Dashboard(){
                 <div>
                     <InsertModal loadAllTransactions={() => loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)} modalInsert={refModalInsert}></InsertModal>
                   
-                    <IonButton onClick={()=>{refModalInsert.current?.present()}} expand="block" mode="ios">Insert a transaction</IonButton>
+                    <IonButton onClick={()=>{refModalInsert.current?.present()}} expand="block" mode="ios" color="dark">Add a new transaction</IonButton>
                 </div>
             </div>
         :

@@ -50,7 +50,7 @@ export default function ListTransactions(props){
             <IonItem color="dark" className="itemList">
                 <IonGrid>
                     <IonRow >
-                        <IonCol>Total: </IonCol>
+                        <IonCol>Earning: </IonCol>
                         <IonCol></IonCol>
                         <IonCol>
                             <IonLabel color={(monthTotal > 0) ? "success" : "danger"}>
