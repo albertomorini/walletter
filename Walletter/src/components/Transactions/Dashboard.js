@@ -2,15 +2,13 @@ import { useEffect, useRef, useState, useContext } from "react"
 import { IonGrid, IonRow, IonButton, IonCol, IonIcon, IonItem, IonLabel} from '@ionic/react';
 import { arrowBack, chevronForwardOutline } from "ionicons/icons";
 
-import { SrvGetAllTransactions } from "../../ServerTalker";
+import {doRequest,bodyUser} from "../../ServerTalker";
 
 import ListTransactions from "./List/ListTransactions.js"
 import MonthlyCalendar from "./Calendar/MonthlyCalendar.js"
-import InsertModal from "./Modals/InsertModal.js"
-import TransactionModal from "./Modals/InsertModal";
+import InsertModal from "../Modals/InsertModal.js"
 import MonthlyRecap from "./MonthlyRecap/MonthlyRecap.js"
 
-import "../../theme/Dashboard.css"
 import {MyContext} from "../../pages/Home"
 
 export default function Dashboard(){
@@ -22,7 +20,7 @@ export default function Dashboard(){
 
 
     function loadAllTransactions(Email, Password) {
-        SrvGetAllTransactions(Email, Password).then(res => {
+        doRequest("getAllTransaction",bodyUser(Email,Password)).then(res=>res.json()).then(res=>{
             let tmp = [];
             res.transactions.forEach(s => {
                 tmp.push(s)
@@ -92,11 +90,7 @@ export default function Dashboard(){
                             </IonItem>
                             <MonthlyRecap AllTransactions={AllTransactions}/>
                         </IonCol>
-                        <IonCol>
-                            <IonItem className="ion-text-center">
-                                <IonLabel >Some graph</IonLabel>
-                            </IonItem>
-                        </IonCol>
+                        
                     </IonRow>
                 </IonGrid>
 

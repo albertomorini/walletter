@@ -32,9 +32,11 @@ http.createServer((req,res)=>{
         //EXPORT-IMPORT
         if(req.url=="/getExport"){
             queryResponder.doExport(res,bodyDict.Email,bodyDict.Password)
-        }else if(req.url=="/importBackup"){
+        }else if(req.url=="/doImport"){
             //TODO:
-            queryResponder.doImport(res,bodyDict.Email,bodyDict.Password,body);
+            console.log(bodyDict)
+
+            //queryResponder.doImport(res,bodyDict.Email,bodyDict.Password,body);
         }
 
         //TRANSACTIONS

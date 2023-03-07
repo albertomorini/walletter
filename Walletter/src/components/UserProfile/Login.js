@@ -1,6 +1,6 @@
 import { IonLabel, IonItem, IonSegment, IonSegmentButton, IonInput, IonCardSubtitle, IonButton } from "@ionic/react";
 import { useState } from "react";
-import { SrvDoLogin, SrvDoSignUp } from "../../ServerTalker";
+import { doRequest,bodyUser } from "../../ServerTalker";
 import { Storage } from '@ionic/storage';
 
 
@@ -25,7 +25,9 @@ export default function Login(props){
         if(Email != null || Email.length!=0 && Password!= null || Password.length!=0){
 
             if(Login){
-                SrvDoLogin(Email,Password).then(res=>{
+                doRequest("getAuth",
+                    bodyUser(Email,Password)
+                ).then(res=>res.json()).then(res=>{
                     props.setUser({
                         "Email":Email,
                         "Password": Password
@@ -36,7 +38,9 @@ export default function Login(props){
                     alert("Error, user not found!")
                 })
             }else{
-                SrvDoSignUp(Email, Password).then(res => {
+                doRequest("user",
+                    bodyUser(Email,Password)
+                ).then(res=>res.json()).then(res => {
                     props.setUser({
                         "Email":Email,
                         "Password": Password
@@ -72,8 +76,6 @@ export default function Login(props){
                 </IonSegmentButton>
             </IonSegment>
 
-
-            <IonCardSubtitle>{(Login)?"Login":"Sign up"}</IonCardSubtitle>
             <IonItem>
                 <IonLabel mode="ios" position="stacked">Email address</IonLabel>
                 <IonInput placeholder="Email" type="email" onIonChange={(ev) => setEmail(ev.target.value)} onKeyDown={(ev) => enterPressed(ev)}></IonInput>

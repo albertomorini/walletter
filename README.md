@@ -55,7 +55,6 @@ TODO
 
 ## TODO
 
+- docs
+- finish import (server side)
 - edit a transaction
-- sankey
-- global chart
-- fix TODO -> add significant data to exaples

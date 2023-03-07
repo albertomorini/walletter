@@ -35,7 +35,7 @@ export default function Home(){
             "FullScreen": { FullScreen,setFullScreen }
           }          
         }>
-        <IonPage>
+        <IonPage className="Home">
           <IonHeader mode='ios'>
             <IonToolbar  color="dark">
               {

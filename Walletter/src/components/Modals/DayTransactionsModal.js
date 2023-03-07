@@ -16,12 +16,10 @@ import {
     IonSearchbar,
     IonList,
 } from '@ionic/react';
-import ListItem from "../List/ListItem.js"
+import ListItem from "../Transactions/List/ListItem.js"
 import moment from "moment"
 
 export default function DayTransactionsModal(props){
-
-
 	 return (
         <div>
             <IonModal ref={props.modalDayRecap} trigger="MonthlyCalendar" mode="ios">
@@ -45,8 +43,6 @@ export default function DayTransactionsModal(props){
                     })}
                 </IonContent>
             </IonModal>
-
         </div>
-    )
-
+    );
 }

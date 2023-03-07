@@ -1,9 +1,9 @@
 
 import { IonList,IonItem, IonRow,useIonAlert, IonCol, IonGrid, IonLabel, IonButton, IonItemSliding, IonItemOptions, IonItemOption, IonIcon} from "@ionic/react";
 import { heart,trash, createOutline } from "ionicons/icons";
-import { SrvDeleteTransaction } from "../../../ServerTalker";
+import {doRequest,bodyUser} from "../../../ServerTalker";
 import moment from "moment";
-import InsertModal from "../Modals/InsertModal.js"
+import InsertModal from "../../Modals/InsertModal.js"
 import {useState,useRef,useContext} from "react"
 import {MyContext} from "../../../pages/Home"
 
@@ -25,8 +25,9 @@ export default function ListItem(props){
                 text: 'OK',
                 role: 'confirm',
                 handler: () => {
-                    //TODO: add user auth
-                    SrvDeleteTransaction(idTransaction,ctx.User.User.Email,ctx.User.User.Password).then(res=>{
+                    doRequest("transaction",
+                        bodyUser(ctx.User.User.Email,ctx.User.User.Password)[idTransaction]=idTransaction
+                        ,"DELETE").then(res=>{
                         props.loadAllTransactions()
                     }).catch(err=>{
                         console.log(err)
