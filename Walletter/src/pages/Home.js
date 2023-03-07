@@ -36,8 +36,8 @@ export default function Home(){
           }          
         }>
         <IonPage className="Home">
-          <IonHeader mode='ios'>
-            <IonToolbar  color="dark">
+          <IonHeader mode='ios' >
+            <IonToolbar color="dark" className="walletterHeader">
               {
                 (FullScreen)?
                   <IonButton slot="start" mode="ios" onClick={()=>setFullScreen(false)} color="light" size="small">
