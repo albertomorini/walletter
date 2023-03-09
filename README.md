@@ -55,6 +55,7 @@ TODO
 
 ## TODO
 
-- docs
-- finish import (server side)
+- docs + logs + create mongo collections at the startup
 - edit a transaction
+- auth check
+- https check

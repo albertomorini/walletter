@@ -25,7 +25,10 @@ export default function MenuProfile(props){
     const reader = new FileReader();
     reader.addEventListener("load", function () {
 
-      doRequest("doImport",{"data":reader.result}).then(res=>{
+      doRequest("doImport",{
+        "DataB64":reader.result,
+        "Email":ctx.User.User.Email,
+      }).then(res=>{
         console.log(res)
       }).catch(err=>{
         console.log(err)

@@ -31,12 +31,9 @@ http.createServer((req,res)=>{
 
         //EXPORT-IMPORT
         if(req.url=="/getExport"){
-            queryResponder.doExport(res,bodyDict.Email,bodyDict.Password)
+            queryResponder.doExport(res,bodyDict.Email,bodyDict.Password);
         }else if(req.url=="/doImport"){
-            //TODO:
-            console.log(bodyDict)
-
-            //queryResponder.doImport(res,bodyDict.Email,bodyDict.Password,body);
+            queryResponder.doImport(res, bodyDict.DataB64.split("base64,")[1],bodyDict.Email);
         }
 
         //TRANSACTIONS

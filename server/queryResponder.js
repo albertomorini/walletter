@@ -136,13 +136,13 @@ function doExport(res,Email,Password){
                         console.log(err);
                         doResponse(res,500,{"export":null})
                     }
-
-                    fs.writeFileSync("./tmpExpoImpo/expo"+Email+".json",JSON.stringify({"transactions":resAll}));
-                    doResponse(res,200,fs.readFileSync("./tmpExpoImpo/expo"+Email+".json"),"file");
+                    let path="./tmpExpoImpo/exp_"+Email+"_at"+Date.now()+".json"
+                    fs.writeFileSync(path,JSON.stringify({"transactions":resAll}));
+                    doResponse(res,200,fs.readFileSync(path),"file");
                     //after 10sec we can remove the export file from server
                     setTimeout(()=>{
-                        fs.unlinkSync("./tmpExpoImpo/expo"+Email+".json")
-                    },[10000]);
+                        fs.unlinkSync(path)
+                    },[10000]); //10 sec
                 })
             });
         }else{
@@ -152,6 +152,47 @@ function doExport(res,Email,Password){
         doResponse(res,500,{"export":null})
 
     })
+}
+
+
+function _decodeBase64ToUtf8(b64string) {
+    var buffer;
+    if (typeof Buffer.from === "function") {
+        // Node 5.10+
+        buffer = Buffer.from(b64string, 'base64');
+    } else {
+        // older Node versions
+        buffer = new Buffer(b64string, 'base64');
+    }
+    return buffer;
+}
+
+
+
+function doImport(res, b64data,Email){
+
+    let path ="./tmpExpoImpo/imp_"+Email+"_at"+Date.now()+".json"
+    fs.writeFileSync(path,_decodeBase64ToUtf8(b64data));
+
+    let dataToImport = JSON.parse(fs.readFileSync(path));
+    let tmp = dataToImport.transactions.map(s=>  {return {...s,Email:Email} }) //replace the email with the one of current user, this because a user can change profile
+    tmp.forEach(s=>delete s._id) //remove the _id to avoid a duplicated
+
+    MongoClient.connect(url, (err, db) => {
+        let dbo = db.db("Walletter");
+        dbo.collection(Collection_Register).insertMany(tmp, (err, resReg) => {
+            if (err){
+                console.log(err)
+                doResponse(res,500,{"transaction":err})
+            }else{
+                doResponse(res,200,{"transaction":tmp})
+            }
+            db.close();
+        });
+    });
+    setTimeout(()=>{
+        fs.unlinkSync(path);
+    },[10000]); //remove the file created
 }
 
 
@@ -214,6 +255,23 @@ function getUser(email,psw){
 }
 
 
+
+
+module.exports={
+	getAllUsers: getAllUsers,
+	getUser: getUser,
+	insertUser: insertUser,
+    getAuth: getAuth,
+	deleteTransaction:deleteTransaction,
+	getAllTransaction:getAllTransaction,
+	getExistingReferences: getExistingReferences,
+	saveTransaction: saveTransaction,
+	createCollection:createCollection,
+    doExport: doExport,
+    doImport: doImport,
+}
+
+
 function getAllUsers(){
 //TODO: remove this one
     return new Promise((resolve,reject)=>{
@@ -232,19 +290,6 @@ function getAllUsers(){
     })
 }
 
-
-module.exports={
-	getAllUsers: getAllUsers,
-	getUser: getUser,
-	insertUser: insertUser,
-    getAuth: getAuth,
-	deleteTransaction:deleteTransaction,
-	getAllTransaction:getAllTransaction,
-	getExistingReferences: getExistingReferences,
-	saveTransaction: saveTransaction,
-	createCollection:createCollection,
-    doExport: doExport
-}
 
 // function deleteUser(objUsr){
 //     MongoClient.connect(url,(err,db)=>{
