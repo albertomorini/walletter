@@ -26,10 +26,10 @@ import {MyContext} from '../../pages/Home';
 
 export default function TransactionModal(props){
 
-    let [Amount, setAmount] = useState((props.Amount==undefined)?0:props.Amount);
-    let [Date, setDate] = useState(moment().format("YYYY-MM-DD"));
-    let [IsOutcome, setIsOutcome] = useState(true); //false is an income
-    let [Reference, setReference] = useState();
+    let [Amount, setAmount] = useState((props.data?.Amount!=undefined)?props.data.Amount:true);
+    let [Date, setDate] = useState(moment((props.data?.Date)).format("YYYY-MM-DD"));
+    let [IsOutcome, setIsOutcome] = useState((props.data?.IsOutcome!=undefined)?props.data.IsOutcome:true); //false is an income
+    let [Reference, setReference] = useState((props.data?.Reference!=undefined)?props.data.Reference:"");
     //
     let [ExistingReferences,setExistingReferences] = useState([]);
     let [ResResearch,setResResearch] = useState([...ExistingReferences]);
@@ -80,6 +80,7 @@ export default function TransactionModal(props){
     }
 
     useEffect(()=>{
+        console.log((props.data?.Amount==undefined)?0:props.data.Amount)
         getExistingReferences()
     },[]);
 
@@ -102,7 +103,7 @@ export default function TransactionModal(props){
             <IonContent className="ion-padding">
                 <IonItem>
                     <IonLabel position="stacked">Amount</IonLabel>
-                    <IonInput type="number" min={1} onIonChange={(ev) => setAmount(ev.target.value)} mode="ios"></IonInput>
+                    <IonInput type="number" min={1} placeholder={Amount} onIonChange={(ev) => setAmount(ev.target.value)} mode="ios"></IonInput>
                 </IonItem>
                 <IonItem>
                     <IonLabel position="stacked">Date</IonLabel>
@@ -134,7 +135,8 @@ export default function TransactionModal(props){
                         }}
                         mode="ios"
                         placeholder="Reference"
-                        value={Reference}
+                        placeholder={Reference}
+
                     />
                     <IonList style={{width: "100%"}}>
                         {ResResearch.map(result => (

@@ -43,7 +43,16 @@ export default function ListItem(props){
 
 	return(
         <div>
-            <InsertModal User={props.User} loadAllTransactions={props.loadAllTransactions} Amount={Amount} modalInsert={modalEdit}/>
+            <InsertModal User={props.User} loadAllTransactions={props.loadAllTransactions} Amount={Amount} modalInsert={modalEdit}
+                data={
+                    {
+                        "Amount":props.sTransaction.Amount,
+                        "IsOutcome": props.sTransaction.IsOutcome,
+                        "Date":props.sTransaction.Date,
+                        "Reference": props.sTransaction.Reference
+                    }
+                }
+            />
 
     		<IonItemSliding>
                 <IonItem color={(props.sTransaction.IsOutcome)?"danger":"success"} className="itemList outcomeElement">
