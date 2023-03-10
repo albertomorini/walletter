@@ -56,5 +56,5 @@ TODO
 ## TODO
 
 - docs + logs + create mongo collections at the startup
-- auth check
+- auth check  + mng errors
 - https check

@@ -43,6 +43,9 @@ function createCollection(){
     });
 }
 
+
+///////////////////////////
+
 /**
  * Insert a new transaction
  * @param {Object} objReg 
@@ -202,21 +205,22 @@ function insertUser(res,objUsr){
         let dbo = db.db("Walletter");
         let usr = await getUser(objUsr.email,objUsr.psw);
         if (usr == null){ //if user doesn't exists
-            dbo.collection(Collection_Users).insertOne(objUsr, (err, res) => {
+            dbo.collection(Collection_Users).insertOne(objUsr, (err, resUser) => {
                 if (err) {
                     console.log(err);
                     doResponse(res, 500, {
                         "usr": null
                     });
+                }else{
+                    doResponse(res,200,{
+                        "usr": {
+                            "email": objUsr.Email,
+                            "psw": objUsr.Password,
+                            "premium": false
+                        }
+                    })
                 }
                 db.close();
-                doResponse(res,200,{
-                    "usr": {
-                        "email": objUsr.Email,
-                        "psw": objUsr.Password,
-                        "premium": false
-                    }
-                })
             });
         }else{
             db.close();
@@ -259,6 +263,7 @@ function getUser(email,psw){
 
 module.exports={
 	getAllUsers: getAllUsers,
+    deleteUser: deleteUser,
 	getUser: getUser,
 	insertUser: insertUser,
     getAuth: getAuth,
@@ -291,16 +296,16 @@ function getAllUsers(){
 }
 
 
-// function deleteUser(objUsr){
-//     MongoClient.connect(url,(err,db)=>{
-//         let dbo= db.db("Walletter");
-//         dbo.collection(Collection_Users).deleteOne(objUsr).toArray((err,res)=>{
-//             if(err){
-//                 return false;
-//             }
-//             return true;
-//         })
-//     })
-// }
+function deleteUser(objUsr){
+    MongoClient.connect(url,(err,db)=>{
+        let dbo= db.db("Walletter");
+        dbo.collection(Collection_Users).deleteOne(objUsr).toArray((err,res)=>{
+            if(err){
+                return false;
+            }
+            return true;
+        })
+    })
+}
 
 

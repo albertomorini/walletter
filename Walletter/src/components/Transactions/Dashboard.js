@@ -8,6 +8,7 @@ import ListTransactions from "./List/ListTransactions.js"
 import MonthlyCalendar from "./Calendar/MonthlyCalendar.js"
 import InsertModal from "../Modals/InsertModal.js"
 import MonthlyRecap from "./MonthlyRecap/MonthlyRecap.js"
+import GroupReference from "./GroupReference/GroupReference"
 
 import {MyContext} from "../../pages/Home"
 
@@ -30,6 +31,7 @@ export default function Dashboard(){
             console.log(err);
         })
     }
+    
     useEffect(()=>{
         loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password);
         if(!ctx.FullScreen.FullScreen){
@@ -75,7 +77,6 @@ export default function Dashboard(){
                             >
                                 <IonLabel >
                                     Monthly overview
-                                    
                                     <IonIcon icon={chevronForwardOutline} />
                                 </IonLabel>
                             </IonItem>
@@ -90,6 +91,21 @@ export default function Dashboard(){
                             </IonItem>
                             <MonthlyRecap AllTransactions={AllTransactions}/>
                         </IonCol>
+                        <IonCol>
+                            <IonItem className="ion-text-center" 
+                                onClick={() => {
+                                    setMyView(<GroupReference AllTransactions={AllTransactions} Limit={null}/>)
+                                    ctx.FullScreen.setFullScreen(true);
+                                }}
+                            >
+                                <IonLabel>
+                                    Reference summary
+                                    <IonIcon icon={chevronForwardOutline} />
+                                </IonLabel>
+                            </IonItem>
+                            <GroupReference AllTransactions={AllTransactions} Limit={5}/>
+                        </IonCol>
+
                         
                     </IonRow>
                 </IonGrid>
@@ -100,7 +116,7 @@ export default function Dashboard(){
                 <div>
                     <InsertModal loadAllTransactions={() => loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)} modalInsert={refModalInsert}></InsertModal>
                   
-                    <IonButton onClick={()=>{refModalInsert.current?.present()}} expand="block" mode="ios" color="dark">Add a new transaction</IonButton>
+                    <IonButton onClick={()=>{refModalInsert.current?.present()}} expand="block" mode="ios" color="dark">Add new transaction</IonButton>
                 </div>
             </div>
         :

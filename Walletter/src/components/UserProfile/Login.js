@@ -28,6 +28,9 @@ export default function Login(props){
                 doRequest("getAuth",
                     bodyUser(Email,Password)
                 ).then(res=>res.json()).then(res=>{
+                    if(res.usr==null){
+                        throw new Error
+                    }
                     props.setUser({
                         "Email":Email,
                         "Password": Password
