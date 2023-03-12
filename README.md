@@ -52,8 +52,10 @@ WT_USERS
 
 ## UX
 
+![walletter](./docs/img/Walletter.gif)
+
 ### Export/Import
-![import](./docs/img/walletterImport.mp4)
+![import](./docs/img/WalletterImport.gif)
 
 ## TODO
 
