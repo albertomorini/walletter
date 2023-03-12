@@ -25,9 +25,10 @@ export default function ListItem(props){
                 text: 'OK',
                 role: 'confirm',
                 handler: () => {
-                    doRequest("transaction",
-                        bodyUser(ctx.User.User.Email,ctx.User.User.Password)[idTransaction]=idTransaction
-                        ,"DELETE").then(res=>{
+                    let tmpBody=bodyUser(ctx.User.User.Email,ctx.User.User.Password)
+                    tmpBody.idTransaction=idTransaction
+
+                    doRequest("transaction",tmpBody,"DELETE").then(res=>{
                         props.loadAllTransactions()
                     }).catch(err=>{
                         console.log(err)

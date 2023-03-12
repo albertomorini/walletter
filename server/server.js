@@ -12,7 +12,7 @@ http.createServer((req,res)=>{
         body+=chunk;
     });
     req.on("end",()=>{
-        let bodyDict = JSON.parse(body);
+            let bodyDict = JSON.parse(body);
 
         if (req.url=="/getAuth"){
             queryResponder.getAuth(res,bodyDict.Email, bodyDict.Password);          
