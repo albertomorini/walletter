@@ -59,9 +59,7 @@ WT_USERS
 
 ## TODO
 
-- try https with, not self-signed: https://letsencrypt.org/
-
-- docs + logs + create mongo collections at the startup
-- auth check  + mng errors
-
--> CHANGE NAME TRANSACTION COLLECTION
+- https and authentication
+    - try  https://letsencrypt.org/
+- at the server startup check if collections exists
+- logs

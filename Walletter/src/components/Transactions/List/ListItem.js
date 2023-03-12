@@ -26,9 +26,8 @@ export default function ListItem(props){
                 role: 'confirm',
                 handler: () => {
                     let tmpBody=bodyUser(ctx.User.User.Email,ctx.User.User.Password)
-                    tmpBody.idTransaction=idTransaction
-
-                    doRequest("transaction",tmpBody,"DELETE").then(res=>{
+                    tmpBody.idTransaction = idTransaction
+                    doRequest("deleteTransaction",tmpBody,"POST").then(res=>{
                         props.loadAllTransactions()
                     }).catch(err=>{
                         console.log(err)
@@ -47,6 +46,7 @@ export default function ListItem(props){
             <InsertModal User={props.User} loadAllTransactions={props.loadAllTransactions} Amount={Amount} modalInsert={modalEdit}
                 data={
                     {
+                        "id": props.sTransaction._id,
                         "Amount":props.sTransaction.Amount,
                         "IsOutcome": props.sTransaction.IsOutcome,
                         "Date":props.sTransaction.Date,

@@ -12,7 +12,13 @@ http.createServer((req,res)=>{
         body+=chunk;
     });
     req.on("end",()=>{
-            let bodyDict = JSON.parse(body);
+        let bodyDict = null;
+        try{
+            bodyDict = JSON.parse(body);
+        }catch(ex){
+            console.log(req.url)
+            console.log(req.method)
+        }
 
         if (req.url=="/getAuth"){
             queryResponder.getAuth(res,bodyDict.Email, bodyDict.Password);          
@@ -21,11 +27,7 @@ http.createServer((req,res)=>{
 
         //USER
         if(req.url=="/user"){
-            if(req.method=="POST"){
-                queryResponder.insertUser(res,{"email": bodyDict.Email,"psw": bodyDict.Password,"premium": false})
-            }else if(req.method=="DELETE"){
-                //TODO: delete user
-            }
+            queryResponder.insertUser(res,{"email": bodyDict.Email,"psw": bodyDict.Password,"premium": false})
         }
 
 
@@ -38,14 +40,13 @@ http.createServer((req,res)=>{
 
         //TRANSACTIONS
         if(req.url=="/transaction"){
-            if(req.method=="POST"){
-                queryResponder.saveTransaction(res,bodyDict)
-            }else if(req.method=="DELETE"){
-                queryResponder.deleteTransaction(res,bodyDict.idTransaction,bodyDict.Email,bodyDict.Password);
-            }else if(req.method=="PUT"){
-                //TODO: update transaction
-            }
-        } 
+            queryResponder.saveTransaction(res,bodyDict)
+        }else if(req.url=="/deleteTransaction"){
+            console.log(bodyDict)
+            queryResponder.deleteTransaction(res,bodyDict.idTransaction,bodyDict.Email,bodyDict.Password);
+        }else if(req.url=="updateTransaction"){
+
+        }
 
         //SUGGESTIONS
         if (req.url =="/getExistingReferences"){

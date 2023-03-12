@@ -4,7 +4,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const url = "mongodb://localhost:27017/Walletter";
 var ObjectId = require('mongodb').ObjectID;
-const Collection_Register = "WT_REGISTER";
+const Collection_Transactions = "WT_TRANSACTIONS";
 const Collection_Users= "WT_USERS";
 
 const fs = require("fs"); //we need to write the export file before send it
@@ -33,7 +33,7 @@ function createCollection(){
             if (err){
                 console.log(err);
             }
-            dbo.createCollection(Collection_Register, function (err, res) {
+            dbo.createCollection(Collection_Transactions, function (err, res) {
                 if (err) {
                     console.log(err);
                 }
@@ -51,15 +51,26 @@ function createCollection(){
  * @param {Object} objReg 
  */
 function saveTransaction(res,objReg){
+
+    const updateDoc = {
+      $set: {
+        Email: objReg.Email,
+        Amount: objReg.Amount,
+        Date: objReg.Date,
+        IsOutcome: objReg.IsOutcome,
+        Reference: objReg.Reference,
+      },
+    };
+    //upsert: true --> if not exists insert a transaction, otherwise update it
     MongoClient.connect(url, (err, db) => {
         let dbo = db.db("Walletter");
-        dbo.collection(Collection_Register).insertOne(objReg, (err, resReg) => {
-            if (err){
-                doResponse(res,500,{"transaction":err})
-            }
-            doResponse(res,200,{"transaction":objReg})
-            db.close();
-        });
+        let result =  dbo.collection(Collection_Transactions).updateOne({ _id: ObjectId(objReg.id),"Email":objReg.Email},updateDoc,  { upsert: true })
+        result.then(resSaving=>{
+            doResponse(res,200,{"transaction":resSaving})
+        }).catch(err=>{
+            doResponse(res,500,{"transaction":err})
+        })
+
     });
 }
 
@@ -71,7 +82,7 @@ function getExistingReferences(res,Email,Password){
                     doResponse(res,403,{"err":"unauthorized"})
                 }
                 let dbo = db.db("Walletter");
-                dbo.collection(Collection_Register).find({"Email":Email}).toArray((err,resReferences)=>{
+                dbo.collection(Collection_Transactions).find({"Email":Email}).toArray((err,resReferences)=>{
                     if(err){
                         doResponse(res,500,{"err":err});
                     }
@@ -96,7 +107,7 @@ function getAllTransaction(res,Email,Password){
         if(resAuth!=null){
             MongoClient.connect(url, (err,db)=>{
                 let dbo= db.db("Walletter");
-                dbo.collection(Collection_Register).find({ "Email": Email }).toArray((err,resTransactions)=>{
+                dbo.collection(Collection_Transactions).find({ "Email": Email }).toArray((err,resTransactions)=>{
                     doResponse(res, 200, { "transactions": resTransactions });
                 });
             });
@@ -111,7 +122,7 @@ function deleteTransaction(res,idTransaction,Email,Password){
         if(resAuth!=null){
             MongoClient.connect(url,(err,db)=>{
                 let dbo = db.db("Walletter");
-                dbo.collection(Collection_Register).deleteOne({ "_id": ObjectId(idTransaction), "Email":Email }, (err,resDelte)=>{
+                dbo.collection(Collection_Transactions).deleteOne({ "_id": ObjectId(idTransaction), "Email":Email }, (err,resDelte)=>{
                     if(err){
                         console.log(err);
                         doResponse(res,500,{"deleteTransaction":err})
@@ -134,7 +145,7 @@ function doExport(res,Email,Password){
         if(resAuth!=null){
             MongoClient.connect(url,(err,db)=>{
                 let dbo= db.db("Walletter");
-                dbo.collection(Collection_Register).find({"Email":Email}).toArray((err,resAll)=>{
+                dbo.collection(Collection_Transactions).find({"Email":Email}).toArray((err,resAll)=>{
                     if(err){
                         console.log(err);
                         doResponse(res,500,{"export":null})
@@ -183,7 +194,7 @@ function doImport(res, b64data,Email){
 
     MongoClient.connect(url, (err, db) => {
         let dbo = db.db("Walletter");
-        dbo.collection(Collection_Register).insertMany(tmp, (err, resReg) => {
+        dbo.collection(Collection_Transactions).insertMany(tmp, (err, resReg) => {
             if (err){
                 console.log(err)
                 doResponse(res,500,{"transaction":err})
@@ -262,8 +273,7 @@ function getUser(email,psw){
 
 
 module.exports={
-	getAllUsers: getAllUsers,
-    deleteUser: deleteUser,
+
 	getUser: getUser,
 	insertUser: insertUser,
     getAuth: getAuth,
@@ -277,8 +287,28 @@ module.exports={
 }
 
 
+//FIX MONGO COLLECTION AFTER TESTS, cool stuff tho
+/*
+function renamedCollection(){
+    MongoClient.connect(url,(err,db)=>{
+            let dbo = db.db("Walletter");
+            dbo.collection("WT_REGISTER").rename("WT_TRANSACTIONS", function(err, newColl) {
+                console.log(newColl)
+            });
+            dbo.collection(Collection_Users).find().toArray((err,res)=>{
+                if(err){
+                    reject(err);
+                }
+                console.log(res);
+
+                db.close();
+                
+            });
+        });
+
+}
+
 function getAllUsers(){
-//TODO: remove this one
     return new Promise((resolve,reject)=>{
         MongoClient.connect(url,(err,db)=>{
             let dbo = db.db("Walletter");
@@ -294,18 +324,36 @@ function getAllUsers(){
         });
     })
 }
+getAllUsers()
+function getAllTransaction(){
+//TODO: remove this one
+    return new Promise((resolve,reject)=>{
+        MongoClient.connect(url,(err,db)=>{
+            let dbo = db.db("Walletter");
+            dbo.collection(Collection_Transactions).find().toArray((err,res)=>{
+                if(err){
+                    reject(err);
+                }
+                console.log(res);
 
+                db.close();
+                
+            });
+        });
+    })
+}
 
 function deleteUser(objUsr){
     MongoClient.connect(url,(err,db)=>{
         let dbo= db.db("Walletter");
-        dbo.collection(Collection_Users).deleteOne(objUsr).toArray((err,res)=>{
-            if(err){
-                return false;
-            }
-            return true;
-        })
+            var myquery = {"email":{$ne:"alberto@morini"}};
+          dbo.collection("WT_USERS").deleteMany(myquery, function(err, obj) {
+            if (err) throw err;
+            console.log("1 document deleted");
+            db.close();
+          });
     })
 }
 
 
+*/

@@ -26,6 +26,7 @@ import {MyContext} from '../../pages/Home';
 
 export default function TransactionModal(props){
 
+
     let [Amount, setAmount] = useState((props.data?.Amount!=undefined)?props.data.Amount:0);
     let [Date, setDate] = useState(moment((props.data?.Date)).format("YYYY-MM-DD"));
     let [IsOutcome, setIsOutcome] = useState((props.data?.IsOutcome!=undefined)?props.data.IsOutcome:true); //false is an income
@@ -64,6 +65,7 @@ export default function TransactionModal(props){
             "Date": Date,
             "IsOutcome": (IsOutcome=='false')?false:true,
             "Reference": Reference,
+            "id": (props.data?.id!=undefined)?props.data.id : null
         }).then(res=>res.json()).then(res=>{
             props.loadAllTransactions()
             props.modalInsert.current?.dismiss()

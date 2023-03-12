@@ -63,6 +63,7 @@ export default function ListTransactions(props){
         )
         setTransactionList(tmp)
     }
+
     useEffect(()=>{
         createMonthList(props.AllTransactions,props.Limit)
     },[props])
