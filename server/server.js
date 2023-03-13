@@ -1,12 +1,18 @@
 // SERVER
-const http = require("http");
+const https = require("https");
 const port = 1999;
 const queryResponder = require("./queryResponder.js")
-
+const fs = require("fs");
 //////////////////////////////////////////
 
 
-http.createServer((req,res)=>{
+
+const options = {
+    key: fs.readFileSync("./certs/key.pem"),
+    cert: fs.readFileSync("./certs/cert.pem")
+}
+
+https.createServer(options,(req,res)=>{
     let body="";
     req.on("data",(chunk)=>{
         body+=chunk;
@@ -16,8 +22,13 @@ http.createServer((req,res)=>{
         try{
             bodyDict = JSON.parse(body);
         }catch(ex){
-            console.log(req.url)
-            console.log(req.method)
+        }
+
+        if(req.url=="/"){
+            res.writeHead(302,{
+                "Location": "http://10.0.0.3:3000"
+            });
+            res.end();
         }
 
         if (req.url=="/getAuth"){

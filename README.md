@@ -44,13 +44,29 @@ WT_USERS
 }
 ```
 
+## Usage
+
+NodeJS and MongoDB are required.
+> You can run MongoDB in docker as well.
+
+Once executed the server (node server.js) and the client (npm start), go to the server port (1999) will ask you to trust of self-signed certified, than, will redict you to the app
+So -> https://10.0.0.3:1999 and boom we there.
+> 10.0.0.3 is my Mac's private IP, config yours into the ServerConfig.json into src folder of Walletter app
+
+
 ## Dependencies
 
+- react-scripts
 - moment
 - @ionic/storage
 
 
+## HTTPS 
+The certified and the private key (that you don't see in this repo), are self-signed, you've to generate yours.
+
 ## UX
+
+Dunno why these gifs are in slow-motion :/
 
 ![walletter](./docs/img/Walletter.gif)
 
@@ -59,7 +75,5 @@ WT_USERS
 
 ## TODO
 
-- https and authentication
-    - try  https://letsencrypt.org/
 - at the server startup check if collections exists
 - logs
