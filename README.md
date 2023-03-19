@@ -65,10 +65,36 @@ So -> https://10.0.0.3:1999 and boom we there.
 The certified and the private key (that you don't see in this repo), are self-signed, you've to generate yours.
 
 ## UX
+![walletter](./docs/img/1.png)
 
-Dunno why these gifs are in slow-motion :/
+![fullscreen](./docs/img/fullscreen.png)
 
-![walletter](./docs/img/Walletter.gif)
+
+You can add a new transaction and searching for existing reference or add a new one.
+
+![search](./docs/img/fullscreen.png)
+
+From my iPad (have to hide some reference, sorry)
+![search](./docs/img/from_iPad.png)
+
+
+### Various widget
+
+Fullscreen of calendar, clicking a day 
+![search](./docs/img/allOfDay.png)
+
+Full screen of grouped (is from my personal account, had to hide, sorry again)
+
+![search](./docs/img/grouped.png)
+
+You can export or import a backup, saved on JSON
+
+![search](./docs/img/grouped.png)
+
+
+But first, you need to login!
+
+![search](./docs/img/login.png)
 
 ### Export/Import
 ![import](./docs/img/WalletterImport.gif)
@@ -77,3 +103,4 @@ Dunno why these gifs are in slow-motion :/
 
 - at the server startup check if collections exists
 - logs
+- saving the credentials

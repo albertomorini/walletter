@@ -1,9 +1,10 @@
 // SERVER
 const https = require("https");
-const port = 1999;
-const queryResponder = require("./queryResponder.js")
 const fs = require("fs");
+const queryResponder = require("./queryResponder.js")
 //////////////////////////////////////////
+const port = 1999;
+const locationWebApp="https://10.0.0.3:3000"
 
 
 
@@ -24,20 +25,19 @@ https.createServer(options,(req,res)=>{
         }catch(ex){
         }
 
+
+        //REDICT TO THE WEBAPP
         if(req.url=="/"){
             res.writeHead(302,{
-                "Location": "http://10.0.0.3:3000"
+                "Location": locationWebApp
             });
             res.end();
         }
 
+        //////////////////////////////////////////
         if (req.url=="/getAuth"){
             queryResponder.getAuth(res,bodyDict.Email, bodyDict.Password);          
-        }
-
-
-        //USER
-        if(req.url=="/user"){
+        }else if(req.url=="/user"){
             queryResponder.insertUser(res,{"email": bodyDict.Email,"psw": bodyDict.Password,"premium": false})
         }
 
@@ -49,6 +49,7 @@ https.createServer(options,(req,res)=>{
             queryResponder.doImport(res, bodyDict.DataB64.split("base64,")[1],bodyDict.Email);
         }
 
+
         //TRANSACTIONS
         if(req.url=="/transaction"){
             queryResponder.saveTransaction(res,bodyDict)
@@ -58,6 +59,7 @@ https.createServer(options,(req,res)=>{
         }else if(req.url=="updateTransaction"){
 
         }
+
 
         //SUGGESTIONS
         if (req.url =="/getExistingReferences"){
