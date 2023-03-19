@@ -65,6 +65,10 @@ So -> https://10.0.0.3:1999 and boom we there.
 The certified and the private key (that you don't see in this repo), are self-signed, you've to generate yours.
 
 ## UX
+
+The dashboard start with 4 widget, clicking some of these you can go in fullscreen mode and see more results.
+
+
 ![walletter](./docs/img/1.png)
 
 ![fullscreen](./docs/img/fullscreen.jpg)
@@ -72,7 +76,7 @@ The certified and the private key (that you don't see in this repo), are self-si
 
 You can add a new transaction and searching for existing reference or add a new one.
 
-![search](./docs/img/fullscreen.jpg)
+![search](./docs/img/search.jpg)
 
 From my iPad (have to hide some reference, sorry)
 ![search](./docs/img/from_iPad.jpg)
