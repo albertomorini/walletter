@@ -104,4 +104,4 @@ But first, you need to login!
 
 - at the server startup check if collections exists
 - logs
-- saving the credentials
+- better use of context, declutter some code

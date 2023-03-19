@@ -2,6 +2,7 @@ import { IonLabel, IonItem, IonSegment, IonSegmentButton, IonInput, IonCardSubti
 import { useState } from "react";
 import { doRequest,bodyUser } from "../../ServerTalker";
 import { Storage } from '@ionic/storage';
+import MD5 from "crypto-js/md5";
 
 
 export default function Login(props){
@@ -16,7 +17,7 @@ export default function Login(props){
         store.create();
         store.set("User",{
             "Email":Email,
-            "Password":Password
+            "Password": MD5(Password).toString()
         });
 
     }
@@ -26,14 +27,14 @@ export default function Login(props){
 
             if(Login){
                 doRequest("getAuth",
-                    bodyUser(Email,Password)
+                    bodyUser(Email,MD5(Password).toString())
                 ).then(res=>res.json()).then(res=>{
                     if(res.usr==null){
                         throw new Error
                     }
-                    props.setUser({
+                    props.setUser({ //TODO: remove, use context instead
                         "Email":Email,
-                        "Password": Password
+                        "Password": MD5(Password).toString()
                     });
                     storeCredentials(Email,Password);
                 }).catch(err=>{
@@ -46,7 +47,7 @@ export default function Login(props){
                 ).then(res=>res.json()).then(res => {
                     props.setUser({
                         "Email":Email,
-                        "Password": Password
+                        "Password": MD5(Password).toString()
                     });
                     storeCredentials(Email,Password)
                 }).catch(err => {

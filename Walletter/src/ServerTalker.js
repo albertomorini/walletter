@@ -1,4 +1,3 @@
-import MD5 from "crypto-js/md5";
 const SocketServer = "https://10.0.0.3:1999" //sever service
 
 export const doRequest = (api,body,method="POST") => {
@@ -12,7 +11,7 @@ export const doRequest = (api,body,method="POST") => {
 export const bodyUser = (Email,Password) =>{
     return {
         "Email":Email,
-        "Password": MD5(Password).toString()
+        "Password": Password
     }
 }
 
