@@ -67,37 +67,34 @@ The certified and the private key (that you don't see in this repo), are self-si
 ## UX
 ![walletter](./docs/img/1.png)
 
-![fullscreen](./docs/img/fullscreen.png)
+![fullscreen](./docs/img/fullscreen.jpg)
 
 
 You can add a new transaction and searching for existing reference or add a new one.
 
-![search](./docs/img/fullscreen.png)
+![search](./docs/img/fullscreen.jpg)
 
 From my iPad (have to hide some reference, sorry)
-![search](./docs/img/from_iPad.png)
+![search](./docs/img/from_iPad.jpg)
 
 
 ### Various widget
 
 Fullscreen of calendar, clicking a day 
-![search](./docs/img/allOfDay.png)
+![search](./docs/img/allOfDay.jpg)
 
 Full screen of grouped (is from my personal account, had to hide, sorry again)
 
-![search](./docs/img/grouped.png)
+![search](./docs/img/grouped.jpg)
 
 You can export or import a backup, saved on JSON
 
-![search](./docs/img/grouped.png)
+![search](./docs/img/expoimpo.jpg)
 
 
 But first, you need to login!
 
 ![search](./docs/img/login.png)
-
-### Export/Import
-![import](./docs/img/WalletterImport.gif)
 
 ## TODO
 
