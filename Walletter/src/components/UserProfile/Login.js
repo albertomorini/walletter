@@ -1,4 +1,4 @@
-import { IonLabel, IonItem, IonSegment, IonSegmentButton, IonInput, IonCardSubtitle, IonButton } from "@ionic/react";
+import { IonLabel, IonItem, IonToggle, IonSegment, IonSegmentButton, IonInput, IonCardSubtitle, IonButton } from "@ionic/react";
 import { useState } from "react";
 import { doRequest,bodyUser } from "../../ServerTalker";
 import { Storage } from '@ionic/storage';
@@ -11,14 +11,17 @@ export default function Login(props){
     let [Password,setPassword] = useState(null);
     let [Login,setLogin] = useState(true); // login, false=> signup
     let [ValueSegment, setValueSegment] = useState("Login");
+    let [Remember,setRemember] = useState(true);
     const store = new Storage();
 
     function storeCredentials(Email,Password){
-        store.create();
-        store.set("User",{
-            "Email":Email,
-            "Password": MD5(Password).toString()
-        });
+        if(Remember){
+            store.create();
+            store.set("User",{
+                "Email":Email,
+                "Password": MD5(Password).toString()
+            });
+        }
 
     }
 
@@ -88,7 +91,15 @@ export default function Login(props){
                 <IonLabel mode="ios" position="stacked">Password</IonLabel>
                 <IonInput placeholder={(Login) ? "Password" : "Pick a strong one"} type="password" onIonChange={(ev)=>setPassword(ev.target.value)} onKeyDown={(ev)=>enterPressed(ev)}></IonInput>
             </IonItem>
+            <br/>
             
+                
+            <IonToggle enableOnOffLabels="true" mode="ios" labelPlacement="end" checked={Remember} onIonChange={(ev)=>setRemember(!Remember)}>
+                Remember me
+            </IonToggle>
+
+            <br/>
+            <br/>
             <IonButton expand="block" onClick={()=>processCredentials()} onKeyDown={(ev)=>{}} >
                 {(Login)?"Login":"Sign up"}
             </IonButton>

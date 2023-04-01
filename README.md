@@ -3,7 +3,7 @@
 
 A simple personal finance tool.
 
-Made in my free time with NodeJS, ReactJS/Ionic and MongoDB.
+Made in my free time with NodeJS, React/Ionic and MongoDB.
 > I'll use React's hooks and context ;)
 
 ## The idea
@@ -53,6 +53,12 @@ Once executed the server (node server.js) and the client (npm start), go to the 
 So -> https://10.0.0.3:1999 and boom we there.
 > 10.0.0.3 is my Mac's private IP, config yours into the ServerConfig.json into src folder of Walletter app
 
+Runnning the client in https mode:
+
+1. `npm run build`
+2. `npx serve -s build --listen 3000 --ssl-cert cert.pem --ssl-key key.pem`
+
+**there's "starter.sh" a shell scriptt which start docker/client/server all in once**
 
 ## Dependencies
 
