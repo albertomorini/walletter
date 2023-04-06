@@ -12,6 +12,7 @@ export default function MenuProfile(props){
   let ctx = useContext(MyContext);
   let store = new Storage();
   let modalUpload = useRef();
+  let popoverMenu = useRef();
 
   function unstoreCredentials(){
       store.create();
@@ -44,7 +45,7 @@ export default function MenuProfile(props){
 
 
 	return(
-		<IonPopover trigger="AccountIcon" triggerAction="click">
+		<IonPopover trigger="AccountIcon" triggerAction="click" ref={popoverMenu}>
            
         <IonButton color="medium" size="small" onClick={()=>{
             doRequest("getExport",
@@ -57,7 +58,7 @@ export default function MenuProfile(props){
 
               a.download = "WalletterExport_"+moment().format("YYYY-MM-DD")+".json";
               document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-              a.click();    
+              a.click();
               a.remove();
 
             })
@@ -74,7 +75,10 @@ export default function MenuProfile(props){
         <IonButton color="warning" size="small" onClick={()=>console.log("TODO:")}>
           Edit
         </IonButton>
-        <IonButton color="danger" size="small" onClick={()=>unstoreCredentials()}>
+        <IonButton color="danger" size="small" onClick={()=>{
+          unstoreCredentials()
+          popoverMenu.current?.dismiss();
+        }}>
           Log out
         </IonButton>
       </IonPopover>

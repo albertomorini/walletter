@@ -15,6 +15,7 @@ const MyContext = React.createContext();
 export default function Home(){
   let [User, setUser] = useState(null);
   let [FullScreen,setFullScreen] = useState(false);
+
   const store = new Storage();
   
 
