@@ -1,27 +1,22 @@
-import { useEffect, useState,useContext } from "react"
+import { useEffect, useState, useContext } from "react";
 import {
     IonButtons,
     IonButton,
     IonModal,
-    IonHeader,
-    IonToggle,
-    IonSegment,
+    IonHeader, IonSegment,
     IonSegmentButton,
     IonContent,
     IonToolbar,
     IonTitle,
     IonItem,
     IonLabel,
-    IonInput,
-    IonSelectOption,
-    IonSelect,
-    IonSearchbar,
-    IonList,
+    IonInput, IonSearchbar,
+    IonList
 } from '@ionic/react';
-import moment from "moment"
+import moment from "moment";
 import { doRequest, bodyUser } from "../../ServerTalker";
-import {checkmarkCircleOutline,searchSharp} from "ionicons/icons"
-import {MyContext} from '../../pages/Home';
+import { checkmarkCircleOutline, searchSharp } from "ionicons/icons";
+import { MyContext } from '../../pages/Home';
 
 
 export default function TransactionModal(props){
@@ -135,7 +130,6 @@ export default function TransactionModal(props){
                             searchReferences(ev.target.value)
                         }}
                         mode="ios"
-                        placeholder="Reference"
                         placeholder={Reference}
 
                     />
