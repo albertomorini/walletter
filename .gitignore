@@ -1,1 +1,4 @@
 /server/node_modules
+/Walletter/node_modules
+
+/server/certs/key.pem

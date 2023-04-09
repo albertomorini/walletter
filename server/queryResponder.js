@@ -125,7 +125,7 @@ async function doImport(b64data,Email){
 async function insertUser(objUsr){
     return getUser(objUsr.email,objUsr.psw).then(resAuth=>{
         if(resAuth==null){
-            return db.collection(COLLECTION_USERS).insertOne(objUsr);
+            return database.collection(COLLECTION_USERS).insertOne(objUsr);
         }else{
             return null;
         }

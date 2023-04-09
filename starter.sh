@@ -2,7 +2,7 @@
 
 ## start docker
 
-docker run -d -p 27017:27017 --restart=unless-stopped --name myMongo -v mongo-data:/data/db mongo:latest &s
+docker run -d -p 27017:27017 --restart=unless-stopped --name myMongo -v mongo-data:/data/db mongo:latest &
 
 
 ## start client
