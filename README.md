@@ -18,6 +18,44 @@ Every **transaction** has the same metadata:
 
 So the database goes along.
 
+
+## UX
+
+The dashboard start with 4 widget, clicking some of these you can go in fullscreen mode and see more results.
+
+
+![walletter](./docs/img/1.png)
+
+![fullscreen](./docs/img/fullscreen.jpg)
+
+
+You can add a new transaction and searching for existing reference or add a new one.
+
+![search](./docs/img/search.jpg)
+
+From my iPad (have to hide some reference, sorry)
+![search](./docs/img/from_iPad.jpg)
+
+
+### Various widget
+
+Fullscreen of calendar, clicking a day 
+![search](./docs/img/allOfDay.jpg)
+
+Full screen of grouped (is from my personal account, had to hide, sorry again)
+
+![search](./docs/img/grouped.jpg)
+
+You can export or import a backup, saved on JSON
+
+![search](./docs/img/expoimpo.jpg)
+
+
+But first, you need to login!
+
+![search](./docs/img/login.png)
+
+
 ## Database
 
 Made with Mongo, why? Why not.
@@ -70,41 +108,6 @@ Runnning the client in https mode:
 ## HTTPS 
 The certified and the private key (that you don't see in this repo), are self-signed, you've to generate yours.
 
-## UX
-
-The dashboard start with 4 widget, clicking some of these you can go in fullscreen mode and see more results.
-
-
-![walletter](./docs/img/1.png)
-
-![fullscreen](./docs/img/fullscreen.jpg)
-
-
-You can add a new transaction and searching for existing reference or add a new one.
-
-![search](./docs/img/search.jpg)
-
-From my iPad (have to hide some reference, sorry)
-![search](./docs/img/from_iPad.jpg)
-
-
-### Various widget
-
-Fullscreen of calendar, clicking a day 
-![search](./docs/img/allOfDay.jpg)
-
-Full screen of grouped (is from my personal account, had to hide, sorry again)
-
-![search](./docs/img/grouped.jpg)
-
-You can export or import a backup, saved on JSON
-
-![search](./docs/img/expoimpo.jpg)
-
-
-But first, you need to login!
-
-![search](./docs/img/login.png)
 
 ## TODO
 
