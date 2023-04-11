@@ -1,25 +1,19 @@
-import { useState } from "react"
 import {
     IonButtons,
     IonButton,
     IonModal,
-    IonHeader,
-    IonToggle,
-    IonContent,
+    IonHeader, IonContent,
     IonToolbar,
-    IonTitle,
-    IonItem,
-    IonLabel,
-    IonInput,
-    IonSelectOption,
-    IonSelect,
-    IonSearchbar,
-    IonList,
+    IonTitle
 } from '@ionic/react';
-import ListItem from "../Transactions/List/ListItem.js"
-import moment from "moment"
+import ListItem from "../Transactions/List/ListItem.js";
+import moment from "moment";
+import { useEffect } from 'react';
 
 export default function DayTransactionsModal(props){
+    useEffect(()=>{
+        console.log(props)
+    },[])
 	 return (
         <div>
             <IonModal ref={props.modalDayRecap} trigger="MonthlyCalendar" mode="ios">

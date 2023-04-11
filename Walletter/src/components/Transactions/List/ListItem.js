@@ -38,59 +38,32 @@ export default function ListItem(props){
         });
     }
 
-    let [Amount,setAmount]=useState()
-    let modalEdit = useRef()
-
 	return(
-        <div>
-            <InsertModal User={props.User} loadAllTransactions={props.loadAllTransactions} Amount={Amount} modalInsert={modalEdit}
-                data={
-                    {
-                        "id": props.sTransaction._id,
-                        "Amount":props.sTransaction.Amount,
-                        "IsOutcome": props.sTransaction.IsOutcome,
-                        "Date":props.sTransaction.Date,
-                        "Reference": props.sTransaction.Reference
-                    }
-                }
-            />
+        <IonItemSliding>
+            <IonItem color={(props.sTransaction.IsOutcome)?"danger":"success"} className="itemList outcomeElement">
+                <IonGrid>
+                <IonRow>
+                    <IonCol>
+                    {(props.sTransaction.IsOutcome)?"-":"+"}
+                    {props.sTransaction.Amount}€
+                    </IonCol>
+                    <IonCol>{props.sTransaction.Reference}</IonCol>
+                    <IonCol>{moment(props.sTransaction.Date).format("DD/MM/YYYY")}</IonCol>
+                </IonRow>
+                </IonGrid>
 
-    		<IonItemSliding>
-                <IonItem color={(props.sTransaction.IsOutcome)?"danger":"success"} className="itemList outcomeElement">
-                    <IonGrid>
-                    <IonRow>
-                        <IonCol>
-                        {(props.sTransaction.IsOutcome)?"-":"+"}
-                        {props.sTransaction.Amount}€
-                        </IonCol>
-                        <IonCol>{props.sTransaction.Reference}</IonCol>
-                        <IonCol>{moment(props.sTransaction.Date).format("DD/MM/YYYY")}</IonCol>
-                    </IonRow>
-                    </IonGrid>
+            </IonItem>
+            <IonItemOptions>
+            <IonItemOption color="warning" onClick={()=>{}} className="buttonList">
+                <IonIcon slot="bottom" icon={createOutline}></IonIcon>
+                Edit
+            </IonItemOption>
 
-                </IonItem>
-                <IonItemOptions>
-                <IonItemOption color="warning" onClick={()=>{
-                    modalEdit.current?.present();
-                    setAmount(props.sTransaction.Amount)
-                }}
-                className="buttonList"
-                >
-                    <IonIcon slot="bottom" icon={createOutline}></IonIcon>
-                    Edit
-                </IonItemOption>
-                <IonItemOption color="danger" 
-                    onClick={()=>deleteTransaction(props.sTransaction._id)
-                    }
-                    expandable
-                 
-                    className="buttonList"
-                 >
-                    <IonIcon slot="bottom" icon={trash}></IonIcon>
-                    Delete
-                </IonItemOption>
-                </IonItemOptions>
-            </IonItemSliding>
-        </div>
+            <IonItemOption color="danger" onClick={()=>deleteTransaction(props.sTransaction._id)} expandable className="buttonList">
+                <IonIcon slot="bottom" icon={trash}></IonIcon>
+                Delete
+            </IonItemOption>
+            </IonItemOptions>
+        </IonItemSliding>
     );	
 }

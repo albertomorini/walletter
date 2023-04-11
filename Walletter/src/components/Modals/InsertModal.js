@@ -69,7 +69,7 @@ export default function TransactionModal(props){
     }
 
     function resetInput(){
-        setAmount((props.Amount==undefined)?0:props.Amount);
+        setAmount((props.data?.Amount==undefined)?0:props.data?.Amount);
         setDate(moment().format("YYYY-MM-DD"));
         setIsOutcome(true);
         setReference();

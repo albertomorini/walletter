@@ -1,73 +1,27 @@
-import { IonList,IonItem, IonRow,useIonAlert, IonCol, IonGrid, IonLabel, IonButton, IonItemSliding, IonItemOptions, IonItemOption, IonIcon} from "@ionic/react";
-import React,{ useEffect, useState} from "react";
-import "../../../theme/ListTransactions.css"
+import { IonButton, IonCol, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonRow } from "@ionic/react";
+import { arrowBack, arrowForward } from "ionicons/icons";
 import moment from "moment";
-import ListItem from "./ListItem.js"
-import { arrowBack,arrowForward } from "ionicons/icons";
+import { useEffect, useState } from "react";
+import "../../../theme/ListTransactions.css";
+import ListItem from "./ListItem.js";
 
-import {MyContext} from '../../../pages/Home';
 
 export default function ListTransactions(props){
-    let [transactionList,setTransactionList] = useState([]);
-    let [MonthSelected,setMonthSelected] = useState(moment().format("MM"))
+
+    let [MonthSelected, setMonthSelected] = useState(moment().format("MM"))
 
 
-    function createMonthList(AllTransactions,Limit,Month=moment().format("MM")){
-        let tmp = []
-        //sorting the transastion
-        AllTransactions = AllTransactions.sort((a, b) => {
-            if (a.Date > b.Date) {
-                return -1
-            } else {
-                return 1
-            }
-        });
-
-        AllTransactions = AllTransactions.filter(s=>{
-          return  moment(s.Date).format("MM") == Month
-        })
-        
-        let monthTotal=0;
-        AllTransactions.forEach(s=>{
-            if(s.IsOutcome){
-                monthTotal-=parseFloat(s.Amount);
-            }else{
-                monthTotal+=parseFloat(s.Amount);
-            }
-        });
-
-
-        AllTransactions.forEach(s=>{
-            if(Limit==null || AllTransactions.indexOf(s)<Limit){
-                tmp.push(
-                    <ListItem sTransaction={s} loadAllTransactions={()=>props.loadAllTransactions()}/>
-                );
-            }
-        })
-
-        //footer
-        tmp.push(
-            <IonItem color="dark" className="itemList">
-                <IonGrid>
-                    <IonRow >
-                        <IonCol>Earning: </IonCol>
-                        <IonCol></IonCol>
-                        <IonCol>
-                            <IonLabel color={(monthTotal > 0) ? "success" : "danger"}>
-                                €{monthTotal}
-                            </IonLabel>
-                        </IonCol>
-                    </IonRow>
-                </IonGrid>
-            </IonItem>
-        )
-        setTransactionList(tmp)
-    }
-
-    useEffect(()=>{
-        createMonthList(props.AllTransactions,props.Limit)
-    },[props])
-    
+    // <InsertModal loadAllTransactions={props.loadAllTransactions} modalInsert={modalEdit}
+    //     data={
+    //         {
+    //             "id": props.sTransaction._id,
+    //             "Amount": props.sTransaction.Amount,
+    //             "IsOutcome": props.sTransaction.IsOutcome,
+    //             "Date": props.sTransaction.Date,
+    //             "Reference": props.sTransaction.Reference
+    //         }
+    //     }
+    // />
     return(
             
         <div>
@@ -75,10 +29,7 @@ export default function ListTransactions(props){
                 <div className="ion-text-center">
                     <IonButton 
                         color="dark"
-                        onClick={()=>{
-                            setMonthSelected(parseInt(MonthSelected)-1);
-                            createMonthList(props.AllTransactions,props.Limit,(moment(MonthSelected,"MM").subtract(1,'months').format("MM")))
-                        }}
+                        onClick={()=>setMonthSelected(parseInt(MonthSelected)-1)}
                         disabled={(MonthSelected==1)?true:false}
                     >
                         <IonIcon mode="ios" icon={arrowBack} />
@@ -87,10 +38,7 @@ export default function ListTransactions(props){
                     <IonLabel>{moment(MonthSelected,"MM").format("MMMM")}</IonLabel>
                     <IonButton 
                         color="dark"
-                        onClick={()=>{
-                            setMonthSelected(parseInt(MonthSelected)+1);
-                            createMonthList(props.AllTransactions,props.Limit,(moment(MonthSelected,"MM").add(1,'months').format("MM")))
-                        }}
+                        onClick={()=>setMonthSelected(parseInt(MonthSelected)+1)}
                         disabled={(MonthSelected==12)?true:false}
                     >
                         <IonIcon mode="ios" icon={arrowForward} />
@@ -110,8 +58,28 @@ export default function ListTransactions(props){
                         </IonRow>
                     </IonGrid>
                 </IonItem>
-
-                {transactionList}
+                {
+                    props.AllTransactions.filter(s=> moment(s.Date).format("MM")==MonthSelected ).map((s,index)=>{
+                        if(props.Limit==null || index<props.Limit){
+                            return <ListItem sTransaction={s} loadAllTransactions={() => props.loadAllTransactions()} />
+                        }
+                    })
+                }
+                <IonItem color="dark" className="itemList">
+                    <IonGrid>
+                        <IonRow >
+                            <IonCol>Earning: </IonCol>
+                            <IonCol></IonCol>
+                            <IonCol>
+                                <IonLabel color={(0 > 0) ? "success" : "danger"}>
+                                    €{
+                                    props.AllTransactions.filter(s => moment(s.Date).format("MM") == MonthSelected).reduce((partialSum, a) => partialSum + parseFloat(a.Amount) * ((a.IsOutcome) ? -1 : 1), 0)
+                                    }
+                                </IonLabel>
+                            </IonCol>
+                        </IonRow>
+                    </IonGrid>
+                </IonItem>
             </IonList>
         </div>
     )

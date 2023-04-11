@@ -26,6 +26,13 @@ export default function Dashboard(){
             res.transactions.forEach(s => {
                 tmp.push(s)
             })
+            tmp.sort((a, b) => {
+                if (a.Date > b.Date) {
+                    return -1
+                } else {
+                    return 1
+                }
+            });
             setAllTransactions(tmp);
         }).catch(err => {
             console.log(err);
