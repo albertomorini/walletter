@@ -1,17 +1,16 @@
 
-import { IonList,IonItem, IonRow,useIonAlert, IonCol, IonGrid, IonLabel, IonButton, IonItemSliding, IonItemOptions, IonItemOption, IonIcon} from "@ionic/react";
-import { heart,trash, createOutline } from "ionicons/icons";
-import {doRequest,bodyUser} from "../../../ServerTalker";
+import { IonItem, IonRow, useIonAlert, IonCol, IonGrid, IonItemSliding, IonItemOptions, IonItemOption, IonIcon } from "@ionic/react";
+import { trash, createOutline } from "ionicons/icons";
+import { doRequest, bodyUser } from "../../../ServerTalker";
 import moment from "moment";
-import InsertModal from "../../Modals/InsertModal.js"
-import {useState,useRef,useContext} from "react"
-import {MyContext} from "../../../pages/Home"
+import { useContext } from "react";
+import { MyContext } from "../../../pages/Home";
 
 export default function ListItem(props){
     const [deleteConfirm] = useIonAlert(); 
     let ctx = useContext(MyContext);
 	
-	 function deleteTransaction(idTransaction){
+	function deleteTransaction(idTransaction){
         deleteConfirm({
             header: 'Delete transaction',
             message: "Confirm the deletion?",
@@ -54,7 +53,7 @@ export default function ListItem(props){
 
             </IonItem>
             <IonItemOptions>
-            <IonItemOption color="warning" onClick={()=>{}} className="buttonList">
+            <IonItemOption color="warning" onClick={()=>{props.editTransaction(props.sTransaction)}} className="buttonList">
                 <IonIcon slot="bottom" icon={createOutline}></IonIcon>
                 Edit
             </IonItemOption>

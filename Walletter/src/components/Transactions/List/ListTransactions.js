@@ -1,30 +1,33 @@
 import { IonButton, IonCol, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonRow } from "@ionic/react";
 import { arrowBack, arrowForward } from "ionicons/icons";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import "../../../theme/ListTransactions.css";
 import ListItem from "./ListItem.js";
+import InsertModal from "../../Modals/InsertModal"
 
 
 export default function ListTransactions(props){
 
     let [MonthSelected, setMonthSelected] = useState(moment().format("MM"))
 
+    let modalEdit = useRef();
 
-    // <InsertModal loadAllTransactions={props.loadAllTransactions} modalInsert={modalEdit}
-    //     data={
-    //         {
-    //             "id": props.sTransaction._id,
-    //             "Amount": props.sTransaction.Amount,
-    //             "IsOutcome": props.sTransaction.IsOutcome,
-    //             "Date": props.sTransaction.Date,
-    //             "Reference": props.sTransaction.Reference
-    //         }
-    //     }
-    // />
     return(
-            
+        
         <div>
+            <InsertModal loadAllTransactions={props.loadAllTransactions} modalInsert={modalEdit}
+                data={
+                    {
+                        "id": props.sTransaction?._id,
+                        "Amount": props.sTransaction?.Amount,
+                        "IsOutcome": props.sTransaction?.IsOutcome,
+                        "Date": props.sTransaction?.Date,
+                        "Reference": props.sTransaction?.Reference
+                    }
+                }
+            />
+
             {(props.Limit==null)?
                 <div className="ion-text-center">
                     <IonButton 

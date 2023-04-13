@@ -1,52 +1,19 @@
-import {useState, useEffect} from "react";
-import { IonGrid, IonRow, IonButton, IonCol, IonIcon, IonItem, IonLabel,IonSegment,IonSegmentButton} from '@ionic/react';
-import moment from "moment"
+import { useState } from "react";
+import { IonGrid, IonRow, IonCol, IonLabel, IonSegment, IonSegmentButton } from '@ionic/react';
+import moment from "moment";
 
 export default function MonthlyRecap(props){
 	
-	let [TotalIncome,setTotalIncome] = useState();
-	let [TotalOutcome,setTotalOutcome] = useState();
-
-	let [ModeSelected,setModeSelected] = useState("Monthly");
-
-	function loadRecap(transactions,Mode="Monthly"){
-		let tmpIncome=0;
-		let tmpOutcome=0;
-
-		if(Mode=="Monthly"){
-			let tmpMonth=moment().format("MM")
-			transactions = transactions.filter(s=>{
-	          return  moment(s.Date).format("MM") == tmpMonth
-	        })
-		}
-
-		transactions.forEach(s=>{
-			if(s.IsOutcome){
-				tmpOutcome+=parseFloat(s.Amount)
-			}else{
-				tmpIncome+=parseFloat(s.Amount)
-			}
-		});
-		setTotalOutcome(tmpOutcome)
-		setTotalIncome(tmpIncome)
-
-	}
-
-	useEffect(()=>{
-		loadRecap(props.AllTransactions)
-	},[props])
+	let [Monthly, setMonthly] = useState(true);
 
 	return(
-		<div>
-			<IonSegment value={ModeSelected} mode="ios" onClick={(ev)=>{
-					loadRecap(props.AllTransactions,ev.target.value)
-					setModeSelected(ev.target.value)
-				}}>
-		        <IonSegmentButton value="Monthly">
+		<>
+			<IonSegment value={Monthly} mode="ios" onClick={(ev)=>setMonthly(ev.target.value === 'true')}>
+		        <IonSegmentButton value={true}>
 		          <IonLabel>Monthly</IonLabel>
 		        </IonSegmentButton>
-		        <IonSegmentButton value="All">
-		          <IonLabel>All time</IonLabel>
+		        <IonSegmentButton value={false}>
+		          <IonLabel>All year</IonLabel>
 		        </IonSegmentButton>
 	      	</IonSegment>
 
@@ -54,14 +21,36 @@ export default function MonthlyRecap(props){
 				<IonRow className="ion-text-center">
 					<IonCol>
 						<IonLabel color="success">Income</IonLabel>
-						<h2><IonLabel color="success">€{TotalIncome}</IonLabel></h2>
+						<h2>
+							<IonLabel color="success">{
+								props.AllTransactions.filter(s => {
+									if (Monthly) {
+										return moment(s.Date).format("MMYY") == moment().format("MMYY")
+									} else {
+										return moment(s.Date).format("YY") == moment().format("YY")
+									}
+								}).reduce((partialSum, a) => partialSum + ((a.IsOutcome) ? 0 : parseFloat(a.Amount)), 0)
+							}€
+							</IonLabel>
+						</h2>
 					</IonCol>
 					<IonCol>
 						<IonLabel color="danger">Outcome</IonLabel>
-						<h2><IonLabel color="danger">€{TotalOutcome}</IonLabel></h2>
+						<h2>
+							<IonLabel color="danger">{
+								props.AllTransactions.filter(s => {
+									if (Monthly) {
+										return moment(s.Date).format("MMYY") == moment().format("MMYY")
+									} else {
+										return moment(s.Date).format("YY") == moment().format("YY")
+									}
+								}).reduce((partialSum, a) => partialSum - ((a.IsOutcome) ? parseFloat(a.Amount) : 0), 0)
+							}€
+							</IonLabel>
+						</h2>
 					</IonCol>
 				</IonRow>
 			</IonGrid>
-		</div>
+		</>
 	);
 }

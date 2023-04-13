@@ -99,11 +99,11 @@ export default function TransactionModal(props){
             <IonContent className="ion-padding">
                 <IonItem>
                     <IonLabel position="stacked">Amount</IonLabel>
-                    <IonInput type="number" min={1} placeholder={Amount} onIonChange={(ev) => setAmount(ev.target.value)} mode="ios"></IonInput>
+                    <IonInput type="number" min={1} placeholder={Amount} onIonInput={(ev) => setAmount(ev.target.value)} mode="ios"></IonInput>
                 </IonItem>
                 <IonItem>
                     <IonLabel position="stacked">Date</IonLabel>
-                    <IonInput type="date" locale="it_IT" value={Date} placeholder={Date} onIonChange={(ev) => setDate(ev.target.value)} mode="ios"></IonInput>
+                    <IonInput type="date" locale="it_IT" value={Date} placeholder={Date} onIonInput={(ev) => setDate(ev.target.value)} mode="ios"></IonInput>
                 </IonItem>
                 <IonItem>
 
@@ -123,7 +123,7 @@ export default function TransactionModal(props){
                     <IonLabel position="stacked">Reference</IonLabel>
                     <IonSearchbar
                         searchIcon={SearchIcon}
-                        onIonChange={(ev) => {
+                        onIonInput={(ev) => {
                             setReference(ev.target.value); 
                             setSearchIcon(searchSharp);
 
