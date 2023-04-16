@@ -87,8 +87,8 @@ export default function IsLogin(props){
 
             <br/>
             <br/>
-            <IonButton expand="block" onClick={()=>processCredentials()} onKeyDown={(ev)=>{}} >
-                {(IsLogin)?"IsLogin":"Sign up"}
+            <IonButton expand="block" onClick={()=>processCredentials()} >
+                {(IsLogin)?"Login":"Sign up"}
             </IonButton>
 
             <h4 style={{color:"red", textAlign:"center"}}>{Message}</h4>

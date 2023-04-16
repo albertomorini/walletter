@@ -41,7 +41,11 @@ export default function MonthlyCalendar(props){
     
     return(
         <>
-            <DayTransacionsModal TransactionsDaySelected={TransactionsDaySelected} User={props.User} loadAllTransactions={()=>props.loadAllTransactions()} modalDayRecap={modalDayRecap}/>
+            <DayTransacionsModal 
+                TransactionsDaySelected={TransactionsDaySelected}
+                loadAllTransactions={()=>props.loadAllTransactions()} 
+                modalDayRecap={modalDayRecap}
+            />
             <IonDatetime 
                 className="myCalendar"
                 mode='ios'
