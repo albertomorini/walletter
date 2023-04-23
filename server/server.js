@@ -42,7 +42,6 @@ https.createServer(options,(req,res)=>{
             
         }
 
-
         //REDIRECT TO THE WEBAPP
         if(req.url=="/"){
             res.writeHead(302,{
@@ -135,4 +134,5 @@ https.createServer(options,(req,res)=>{
 
     });
 }).listen(port);
+console.log("Server started at port: "+port)
 

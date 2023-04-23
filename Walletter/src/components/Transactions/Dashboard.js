@@ -1,32 +1,24 @@
-import { useEffect, useRef, useState, useContext } from "react"
-import { IonGrid, IonRow, IonButton, IonCol, IonIcon, IonItem, IonLabel} from '@ionic/react';
-import { arrowBack, chevronForwardOutline } from "ionicons/icons";
+import { createContext, useEffect, useRef, useState } from "react";
+import { IonGrid, IonRow, IonButton, IonCol, IonIcon, IonItem, IonLabel } from '@ionic/react';
+import { chevronForwardOutline } from "ionicons/icons";
+import { doRequest, bodyUser } from "../../ServerTalker";
+import ListTransactions from "./List/ListTransactions.js";
+import MonthlyCalendar from "./Calendar/MonthlyCalendar.js";
+import InsertModal from "../Modals/TransactionModal.js";
+import MonthlyRecap from "./MonthlyRecap/MonthlyRecap.js";
+import GroupReference from "./GroupReference/GroupReference";
 
-import {doRequest,bodyUser} from "../../ServerTalker";
+const MyContext = createContext();
 
-import ListTransactions from "./List/ListTransactions.js"
-import MonthlyCalendar from "./Calendar/MonthlyCalendar.js"
-import InsertModal from "../Modals/InsertModal.js"
-import MonthlyRecap from "./MonthlyRecap/MonthlyRecap.js"
-import GroupReference from "./GroupReference/GroupReference"
+export default function Dashboard(props){
 
-import {MyContext} from "../../pages/Home"
-
-export default function Dashboard(){
-
-    let ctx = useContext(MyContext);
     let [AllTransactions,setAllTransactions] = useState([]);
     let [MyView, setMyView] = useState();
     const refModalInsert = useRef();
 
-
     function loadAllTransactions(Email, Password) {
         doRequest("getAllTransaction",bodyUser(Email,Password)).then(res=>res.json()).then(res=>{
-            let tmp = [];
-            res.transactions.forEach(s => {
-                tmp.push(s)
-            })
-            tmp.sort((a, b) => {
+            let tmp = res.transactions.map(s =>s).sort((a, b) => { //sort the transaction by date
                 if (a.Date > b.Date) {
                     return -1
                 } else {
@@ -40,100 +32,95 @@ export default function Dashboard(){
     }
     
     useEffect(()=>{
-        loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password);
-        if(!ctx.FullScreen.FullScreen){
-            //break the loop
-            setMyView(ctx.FullScreen.FullScreen)
+        loadAllTransactions(props.User.Email,props.User.Password);
+        if(!props.FullScreen){
+            setMyView()
         }
-    },[ctx.FullScreen.FullScreen])
+    },[props])
 
     return(
-
-        <>
-        {(!MyView)?
-            <div className="Dashboard">
-                <IonGrid>
-                    <IonRow>
-                        <IonCol className="ion-text-center" >
-                            <IonItem className="ion-text-center">
-                                <IonLabel onClick={() => 
-                                        {
-                                            setMyView(
-                                                <ListTransactions AllTransactions={AllTransactions} 
-                                                    Limit={null}
-                                                    loadAllTransactions={()=>loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)}
-                                                />)
-                                            ctx.FullScreen.setFullScreen(true);
+        <MyContext.Provider value={
+            {
+                "User": props.User,
+                "AllTransactions": AllTransactions,
+                "loadAllTransaction": ()=>loadAllTransactions(props.User.Email, props.User.Password)
+            }
+        }>
+            <>
+                {(!MyView) ?
+                    <div className="Dashboard">
+                        <IonGrid>
+                            <IonRow>
+                                <IonCol className="ion-text-center" >
+                                    <IonItem className="ion-text-center">
+                                        <IonLabel onClick={() => {
+                                            setMyView(<ListTransactions Limit={null}/>)
+                                            props.setFullScreen();
                                         }
-                                     }
-                                 >
-                                        Last transactions
-                                        <IonIcon icon={chevronForwardOutline} />
-                                    </IonLabel>
-                            </IonItem>
-                            <ListTransactions AllTransactions={AllTransactions} Limit={5} loadAllTransactions={()=>loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)}/>
-                        </IonCol>
+                                        }
+                                        >
+                                            Last transactions
+                                            <IonIcon icon={chevronForwardOutline} />
+                                        </IonLabel>
+                                    </IonItem>
+                                    <ListTransactions Limit={5} />
+                                </IonCol>
 
 
-                        <IonCol className="ion-text-center">
-                            <IonItem className="ion-text-center" 
-                                onClick={() => {
-                                    setMyView(<MonthlyCalendar AllTransactions={AllTransactions} loadAllTransactions={()=>loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)}/>)
-                                    ctx.FullScreen.setFullScreen(true);
-                                }}
-                            >
-                                <IonLabel >
-                                    Monthly overview
-                                    <IonIcon icon={chevronForwardOutline} />
-                                </IonLabel>
-                            </IonItem>
-                            <MonthlyCalendar AllTransactions={AllTransactions} loadAllTransactions={()=>loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)}/>
-                        </IonCol>
-                    </IonRow>
+                                <IonCol className="ion-text-center">
+                                    <IonItem className="ion-text-center"
+                                        onClick={() => {
+                                            setMyView(<MonthlyCalendar />)
+                                            props.setFullScreen();
+                                        }}
+                                    >
+                                        <IonLabel >
+                                            Monthly overview
+                                            <IonIcon icon={chevronForwardOutline} />
+                                        </IonLabel>
+                                    </IonItem>
+                                    <MonthlyCalendar />
+                                </IonCol>
+                            </IonRow>
 
-                    <IonRow>
-                        <IonCol>
-                            <IonItem className="ion-text-center">
-                                <IonLabel >Total</IonLabel>
-                            </IonItem>
-                            <MonthlyRecap AllTransactions={AllTransactions}/>
-                        </IonCol>
-                        <IonCol>
-                            <IonItem className="ion-text-center" 
-                                onClick={() => {
-                                    setMyView(<GroupReference AllTransactions={AllTransactions} Limit={null}/>)
-                                    ctx.FullScreen.setFullScreen(true);
-                                }}
-                            >
-                                <IonLabel>
-                                    Reference summary
-                                    <IonIcon icon={chevronForwardOutline} />
-                                </IonLabel>
-                            </IonItem>
-                            <GroupReference AllTransactions={AllTransactions} Limit={5}/>
-                        </IonCol>
-
-                        
-                    </IonRow>
-                </IonGrid>
+                            <IonRow>
+                                <IonCol>
+                                    <IonItem className="ion-text-center">
+                                        <IonLabel >Total</IonLabel>
+                                    </IonItem>
+                                    <MonthlyRecap />
+                                </IonCol>
+                                <IonCol>
+                                    <IonItem className="ion-text-center"
+                                        onClick={() => {
+                                            setMyView(<GroupReference Limit={null} />)
+                                            props.setFullScreen();
+                                        }}
+                                    >
+                                        <IonLabel>
+                                            Reference summary
+                                            <IonIcon icon={chevronForwardOutline} />
+                                        </IonLabel>
+                                    </IonItem>
+                                    <GroupReference Limit={5} />
+                                </IonCol>
 
 
-
-
-                <div>
-                    <InsertModal loadAllTransactions={() => loadAllTransactions(ctx.User.User.Email,ctx.User.User.Password)} modalInsert={refModalInsert}></InsertModal>
-                  
-                    <IonButton onClick={()=>{refModalInsert.current?.present()}} expand="block" mode="ios" color="dark">Add new transaction</IonButton>
-                </div>
-            </div>
-        :
-        <>
-            <div>
-                {MyView}
-            </div>
-        </>
-        }
-        </>
-
-    )
+                            </IonRow>
+                        </IonGrid>
+                        <div>
+                            <InsertModal modalInsert={refModalInsert}></InsertModal>
+                            <IonButton onClick={() => { refModalInsert.current?.present() }} expand="block" mode="ios" color="dark">Add new transaction</IonButton>
+                        </div>
+                    </div>
+                    :
+                    <div>
+                        {MyView}
+                    </div>
+                }
+            </>
+        </MyContext.Provider >
+    );
 }
+
+export { MyContext };

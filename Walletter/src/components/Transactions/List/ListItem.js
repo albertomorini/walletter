@@ -4,7 +4,7 @@ import { trash, createOutline } from "ionicons/icons";
 import { doRequest, bodyUser } from "../../../ServerTalker";
 import moment from "moment";
 import { useContext } from "react";
-import { MyContext } from "../../../pages/Home";
+import { MyContext } from "../Dashboard";
 
 export default function ListItem(props){
     const [deleteConfirm] = useIonAlert(); 
@@ -24,10 +24,11 @@ export default function ListItem(props){
                 text: 'OK',
                 role: 'confirm',
                 handler: () => {
-                    let tmpBody=bodyUser(ctx.User.User.Email,ctx.User.User.Password)
+                    let tmpBody=bodyUser(ctx.User.Email,ctx.User.Password)
                     tmpBody.idTransaction = idTransaction
                     doRequest("deleteTransaction",tmpBody,"POST").then(res=>{
-                        props.loadAllTransactions()
+                        ctx.loadAllTransaction()
+                        props.closeModal?.current.dismiss(); //if item is opened in a modal, we close the modal on the delete of the item
                     }).catch(err=>{
                         console.log(err)
                     })

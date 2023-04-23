@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { IonGrid, IonRow, IonCol, IonLabel, IonSegment, IonSegmentButton } from '@ionic/react';
 import moment from "moment";
+import { MyContext } from "../Dashboard"
 
 export default function MonthlyRecap(props){
 	
 	let [Monthly, setMonthly] = useState(true);
+	let ctx = useContext(MyContext);
 
 	return(
 		<>
@@ -23,7 +25,7 @@ export default function MonthlyRecap(props){
 						<IonLabel color="success">Income</IonLabel>
 						<h2>
 							<IonLabel color="success">{
-								props.AllTransactions.filter(s => {
+								ctx.AllTransactions.filter(s => {
 									if (Monthly) {
 										return moment(s.Date).format("MMYY") == moment().format("MMYY")
 									} else {
@@ -38,7 +40,7 @@ export default function MonthlyRecap(props){
 						<IonLabel color="danger">Outcome</IonLabel>
 						<h2>
 							<IonLabel color="danger">{
-								props.AllTransactions.filter(s => {
+								ctx.AllTransactions.filter(s => {
 									if (Monthly) {
 										return moment(s.Date).format("MMYY") == moment().format("MMYY")
 									} else {

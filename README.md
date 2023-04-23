@@ -105,12 +105,22 @@ Runnning the client in https mode:
 - @ionic/storage
 
 
+### Building on iOS
+
+`ionic capacitor build ios --prod`
+
+- via xcode we build the app and bring into the device
+- we need to allow the developer mode in the setting of the device (to run with a physical device)... Then trust the author on the general settings
+
+#### trust the self signed certified.
+
+
+
+
 ## HTTPS 
 The certified and the private key (that you don't see in this repo), are self-signed, you've to generate yours.
 
 
 ## TODO
-
 - at the server startup check if collections exists
 - logs
-- better use of context, declutter some code

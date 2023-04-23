@@ -1,34 +1,32 @@
 
-import { IonLabel, IonHeader,IonToolbar,IonTitle,IonContent,IonItem, IonPopover, IonSegment, IonSegmentButton, IonInput, IonCardSubtitle, IonButton,IonModal } from "@ionic/react";
-import {doRequest,bodyUser} from "../../ServerTalker.js"
+import { IonPopover, IonButton } from "@ionic/react";
+import { doRequest, bodyUser } from "../../ServerTalker.js";
 import moment from "moment";
-import {MyContext} from '../../pages/Home';
-import {useContext, useRef} from "react"
+import { useRef } from "react";
 import { Storage } from '@ionic/storage';
-import UploadModal from "../Modals/UploadModal"
+import UploadModal from "../Modals/UploadModal";
 
 export default function MenuProfile(props){
 
-  let ctx = useContext(MyContext);
+
   let store = new Storage();
   let modalUpload = useRef();
   let popoverMenu = useRef();
 
   function unstoreCredentials(){
-      store.create();
-      store.set("User",null);
-      ctx.User.setUser(null)
+    store.create();
+    store.set("User",null);
+    props.doLogout()
   }
 
   function doUpload(){
     const file = document.querySelector('input[type=file]').files[0];
-    console.log(file)
     const reader = new FileReader();
     reader.addEventListener("load", function () {
 
       doRequest("doImport",{
         "DataB64":reader.result,
-        "Email":ctx.User.User.Email,
+        "Email":props.User.Email,
       }).then(res=>{
         console.log(res)
       }).catch(err=>{
@@ -49,7 +47,7 @@ export default function MenuProfile(props){
            
         <IonButton color="medium" size="small" onClick={()=>{
             doRequest("getExport",
-                bodyUser(ctx.User.User.Email,ctx.User.User.Password)
+                bodyUser(props.User.Email,props.User.Password)
               ).then(res=>res.blob()).then(blob=>{
 
               var url = window.URL.createObjectURL(blob);

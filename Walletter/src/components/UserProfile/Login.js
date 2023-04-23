@@ -4,7 +4,6 @@ import { doRequest, bodyUser } from "../../ServerTalker";
 import { Storage } from '@ionic/storage';
 import MD5 from "crypto-js/md5";
 
-
 export default function IsLogin(props){
 
     let [Email,setEmail] = useState(null);
@@ -34,7 +33,6 @@ export default function IsLogin(props){
             doRequest(scope,
                 bodyUser(Email, MD5(Password).toString())
             ).then(res => res.json()).then(res => {
-                console.log(res)
                 if(res.usr!=null){
                     props.setUser({
                         "Email": Email,
@@ -42,12 +40,12 @@ export default function IsLogin(props){
                     });
                     storeCredentials(Email, Password)
                 }else{
-                    setMessage("User not found");
+                    setMessage("User not found: "+res);
                     setTimeout(()=>setMessage(null),2500)
                 }
             }).catch(err => {
                 console.log(err);
-                alert("Error, user not found!")
+                alert("Error, user not found!"+err)
             })
         }
     }
@@ -90,8 +88,7 @@ export default function IsLogin(props){
             <IonButton expand="block" onClick={()=>processCredentials()} >
                 {(IsLogin)?"Login":"Sign up"}
             </IonButton>
-
             <h4 style={{color:"red", textAlign:"center"}}>{Message}</h4>
         </div>
-    )
+    );
 }

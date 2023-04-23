@@ -1,22 +1,9 @@
 import { useEffect, useState, useContext } from "react";
-import {
-    IonButtons,
-    IonButton,
-    IonModal,
-    IonHeader, IonSegment,
-    IonSegmentButton,
-    IonContent,
-    IonToolbar,
-    IonTitle,
-    IonItem,
-    IonLabel,
-    IonInput, IonSearchbar,
-    IonList
-} from '@ionic/react';
+import {IonButtons,IonButton,IonModal,IonHeader, IonSegment,IonSegmentButton,IonContent,IonToolbar,IonTitle,IonItem,IonLabel,    IonInput, IonSearchbar,IonList} from '@ionic/react';
 import moment from "moment";
 import { doRequest, bodyUser } from "../../ServerTalker";
 import { checkmarkCircleOutline, searchSharp } from "ionicons/icons";
-import { MyContext } from '../../pages/Home';
+import { MyContext } from "../Transactions/Dashboard"
 
 
 export default function TransactionModal(props){
@@ -34,11 +21,8 @@ export default function TransactionModal(props){
     let ctx = useContext(MyContext);
 
     function getExistingReferences(){
-        doRequest("getExistingReferences",bodyUser(ctx.User.User.Email,ctx.User.User.Password)).then(res=>res.json()).then(res=>{
-            let tmp=[]
-            res.singleReferences.forEach(s=>{
-                tmp.push(s);
-            });
+        doRequest("getExistingReferences",bodyUser(ctx.User.Email,ctx.User.Password)).then(res=>res.json()).then(res=>{
+            let tmp= res.singleReferences.map(s=>s);
             setExistingReferences(tmp);
             setResResearch(tmp)
         });
@@ -55,14 +39,14 @@ export default function TransactionModal(props){
     
     function insertTransaction() {
         doRequest("transaction",{
-            "Email": ctx.User.User.Email,
+            "Email": ctx.User.Email,
             "Amount": Amount,
             "Date": Date,
             "IsOutcome": (IsOutcome=='false')?false:true,
             "Reference": Reference,
             "id": (props.data?.id!=undefined)?props.data.id : null
         }).then(res=>res.json()).then(res=>{
-            props.loadAllTransactions()
+            ctx.loadAllTransaction()
             props.modalInsert.current?.dismiss()
             resetInput();
         })
@@ -77,12 +61,13 @@ export default function TransactionModal(props){
     }
 
     useEffect(()=>{
+        console.log(ctx)
         getExistingReferences()
     },[]);
 
 
     return (
-        <IonModal ref={props.modalInsert} trigger="modalInsert" onWillDismiss={(ev) => { }} mode="ios">
+        <IonModal ref={props.modalInsert} trigger="modalInsert" mode="ios">
             <IonHeader mode="ios">
                 <IonToolbar>
                     <IonButtons slot="start">
@@ -134,14 +119,16 @@ export default function TransactionModal(props){
 
                     />
                     <IonList style={{width: "100%"}}>
-                        {ResResearch.map(result => (
+                        {ResResearch.map((result,index) => (
                             <IonItem onClick={()=>{ 
                                 setTimeout(() => {
                                     setSearchIcon(checkmarkCircleOutline);
                                     setResResearch([]);
                                 }, 400);
                                 setReference(result)
-                            }}>{result}</IonItem>
+                            }}
+                            key={"referenceItem"+index}
+                            >{result}</IonItem>
                         ))}
                     </IonList>
 

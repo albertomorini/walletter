@@ -1,15 +1,11 @@
-import React,{ useState,useEffect } from 'react';
-import { IonContent, IonHeader, IonIcon, IonPopover, IonButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { personCircleSharp, arrowBack, chevronForwardOutline } from "ionicons/icons";
+import { useState, useEffect } from 'react';
+import { IonContent, IonHeader, IonIcon, IonButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { personCircleSharp, arrowBack } from "ionicons/icons";
 import { Storage } from '@ionic/storage';
-
-
 import Dashboard from '../components/Transactions/Dashboard';
-import Login from "../components/UserProfile/Login"
+import Login from "../components/UserProfile/Login";
 import MenuProfile from "../components/UserProfile/MenuProfile.js";
 import './Home.css';
-
-const MyContext = React.createContext();
 
 
 export default function Home(){
@@ -19,7 +15,7 @@ export default function Home(){
   const store = new Storage();
   
 
-  useEffect(()=>{
+  useEffect(()=>{ //se if there are the credentials in cache
     store.create();
     store.get('User').then(res=>{
       if(res!=null){
@@ -29,50 +25,37 @@ export default function Home(){
   },[])
 
   return (
+    <IonPage className="Home">
+      <IonHeader mode='ios' >
+        <IonToolbar color="dark" className="walletterHeader">
+          { //back button
+            (FullScreen)?
+              <IonButton slot="start" mode="ios" onClick={(ev)=>{ev.preventDefault();setFullScreen(false)}} color="light" size="small">
+                  <IonIcon mode="ios" icon={arrowBack} />
+              </IonButton>
+            :
+            null
+          }
 
-      <MyContext.Provider value={
-          {
-            "User" : {User,setUser},
-            "FullScreen": { FullScreen,setFullScreen }
-          }          
-        }>
-        <IonPage className="Home">
-          <IonHeader mode='ios' >
-            <IonToolbar color="dark" className="walletterHeader">
-              {
-                (FullScreen)?
-                  <IonButton slot="start" mode="ios" onClick={()=>setFullScreen(false)} color="light" size="small">
-                      <IonIcon mode="ios" icon={arrowBack} />
-
-                  </IonButton>
-                :
-                null
-              }
-
-              <IonTitle>Walletter</IonTitle>
-              {
-                (User!=null)?
-                  <div>
-                    <IonIcon icon={personCircleSharp} id="AccountIcon" size="large" style={{float: "right",marginRight:'5px'}}/>
-                    <MenuProfile/>
-                  </div>
-                :
-                  null
-              }
-            </IonToolbar>
-          </IonHeader>
-          <IonContent fullscreen>
-            
-            {(User==null)?
-               <Login setUser={(ev:any)=>setUser(ev)}/> 
-            : 
-                <Dashboard/>
-            }
-          </IonContent>
-        </IonPage>
-      </MyContext.Provider>
-    
+          <IonTitle>Walletter</IonTitle>
+          { //user menu
+            (User!=null)?
+              <div>
+                <IonIcon icon={personCircleSharp} id="AccountIcon" size="large" style={{float: "right",marginRight:'5px'}}/>
+                <MenuProfile doLogout={() => setUser(null)} User={User} />
+              </div>
+            :
+              null
+          }
+        </IonToolbar>
+      </IonHeader>
+      <IonContent fullscreen>
+        {(User==null)?
+          <Login setUser={(ev)=>setUser(ev)}/> 
+        : 
+          <Dashboard User={User} FullScreen={FullScreen} setFullScreen={()=>{setFullScreen(true)}}/>
+        }
+      </IonContent>
+    </IonPage>
   );
 }
-
-export { MyContext };

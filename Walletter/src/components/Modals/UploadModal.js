@@ -2,20 +2,9 @@ import {
     IonButtons,
     IonButton,
     IonModal,
-    IonHeader,
-    IonToggle,
-    IonSegment,
-    IonSegmentButton,
-    IonContent,
+    IonHeader, IonContent,
     IonToolbar,
-    IonTitle,
-    IonItem,
-    IonLabel,
-    IonInput,
-    IonSelectOption,
-    IonSelect,
-    IonSearchbar,
-    IonList,
+    IonTitle
 } from '@ionic/react';
 
 

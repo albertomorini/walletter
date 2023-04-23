@@ -1,10 +1,12 @@
 import { IonButton, IonCol, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonRow } from "@ionic/react";
 import { arrowBack, arrowForward } from "ionicons/icons";
 import moment from "moment";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import "../../../theme/ListTransactions.css";
 import ListItem from "./ListItem.js";
-import InsertModal from "../../Modals/InsertModal"
+import InsertModal from "../../Modals/TransactionModal"
+import { MyContext } from "../Dashboard"
+
 
 
 export default function ListTransactions(props){
@@ -12,11 +14,13 @@ export default function ListTransactions(props){
     let [MonthSelected, setMonthSelected] = useState(moment().format("MM"))
 
     let modalEdit = useRef();
+    let ctx = useContext(MyContext);
+
 
     return(
         
         <div>
-            <InsertModal loadAllTransactions={props.loadAllTransactions} modalInsert={modalEdit}
+            <InsertModal modalInsert={modalEdit}
                 data={
                     {
                         "id": props.sTransaction?._id,
@@ -62,9 +66,9 @@ export default function ListTransactions(props){
                     </IonGrid>
                 </IonItem>
                 {
-                    props.AllTransactions.filter(s=> moment(s.Date).format("MM")==MonthSelected ).map((s,index)=>{
+                    ctx.AllTransactions.filter(s=> moment(s.Date).format("MM")==MonthSelected ).map((s,index)=>{
                         if(props.Limit==null || index<props.Limit){
-                            return <ListItem sTransaction={s} loadAllTransactions={() => props.loadAllTransactions()} />
+                            return <ListItem sTransaction={s} key={"itemTransaction"+index}/>
                         }
                     })
                 }
@@ -76,7 +80,7 @@ export default function ListTransactions(props){
                             <IonCol>
                                 <IonLabel color={(0 > 0) ? "success" : "danger"}>
                                     €{
-                                    props.AllTransactions.filter(s => moment(s.Date).format("MM") == MonthSelected).reduce((partialSum, a) => partialSum + parseFloat(a.Amount) * ((a.IsOutcome) ? -1 : 1), 0)
+                                    ctx.AllTransactions.filter(s => moment(s.Date).format("MM") == MonthSelected).reduce((partialSum, a) => partialSum + parseFloat(a.Amount) * ((a.IsOutcome) ? -1 : 1), 0)
                                     }
                                 </IonLabel>
                             </IonCol>

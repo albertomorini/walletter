@@ -1,16 +1,19 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { IonGrid, IonRow, IonCol, IonItem, IonLabel } from '@ionic/react';
+import { MyContext } from "../Dashboard"
 
 
 // 4th widget: grouped by reference 
 export default function GroupReference(props){
 
 	let [Ranking,setRanking] = useState([])
+	let ctx = useContext(MyContext);
+
 
 	useEffect(()=>{
 		let groupedBy={}
-		props.AllTransactions.forEach(s=>{
+		ctx.AllTransactions.forEach(s=>{
 			if (isNaN(groupedBy[s.Reference])){
 				groupedBy[s.Reference]=0
 			}
@@ -38,7 +41,7 @@ export default function GroupReference(props){
 			})
 		)
 
-	},[props.AllTransactions])
+	}, [ctx.AllTransactions])
 
 	return(
 		<IonGrid>
@@ -53,7 +56,7 @@ export default function GroupReference(props){
 			{Ranking.map((s,index)=>{
 				if((props.Limit!=null && index<props.Limit) || props.Limit==null){ //if limit!=null we're in preview, otherwhise fullscreen
 					return(
-						<IonRow >
+						<IonRow key={"goupItem"+index}>
 							<IonItem style={{width:"100%", borderRadius:'10px'}}>
 							<IonCol>
 								<b><IonLabel>{s.reference}</IonLabel></b>
