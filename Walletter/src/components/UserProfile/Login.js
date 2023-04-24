@@ -30,6 +30,7 @@ export default function IsLogin(props){
             if(!IsLogin){ //sign up
                 scope="user";
             }
+            
             doRequest(scope,
                 bodyUser(Email, MD5(Password).toString())
             ).then(res => res.json()).then(res => {
@@ -58,8 +59,9 @@ export default function IsLogin(props){
 
     return(
         <div>
-        <br/>
-        <br/>
+            <br/>
+            <br/>
+
             <IonSegment value={IsLogin} onClick={(ev) => setIsLogin(ev.target.value==="true")} mode="ios">
                 <IonSegmentButton value={true}>
                     <IonLabel>Login</IonLabel>
@@ -70,7 +72,7 @@ export default function IsLogin(props){
             </IonSegment>
 
             <IonItem>
-                <IonLabel mode="ios" position="stacked">Email address</IonLabel>
+                <IonLabel mode="ios" position="stacked">Email</IonLabel>
                 <IonInput placeholder="Email" type="email" onIonChange={(ev) => setEmail(ev.target.value)} onKeyDown={(ev) => enterPressed(ev)}></IonInput>
             </IonItem>
             <IonItem>

@@ -12,7 +12,8 @@ export default function GroupReference(props){
 
 
 	useEffect(()=>{
-		let groupedBy={}
+
+		let groupedBy={} //create a dict with the amount of money for reference
 		ctx.AllTransactions.forEach(s=>{
 			if (isNaN(groupedBy[s.Reference])){
 				groupedBy[s.Reference]=0
@@ -24,6 +25,7 @@ export default function GroupReference(props){
 			}
 		})
 		
+		//create the rank: first the reference with more income/outcome
 		setRanking(
 
 			Object.keys(groupedBy).sort((a,b)=>{ //sort the groupedBy dictionary

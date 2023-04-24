@@ -12,11 +12,12 @@ const MyContext = createContext();
 
 export default function Dashboard(props){
 
-    let [AllTransactions,setAllTransactions] = useState([]);
-    let [MyView, setMyView] = useState();
-    const refModalInsert = useRef();
+    let [AllTransactions,setAllTransactions] = useState([]); //all transaction of the user
+    let [MyView, setMyView] = useState(); //in full screen we set the widget selected
+    const refModalInsert = useRef(); //references the insert modal (for closing programmatically)
 
     function loadAllTransactions(Email, Password) {
+        //create an array with the transaction, sorted by date desc
         doRequest("getAllTransaction",bodyUser(Email,Password)).then(res=>res.json()).then(res=>{
             let tmp = res.transactions.map(s =>s).sort((a, b) => { //sort the transaction by date
                 if (a.Date > b.Date) {
@@ -32,8 +33,8 @@ export default function Dashboard(props){
     }
     
     useEffect(()=>{
-        loadAllTransactions(props.User.Email,props.User.Password);
-        if(!props.FullScreen){
+        loadAllTransactions(props.User.Email,props.User.Password); //load the transactions
+        if(!props.FullScreen){ //if out of full screen, remove the widget in view (so return to dashboard)
             setMyView()
         }
     },[props])

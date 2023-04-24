@@ -25,7 +25,7 @@ export default function MonthlyRecap(props){
 						<IonLabel color="success">Income</IonLabel>
 						<h2>
 							<IonLabel color="success">{
-								ctx.AllTransactions.filter(s => {
+								ctx.AllTransactions.filter(s => { //sum all income
 									if (Monthly) {
 										return moment(s.Date).format("MMYY") == moment().format("MMYY")
 									} else {
@@ -40,7 +40,7 @@ export default function MonthlyRecap(props){
 						<IonLabel color="danger">Outcome</IonLabel>
 						<h2>
 							<IonLabel color="danger">{
-								ctx.AllTransactions.filter(s => {
+								ctx.AllTransactions.filter(s => { //summ all outcome
 									if (Monthly) {
 										return moment(s.Date).format("MMYY") == moment().format("MMYY")
 									} else {

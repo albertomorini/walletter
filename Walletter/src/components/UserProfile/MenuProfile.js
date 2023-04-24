@@ -19,11 +19,10 @@ export default function MenuProfile(props){
     props.doLogout()
   }
 
-  function doUpload(){
+  function doUpload(){ //upload JSON backup file 
     const file = document.querySelector('input[type=file]').files[0];
     const reader = new FileReader();
     reader.addEventListener("load", function () {
-
       doRequest("doImport",{
         "DataB64":reader.result,
         "Email":props.User.Email,
@@ -37,7 +36,7 @@ export default function MenuProfile(props){
     modalUpload.current?.dismiss();
 
     if (file) {
-        reader.readAsDataURL(file);
+      reader.readAsDataURL(file);
     }
   }
 
@@ -67,7 +66,6 @@ export default function MenuProfile(props){
         <UploadModal modalUpload={modalUpload} doUpload={()=>doUpload()}/>
         <IonButton size="small" color="success" id="modalUpload">
           Import
-          
         </IonButton>
 
         <IonButton color="warning" size="small" onClick={()=>console.log("TODO:")}>
@@ -75,7 +73,7 @@ export default function MenuProfile(props){
         </IonButton>
         <IonButton color="danger" size="small" onClick={()=>{
           unstoreCredentials()
-          popoverMenu.current?.dismiss();
+          popoverMenu.current?.dismiss(); //close the menu pop-over
         }}>
           Log out
         </IonButton>

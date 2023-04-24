@@ -16,7 +16,6 @@ export default function ListTransactions(props){
     let modalEdit = useRef();
     let ctx = useContext(MyContext);
 
-
     return(
         
         <div>
@@ -32,7 +31,7 @@ export default function ListTransactions(props){
                 }
             />
 
-            {(props.Limit==null)?
+            {(props.Limit==null)? //if limits is a widget
                 <div className="ion-text-center">
                     <IonButton 
                         color="dark"
@@ -52,7 +51,7 @@ export default function ListTransactions(props){
                     </IonButton>
                 </div>
             :
-            ""
+                null
             }
 
             <IonList>

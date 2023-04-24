@@ -9,20 +9,20 @@ import './Home.css';
 
 
 export default function Home(){
-  let [User, setUser] = useState(null);
-  let [FullScreen,setFullScreen] = useState(false);
+  let [User, setUser] = useState(null); //user credentials
+  let [FullScreen,setFullScreen] = useState(false); //if full screen we'll show the back button
 
   const store = new Storage();
   
 
-  useEffect(()=>{ //se if there are the credentials in cache
+  useEffect(()=>{ //se if there are the credentials in cache then set it
     store.create();
     store.get('User').then(res=>{
       if(res!=null){
         setUser(res)
       }
     })
-  },[])
+  },[]);
 
   return (
     <IonPage className="Home">
@@ -50,7 +50,7 @@ export default function Home(){
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        {(User==null)?
+        {(User==null)? //not credentials found -> login
           <Login setUser={(ev)=>setUser(ev)}/> 
         : 
           <Dashboard User={User} FullScreen={FullScreen} setFullScreen={()=>{setFullScreen(true)}}/>

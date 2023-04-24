@@ -14,7 +14,7 @@ export default function DayTransactionsModal(props){
                 </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
-                {props.TransactionsDaySelected.map((s,index)=>(
+                {props.TransactionsDaySelected.map((s,index)=>( //if day selected open the modal with the transaction of that day
                     <ListItem key={"transactionItem" + index} sTransaction={s} closeModal={props.modalDayRecap} />
                 ))}
             </IonContent>

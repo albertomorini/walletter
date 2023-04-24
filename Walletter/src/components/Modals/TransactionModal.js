@@ -6,6 +6,7 @@ import { checkmarkCircleOutline, searchSharp } from "ionicons/icons";
 import { MyContext } from "../Transactions/Dashboard"
 
 
+//INSERT TRANSACTION MODAL
 export default function TransactionModal(props){
 
 
@@ -131,10 +132,7 @@ export default function TransactionModal(props){
                             >{result}</IonItem>
                         ))}
                     </IonList>
-
-                    
                 </IonItem>
-              
             </IonContent>
         </IonModal>
     )

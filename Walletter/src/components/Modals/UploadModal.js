@@ -7,7 +7,7 @@ import {
     IonTitle
 } from '@ionic/react';
 
-
+//UPLOAD A JSON BACKUP
 export default function UploadModal(props){
 	return(
 		<IonModal ref={props.modalUpload} trigger="modalUpload" mode="ios">
