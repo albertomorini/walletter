@@ -4,7 +4,7 @@ import moment from "moment";
 import { useContext, useRef, useState } from "react";
 import "../../../theme/ListTransactions.css";
 import ListItem from "./ListItem.js";
-import InsertModal from "../../Modals/TransactionModal"
+import TransactionModal from "../../Modals/TransactionModal"
 import { MyContext } from "../Dashboard"
 
 
@@ -16,19 +16,21 @@ export default function ListTransactions(props){
     let modalEdit = useRef();
     let ctx = useContext(MyContext);
 
+    let [DataInsert,setDataInsert] = useState(
+        {
+            "id": props.sTransaction?._id,
+            "Amount": props.sTransaction?.Amount,
+            "IsOutcome": props.sTransaction?.IsOutcome,
+            "Date": props.sTransaction?.Date,
+            "Reference": props.sTransaction?.Reference
+        }
+    )
+
     return(
         
         <div>
-            <InsertModal modalInsert={modalEdit}
-                data={
-                    {
-                        "id": props.sTransaction?._id,
-                        "Amount": props.sTransaction?.Amount,
-                        "IsOutcome": props.sTransaction?.IsOutcome,
-                        "Date": props.sTransaction?.Date,
-                        "Reference": props.sTransaction?.Reference
-                    }
-                }
+            <TransactionModal modalInsert={modalEdit}
+                data={DataInsert}
             />
 
             {(props.Limit==null)? //if limits is a widget
@@ -67,7 +69,20 @@ export default function ListTransactions(props){
                 {
                     ctx.AllTransactions.filter(s=> moment(s.Date).format("MM")==MonthSelected ).map((s,index)=>{
                         if(props.Limit==null || index<props.Limit){
-                            return <ListItem sTransaction={s} key={"itemTransaction"+index}/>
+                            return <ListItem 
+                                sTransaction={s} 
+                                key={"itemTransaction"+index}
+                                editTransaction={(s)=>{
+                                    modalEdit.current?.present();
+                                    setDataInsert({
+                                        "id": s._id,
+                                        "Amount": s.Amount,
+                                        "IsOutcome": s?.IsOutcome,
+                                        "Date": s?.Date,
+                                        "Reference": s?.Reference
+                                    })
+                                }}
+                            />
                         }
                     })
                 }

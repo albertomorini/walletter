@@ -10,10 +10,10 @@ import { MyContext } from "../Transactions/Dashboard"
 export default function TransactionModal(props){
 
 
-    let [Amount, setAmount] = useState((props.data?.Amount!=undefined)?props.data.Amount:0);
-    let [Date, setDate] = useState(moment((props.data?.Date)).format("YYYY-MM-DD"));
-    let [IsOutcome, setIsOutcome] = useState((props.data?.IsOutcome!=undefined)?props.data.IsOutcome:true); //false is an income
-    let [Reference, setReference] = useState((props.data?.Reference!=undefined)?props.data.Reference:"");
+    let [Amount, setAmount] = useState(0);
+    let [Date, setDate] = useState(moment().format("YYYY-MM-DD"));
+    let [IsOutcome, setIsOutcome] = useState(true); //false is an income
+    let [Reference, setReference] = useState("");
     //
     let [ExistingReferences,setExistingReferences] = useState([]);
     let [ResResearch,setResResearch] = useState([...ExistingReferences]);
@@ -62,9 +62,12 @@ export default function TransactionModal(props){
     }
 
     useEffect(()=>{
-        console.log(ctx)
+        setAmount(props.data?.Amount);
+        setDate(props.data?.Date);
+        setIsOutcome(props.data?.IsOutcome);
+        setReference(props.data?.Reference);
         getExistingReferences()
-    },[]);
+    },[props]);
 
 
     return (
