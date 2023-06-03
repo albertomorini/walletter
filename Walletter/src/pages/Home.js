@@ -1,10 +1,12 @@
 import { useState, useEffect, createContext } from 'react';
-import { IonContent, IonPage, IonNav, IonApp } from '@ionic/react';
+import { IonContent, IonPage, IonNav, IonApp, IonHeader, IonToolbar, IonTitle, IonIcon } from '@ionic/react';
 import { Storage } from '@ionic/storage';
 import Dashboard from '../components/Dashboard';
 import Login from "../components/Login";
 import { bodyUser, doRequest } from '../ServerTalker';
 import MonthlyRecap from '../components/widgets/MonthlyRecap';
+import { personCircleSharp } from 'ionicons/icons';
+import MenuProfile from '../components/MenuProfile';
 
 const MyContext = createContext();
 
@@ -45,7 +47,23 @@ export default function Home(){
 
   return (
     <IonPage className="Home">
-      <IonContent >
+      <IonHeader mode='ios'>
+        <IonToolbar color="dark" className="walletterHeader">
+
+          <IonTitle>Walletter</IonTitle>
+          { //user menu
+            (User != null) ?
+              <div>
+                <IonIcon icon={personCircleSharp} id="AccountIcon" size="large" style={{ float: "right", marginRight: '5px' }} />
+                <MenuProfile doLogout={() => setUser(null)} User={User} />
+              </div>
+              :
+              null
+          }
+        </IonToolbar>
+      </IonHeader>
+
+      <IonContent class='ion-padding'>
         {(User==null)? //not credentials found -> login
           <Login setUser={(ev)=>{setUser(ev); loadAllTransactions(ev.Email,ev.Password)}}/> 
         : 

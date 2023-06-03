@@ -87,7 +87,7 @@ export default function ListTransactions(props){
                             <IonCol>Earning: </IonCol>
                             <IonCol></IonCol>
                             <IonCol>
-                                <IonLabel color={(0 > 0) ? "success" : "danger"}>
+                                <IonLabel color={(ctx.AllTransactions.filter(s => moment(s.Date).format("MM") == MonthSelected).reduce((partialSum, a) => partialSum + parseFloat(a.Amount) * ((a.IsOutcome) ? -1 : 1), 0) > 0) ? "success" : "danger"}>
                                     €{
                                         ctx.AllTransactions.filter(s => moment(s.Date).format("MM") == MonthSelected).reduce((partialSum, a) => partialSum + parseFloat(a.Amount) * ((a.IsOutcome) ? -1 : 1), 0)
                                     }

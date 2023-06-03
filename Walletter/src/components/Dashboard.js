@@ -15,7 +15,7 @@ export default function Dashboard(props){
 
     const refModalInsert = useRef(); //references the insert modal (for closing programmatically)
     return(
-            <div className="Dashboard">
+            <IonContent className="Dashboard" fullscreen={true}>
                 <IonGrid>
                     <IonRow>
                         <IonCol className="ion-text-center ion-padding" >
@@ -66,7 +66,7 @@ export default function Dashboard(props){
                     <IonButton onClick={() => { refModalInsert.current?.present() }} expand="block" mode="ios" color="dark">Add new transaction</IonButton>
                     <TransactionModal modalInsert={refModalInsert} />
                 </div>
-            </div>
+        </IonContent>
     );
 }
 
