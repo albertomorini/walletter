@@ -1,24 +1,43 @@
-import { useState, useEffect } from 'react';
-import { IonContent, IonHeader, IonIcon, IonButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { personCircleSharp, arrowBack } from "ionicons/icons";
+import { useState, useEffect, createContext } from 'react';
+import { IonContent, IonPage, IonNav, IonApp } from '@ionic/react';
 import { Storage } from '@ionic/storage';
-import Dashboard from '../components/Transactions/Dashboard';
-import Login from "../components/UserProfile/Login";
-import MenuProfile from "../components/UserProfile/MenuProfile.js";
-import './Home.css';
+import Dashboard from '../components/Dashboard';
+import Login from "../components/Login";
+import { bodyUser, doRequest } from '../ServerTalker';
+import MonthlyRecap from '../components/widgets/MonthlyRecap';
 
+const MyContext = createContext();
 
 export default function Home(){
   let [User, setUser] = useState(null); //user credentials
-  let [FullScreen,setFullScreen] = useState(false); //if full screen we'll show the back button
-
   const store = new Storage();
-  
+
+
+  let [AllTransactions, setAllTransactions] = useState([]); //all transaction of the user
+
+  function loadAllTransactions(Email, Password) {
+    //create an array with the transaction, sorted by date desc
+    doRequest("getAllTransaction", bodyUser(Email, Password)).then(res => res.json()).then(res => {
+      let tmp = res.transactions.map(s => s).sort((a, b) => { //sort the transaction by date
+        if (a.Date > b.Date) {
+          return -1
+        } else {
+          return 1
+        }
+      });
+      setAllTransactions(tmp);
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+
+
 
   useEffect(()=>{ //se if there are the credentials in cache then set it
     store.create();
     store.get('User').then(res=>{
       if(res!=null){
+        loadAllTransactions(res.Email,res.Password)
         setUser(res)
       }
     })
@@ -26,36 +45,47 @@ export default function Home(){
 
   return (
     <IonPage className="Home">
-      <IonHeader mode='ios' >
-        <IonToolbar color="dark" className="walletterHeader">
-          { //back button
-            (FullScreen)?
-              <IonButton slot="start" mode="ios" onClick={(ev)=>{ev.preventDefault();setFullScreen(false)}} color="light" size="small">
-                  <IonIcon mode="ios" icon={arrowBack} />
-              </IonButton>
-            :
-            null
-          }
-
-          <IonTitle>Walletter</IonTitle>
-          { //user menu
-            (User!=null)?
-              <div>
-                <IonIcon icon={personCircleSharp} id="AccountIcon" size="large" style={{float: "right",marginRight:'5px'}}/>
-                <MenuProfile doLogout={() => setUser(null)} User={User} />
-              </div>
-            :
-              null
-          }
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
+      <IonContent >
         {(User==null)? //not credentials found -> login
-          <Login setUser={(ev)=>setUser(ev)}/> 
+          <Login setUser={(ev)=>{setUser(ev); loadAllTransactions(ev.Email,ev.Password)}}/> 
         : 
-          <Dashboard User={User} FullScreen={FullScreen} setFullScreen={()=>{setFullScreen(true)}}/>
+          <MyContext.Provider value={
+            {
+              "User": User,
+              "AllTransactions": AllTransactions,
+              "loadAllTransaction": () => loadAllTransactions(User.Email, User.Password)
+            }
+          }>
+              
+            <IonNav animated="true" swipeGesture="true" root={() => <Dashboard/> }></IonNav>
+          </MyContext.Provider>
         }
       </IonContent>
     </IonPage>
   );
 }
+
+export { MyContext };
+
+
+/**
+ * 
+ * 
+ *    <IonHeader mode='ios' >
+        <IonToolbar color="dark" className="walletterHeader">
+          
+
+          <IonTitle>Walletter</IonTitle>
+          { //user menu
+            (User != null) ?
+              <div>
+                <IonIcon icon={personCircleSharp} id="AccountIcon" size="large" style={{ float: "right", marginRight: '5px' }} />
+                <MenuProfile doLogout={() => setUser(null)} User={User} />
+              </div>
+              :
+              null
+          }
+        </IonToolbar>
+      </IonHeader>
+ * 
+ */

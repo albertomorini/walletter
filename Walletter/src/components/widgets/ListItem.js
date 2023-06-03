@@ -1,10 +1,10 @@
 
 import { IonItem, IonRow, useIonAlert, IonCol, IonGrid, IonItemSliding, IonItemOptions, IonItemOption, IonIcon } from "@ionic/react";
 import { trash, createOutline } from "ionicons/icons";
-import { doRequest, bodyUser } from "../../../ServerTalker";
+import { doRequest, bodyUser } from "../../ServerTalker";
 import moment from "moment";
 import { useContext } from "react";
-import { MyContext } from "../Dashboard";
+import { MyContext } from "../../pages/Home"
 
 export default function ListItem(props){
     const [deleteConfirm] = useIonAlert(); 

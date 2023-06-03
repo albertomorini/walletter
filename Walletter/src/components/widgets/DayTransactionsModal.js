@@ -1,5 +1,5 @@
 import {IonButtons,IonButton,IonModal,IonHeader, IonContent,IonToolbar,IonTitle} from '@ionic/react';
-import ListItem from "../Transactions/List/ListItem.js";
+import ListItem from "./ListItem.js";
 import moment from "moment";
 
 export default function DayTransactionsModal(props){

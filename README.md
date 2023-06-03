@@ -124,3 +124,4 @@ The certified and the private key (that you don't see in this repo), are self-si
 ## TODO
 - at the server startup check if collections exists
 - logs
+- bug fix: data is null, but the transactions has been saved --> calendar error etc. !!!

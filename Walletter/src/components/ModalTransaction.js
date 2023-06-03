@@ -1,44 +1,43 @@
+
 import { useEffect, useState, useContext } from "react";
-import {IonButtons,IonButton,IonModal,IonHeader, IonSegment,IonSegmentButton,IonContent,IonToolbar,IonTitle,IonItem,IonLabel,    IonInput, IonSearchbar,IonList} from '@ionic/react';
+import { IonButtons, IonButton, IonModal, IonHeader, IonSegment, IonSegmentButton, IonContent, IonToolbar, IonTitle, IonItem, IonLabel, IonInput, IonSearchbar, IonList } from '@ionic/react';
 import moment from "moment";
-import { doRequest, bodyUser } from "../../ServerTalker";
+import { doRequest, bodyUser } from "../ServerTalker";
 import { checkmarkCircleOutline, searchSharp } from "ionicons/icons";
-import { MyContext } from "../Transactions/Dashboard"
+import { MyContext } from "../pages/Home";
 
 
-//INSERT TRANSACTION MODAL
-export default function TransactionModal(props){
-
-
+export default function ModalTransaction(props){
     let [Amount, setAmount] = useState(0);
     let [Date, setDate] = useState(moment().format("YYYY-MM-DD"));
     let [IsOutcome, setIsOutcome] = useState(true); //false is an income
     let [Reference, setReference] = useState("");
     //
-    let [ExistingReferences,setExistingReferences] = useState([]);
-    let [ResResearch,setResResearch] = useState([...ExistingReferences]);
+    let [ExistingReferences, setExistingReferences] = useState([]);
+    let [ResResearch, setResResearch] = useState([...ExistingReferences]);
     let [SearchIcon, setSearchIcon] = useState(searchSharp)
     //
     let ctx = useContext(MyContext);
 
-    function getExistingReferences(){
-        doRequest("getExistingReferences",bodyUser(ctx.User.Email,ctx.User.Password)).then(res=>res.json()).then(res=>{
-            let tmp= res.singleReferences.map(s=>s);
+    function getExistingReferences() {
+        doRequest("getExistingReferences", bodyUser(ctx.User.Email, ctx.User.Password)).then(res => res.json()).then(res => {
+            let tmp = res.singleReferences.map(s => s);
             setExistingReferences(tmp);
             setResResearch(tmp)
         });
     }
 
-    const searchReferences = (query) =>{
-        let results = ExistingReferences.filter(s=>s.toLowerCase().indexOf(query)>-1);
-        if(results.length==0){
+    const searchReferences = (query) => {
+        let results = ExistingReferences.filter(s => s.toLowerCase().indexOf(query) > -1);
+        if (results.length == 0) {
             results.push(query) //TODO: optimize, if the query is a substring doesn't show the new element
         }
         setResResearch(results);
     }
 
-    
+
     function insertTransaction() {
+        
         doRequest("transaction",{
             "Email": ctx.User.Email,
             "Amount": Amount,
@@ -49,30 +48,33 @@ export default function TransactionModal(props){
         }).then(res=>res.json()).then(res=>{
             ctx.loadAllTransaction()
             props.modalInsert.current?.dismiss()
-            resetInput();
+            cleanInputs();
         })
     }
 
-    function resetInput(){
-        setAmount((props.data?.Amount==undefined)?0:props.data?.Amount);
+    function cleanInputs() {
+        setAmount((props.data?.Amount == undefined) ? 0 : props.data?.Amount);
         setDate(moment().format("YYYY-MM-DD"));
         setIsOutcome(true);
         setReference();
         getExistingReferences()
     }
 
-    useEffect(()=>{
+    useEffect(() => {
+        console.log(props)
+        /*
         setAmount(props.data?.Amount);
         setDate(props.data?.Date);
         setIsOutcome(props.data?.IsOutcome);
         setReference(props.data?.Reference);
+        */
         getExistingReferences()
-    },[props]);
+    }, [props]);
 
 
-    return (
-        <IonModal ref={props.modalInsert} trigger="modalInsert" mode="ios">
-            <IonHeader mode="ios">
+    return(
+        <div>
+         <IonHeader mode="ios">
                 <IonToolbar>
                     <IonButtons slot="start">
                         <IonButton id="closeModal" onClick={() => props.modalInsert.current?.dismiss()}>Cancel</IonButton>
@@ -85,7 +87,7 @@ export default function TransactionModal(props){
                     </IonButtons>
                 </IonToolbar>
             </IonHeader>
-            <IonContent className="ion-padding">
+            <IonContent className="ion-padding" fullscreen={true}>
                 <IonItem>
                     <IonLabel position="stacked">Amount</IonLabel>
                     <IonInput type="number" min={1} placeholder={Amount} onIonInput={(ev) => setAmount(ev.target.value)} mode="ios"></IonInput>
@@ -112,22 +114,20 @@ export default function TransactionModal(props){
                     <IonLabel position="stacked">Reference</IonLabel>
                     <IonSearchbar
                         searchIcon={SearchIcon}
+                        value={Reference}
                         onIonInput={(ev) => {
                             setReference(ev.target.value); 
                             setSearchIcon(searchSharp);
-
                             searchReferences(ev.target.value)
                         }}
                         mode="ios"
                         placeholder={Reference}
-
                     />
                     <IonList style={{width: "100%"}}>
                         {ResResearch.map((result,index) => (
                             <IonItem onClick={()=>{ 
                                 setTimeout(() => {
                                     setSearchIcon(checkmarkCircleOutline);
-                                    setResResearch([]);
                                 }, 400);
                                 setReference(result)
                             }}
@@ -136,7 +136,8 @@ export default function TransactionModal(props){
                         ))}
                     </IonList>
                 </IonItem>
+                    <IonButton onClick={()=>console.log("OK")}>test</IonButton>
             </IonContent>
-        </IonModal>
-    )
+        </div>
+    );
 }

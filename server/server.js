@@ -93,6 +93,7 @@ https.createServer(options,(req,res)=>{
 
         //TRANSACTIONS
         if(req.url=="/transaction"){ // update or insert new a transaction
+            console.log(bodyDict)
             queryResponder.saveTransaction(bodyDict).then(resQuery=>{
                 if(resQuery.acknowledged){
                     sendResponse(res, 200, { "transaction": resQuery })

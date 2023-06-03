@@ -1,6 +1,6 @@
-import { IonLabel, IonItem, IonToggle, IonSegment, IonSegmentButton, IonInput, IonButton } from "@ionic/react";
+import { IonLabel, IonItem, IonToggle, IonSegment, IonSegmentButton, IonInput, IonButton, IonTitle } from "@ionic/react";
 import { useState } from "react";
-import { doRequest, bodyUser } from "../../ServerTalker";
+import { doRequest, bodyUser } from "../ServerTalker";
 import { Storage } from '@ionic/storage';
 import MD5 from "crypto-js/md5";
 
@@ -59,6 +59,7 @@ export default function IsLogin(props){
 
     return(
         <div>
+            
             <br/>
             <br/>
 

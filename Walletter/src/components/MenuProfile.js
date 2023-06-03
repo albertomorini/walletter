@@ -1,10 +1,10 @@
 
 import { IonPopover, IonButton } from "@ionic/react";
-import { doRequest, bodyUser } from "../../ServerTalker.js";
+import { doRequest, bodyUser } from "../ServerTalker.js";
 import moment from "moment";
 import { useRef } from "react";
 import { Storage } from '@ionic/storage';
-import UploadModal from "../Modals/UploadModal";
+import UploadModal from "./UploadModal.js";
 
 export default function MenuProfile(props){
 
