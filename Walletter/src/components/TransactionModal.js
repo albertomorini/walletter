@@ -40,8 +40,6 @@ export default function TransactionModal(props){
     
     function insertTransaction() {
         console.log("OK")
-  
-        /*
         doRequest("transaction",{
             "Email": ctx.User.Email,
             "Amount": Amount,
@@ -54,7 +52,6 @@ export default function TransactionModal(props){
             props.modalInsert.current?.dismiss()
             cleanInputs();
         })
-        */
     }
 
     function cleanInputs(){
@@ -66,6 +63,7 @@ export default function TransactionModal(props){
     }
 
     useEffect(()=>{
+
         console.log(props)
         /*
         setAmount(props.data?.Amount);
@@ -78,21 +76,11 @@ export default function TransactionModal(props){
 
 
     return (
-        <IonModal ref={props.modalInsert} trigger="modalInsert" mode="ios">
-            <IonHeader mode="ios">
-                <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonButton id="closeModal" onClick={() => props.modalInsert.current?.dismiss()}>Cancel</IonButton>
-                    </IonButtons>
-                    <IonTitle>Add a transaction</IonTitle>
-                    <IonButtons slot="end">
-                        <IonButton strong={true} onClick={() => insertTransaction()}>
-                            Confirm
-                        </IonButton>
-                    </IonButtons>
-                </IonToolbar>
-            </IonHeader>
-            <IonContent className="ion-padding" fullscreen={true}>
+        <div className="ion-padding" >
+
+            <IonButton color="dark" expand="block" onClick={() => insertTransaction()} >
+                Confirm
+            </IonButton>
                 <IonItem>
                     <IonLabel position="stacked">Amount</IonLabel>
                     <IonInput type="number" min={1} placeholder={Amount} onIonInput={(ev) => setAmount(ev.target.value)} mode="ios"></IonInput>
@@ -141,8 +129,6 @@ export default function TransactionModal(props){
                         ))}
                     </IonList>
                 </IonItem>
-                    <IonButton onClick={()=>console.log("OK")}>test</IonButton>
-            </IonContent>
-        </IonModal>
+        </div>
     )
 }

@@ -3,17 +3,15 @@ import { IonGrid, IonRow, IonButton, IonCol, IonIcon, IonNavLink, IonContent } f
 import { chevronForwardOutline } from "ionicons/icons";
 import ListTransactions from "./widgets/ListTransactions.js";
 import MonthlyCalendar from "./widgets/MonthlyCalendar.js";
-import InsertModal from "./TransactionModal.js";
 import GroupReference from "./widgets/GroupReference";
 import MonthlyRecap from "./widgets/MonthlyRecap.js";
 import MiddlewareFullScreen from "./MiddlewareFullScreen.js";
-import ModalTransaction from "./ModalTransaction.js";
 import TransactionModal from "./TransactionModal.js";
 
 
 export default function Dashboard(props){
 
-    const refModalInsert = useRef(); //references the insert modal (for closing programmatically)
+    const refModalInsert = useRef(); //refere   nces the insert modal (for closing programmatically)
     return(
             <IonContent className="Dashboard" fullscreen={true}>
                 <IonGrid>
@@ -61,11 +59,18 @@ export default function Dashboard(props){
                             <GroupReference fullscreen={false} />
                         </IonCol>
                     </IonRow>
+                    <IonRow>
+                        <IonCol>
+
+                        <IonNavLink routerDirection="forward" component={() => <MiddlewareFullScreen entity={<TransactionModal fullscreen={true} title="Add a new transaction" />} />} >
+                            <IonButton color={"dark"} expand="block">Insert new transaction
+                                <IonIcon icon={chevronForwardOutline} />
+                            </IonButton>
+                        </IonNavLink>
+
+                        </IonCol>
+                    </IonRow>
                 </IonGrid>
-                <div>
-                    <IonButton onClick={() => { refModalInsert.current?.present() }} expand="block" mode="ios" color="dark">Add new transaction</IonButton>
-                    <TransactionModal modalInsert={refModalInsert} />
-                </div>
         </IonContent>
     );
 }

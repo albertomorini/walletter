@@ -1,24 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { IonGrid, IonRow, IonCol, IonLabel, IonSegment, IonSegmentButton } from '@ionic/react';
 import moment from "moment";
-import { MyContext } from "../../pages/Home"
+import { MyContext } from "../../pages/Home";
 
 export default function MonthlyRecap(){
 	
 	let [Monthly, setMonthly] = useState(true);
 	let ctx = useContext(MyContext);
 
-	useEffect(()=>{
-		console.log(
-			ctx.AllTransactions.filter(s => { //sum all income
-				if (Monthly) {
-					return moment(s.Date).format("MMYY") == moment().format("MMYY")
-				} else {
-					return moment(s.Date).format("YY") == moment().format("YY")
-				}
-			}).reduce((partialSum, a) => partialSum + ((a.IsOutcome) ? 0 : parseFloat(a.Amount)), 0)
-		)
-	},[Monthly])
 	return(
 		<>
 			<IonSegment value={Monthly} mode="ios" onClick={(ev)=>setMonthly(ev.target.value === 'true')}>
