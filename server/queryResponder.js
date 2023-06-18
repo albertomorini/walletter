@@ -3,7 +3,7 @@
 const url = "mongodb://localhost:27017/Walletter";
 const { MongoClient } = require("mongodb");
 const database = new MongoClient(url).db("Walletter");
-var ObjectId = require('mongodb').ObjectID;
+const { ObjectId } = require('mongodb');
 const COLLECTION_TRANSACTIONS = "WT_TRANSACTIONS";
 const COLLECTION_USERS= "WT_USERS";
 
@@ -35,7 +35,7 @@ async function saveTransaction(objReg){
             Reference: objReg.Reference,
         },
     };
-    return  dbo.updateOne({ _id: ObjectId(objReg.id), "Email": objReg.Email }, updateDoc, { upsert: true });
+    return  dbo.updateOne({ _id: new ObjectId(objReg.id), "Email": objReg.Email }, updateDoc, { upsert: true });
 }
 
 async function getExistingReferences(Email,Password){
@@ -78,7 +78,7 @@ async function getAllTransaction(Email,Password){
 async function deleteTransaction(idTransaction,Email,Password){
     return getUser(Email,Password).then(resAuth=>{
         if(resAuth!=null){
-            return database.collection(COLLECTION_TRANSACTIONS).deleteOne({ "_id": ObjectId(idTransaction), "Email": Email })
+            return database.collection(COLLECTION_TRANSACTIONS).deleteOne({ "_id": new ObjectId(idTransaction), "Email": Email })
         }else{
             return null;
         }

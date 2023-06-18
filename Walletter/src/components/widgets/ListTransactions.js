@@ -50,7 +50,6 @@ export default function ListTransactions(props){
         null
         } 
 
-
             <IonList>
                 <IonItem color="light" className="itemList">
                     <IonGrid>

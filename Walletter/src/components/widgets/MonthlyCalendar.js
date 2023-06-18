@@ -1,9 +1,9 @@
-import { IonBackButton, IonButtons, IonContent, IonDatetime, IonHeader, IonTitle, IonToolbar } from '@ionic/react';
+import { IonDatetime } from '@ionic/react';
 import moment from 'moment';
 import { useEffect, useState, useRef, useContext } from 'react';
-import DayTransacionsModal from "./DayTransactionsModal.js"
-import "../../theme/MonthlyCalendar.css"
-import { MyContext } from "../../pages/Home"
+import DayTransacionsModal from "./DayTransactionsModal.js";
+import "../../theme/MonthlyCalendar.css";
+import { MyContext } from "../../pages/Home";
 
 
 export default function MonthlyCalendar(props){
@@ -14,8 +14,7 @@ export default function MonthlyCalendar(props){
     let ctx = useContext(MyContext);
 
     function displayDays(AllTransactions){
-        let tmp = AllTransactions.map(s=>moment(s.Date).format("YYYY-MM-DD"))
-        setTransactionsDays(tmp);
+        setTransactionsDays(AllTransactions.map(s => moment(s.Date).format("YYYY-MM-DD")));
     }
 
     function daySelected(CalendarValues){
@@ -34,30 +33,29 @@ export default function MonthlyCalendar(props){
     }
     
     useEffect(()=>{
-        displayDays(ctx.AllTransactions)
+        displayDays(ctx.AllTransactions);
     },[props,ctx.AllTransactions]);
     
     return(
-       
         <>
         <DayTransacionsModal
-                TransactionsDaySelected={TransactionsDaySelected}
-                modalDayRecap={modalDayRecap}
-                />
-                
-                <IonDatetime
-                    className="myCalendar"
-                    mode='ios'
-                    yearValues={moment().format("YYYY")}
-                    presentation="date"
-                    size='large'
-                    multiple="true"
-                    locale='it-IT'
-                    firstDayOfWeek={1}
-                    preferWheel="false"
-                    value={TransactionsDays}
-                    onClick={(ev) => daySelected(ev.target.value)}
-                />
+        TransactionsDaySelected={TransactionsDaySelected}
+        modalDayRecap={modalDayRecap}
+        />
+            
+        <IonDatetime
+            className="myCalendar"
+            mode='ios'
+            yearValues={moment().format("YYYY")}
+            presentation="date"
+            size='large'
+            multiple="true"
+            locale='it-IT'
+            firstDayOfWeek="1"
+            preferWheel="false"
+            value={TransactionsDays}
+            onClick={(ev) => daySelected(ev.target.value)}
+        />
             
         </>
     )

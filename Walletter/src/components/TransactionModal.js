@@ -5,7 +5,6 @@ import { doRequest, bodyUser } from "../ServerTalker";
 import { checkmarkCircleOutline, searchSharp } from "ionicons/icons";
 import { MyContext } from "../pages/Home";
 
-
 //INSERT TRANSACTION MODAL
 export default function TransactionModal(props){
 
@@ -23,9 +22,8 @@ export default function TransactionModal(props){
 
     function getExistingReferences(){
         doRequest("getExistingReferences",bodyUser(ctx.User.Email,ctx.User.Password)).then(res=>res.json()).then(res=>{
-            let tmp= res.singleReferences.map(s=>s);
-            setExistingReferences(tmp);
-            setResResearch(tmp)
+            setExistingReferences(res.singleReferences);
+            setResResearch(res.singleReferences);
         });
     }
 
@@ -39,7 +37,7 @@ export default function TransactionModal(props){
 
     
     function insertTransaction() {
-        console.log("OK")
+    
         doRequest("transaction",{
             "Email": ctx.User.Email,
             "Amount": Amount,
@@ -49,7 +47,7 @@ export default function TransactionModal(props){
             "id": (props.data?.id!=undefined)?props.data.id : null
         }).then(res=>res.json()).then(res=>{
             ctx.loadAllTransaction()
-            props.modalInsert.current?.dismiss()
+            props.modalHandler.current?.dismiss()
             cleanInputs();
         })
     }
@@ -64,7 +62,6 @@ export default function TransactionModal(props){
 
     useEffect(()=>{
 
-        console.log(props)
         /*
         setAmount(props.data?.Amount);
         setDate(props.data?.Date);
@@ -76,11 +73,21 @@ export default function TransactionModal(props){
 
 
     return (
-        <div className="ion-padding" >
-
-            <IonButton color="dark" expand="block" onClick={() => insertTransaction()} >
-                Confirm
-            </IonButton>
+        <IonModal ref={props.modalHandler} mode="ios">
+            <IonHeader mode="ios">
+                <IonToolbar>
+                    <IonButtons slot="start">
+                        <IonButton onClick={() => props.modalHandler.current?.dismiss()}>Cancel</IonButton>
+                    </IonButtons>
+                    <IonTitle>Add a transaction</IonTitle>
+                    <IonButtons slot="end">
+                        <IonButton strong={true} onClick={() => insertTransaction()}>
+                            Confirm
+                        </IonButton>
+                    </IonButtons>
+                </IonToolbar>
+            </IonHeader>
+            <IonContent>
                 <IonItem>
                     <IonLabel position="stacked">Amount</IonLabel>
                     <IonInput type="number" min={1} placeholder={Amount} onIonInput={(ev) => setAmount(ev.target.value)} mode="ios"></IonInput>
@@ -90,7 +97,6 @@ export default function TransactionModal(props){
                     <IonInput type="date" locale="it_IT" value={Date} placeholder={Date} onIonInput={(ev) => setDate(ev.target.value)} mode="ios"></IonInput>
                 </IonItem>
                 <IonItem>
-
                     <IonSegment value={IsOutcome} onIonChange={(ev) => setIsOutcome(ev.target.value) //this returns a string...
                         } mode="ios">
                         <IonSegmentButton value={true}>
@@ -100,7 +106,6 @@ export default function TransactionModal(props){
                             <IonLabel color="success" style={{fontWeight :'bold'}}>Income</IonLabel>
                         </IonSegmentButton>
                     </IonSegment>
-
                   
                 </IonItem>
                 <IonItem>
@@ -129,6 +134,9 @@ export default function TransactionModal(props){
                         ))}
                     </IonList>
                 </IonItem>
-        </div>
+            </IonContent>
+
+        </IonModal>
+
     )
 }

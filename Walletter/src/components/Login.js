@@ -1,4 +1,4 @@
-import { IonLabel, IonItem, IonToggle, IonSegment, IonSegmentButton, IonInput, IonButton, IonTitle } from "@ionic/react";
+import { IonLabel, IonItem, IonToggle, IonSegment, IonSegmentButton, IonInput, IonButton, IonTitle, IonHeader, IonToolbar } from "@ionic/react";
 import { useState } from "react";
 import { doRequest, bodyUser } from "../ServerTalker";
 import { Storage } from '@ionic/storage';
@@ -59,10 +59,6 @@ export default function IsLogin(props){
 
     return(
         <div>
-            
-            <br/>
-            <br/>
-
             <IonSegment value={IsLogin} onClick={(ev) => setIsLogin(ev.target.value==="true")} mode="ios">
                 <IonSegmentButton value={true}>
                     <IonLabel>Login</IonLabel>

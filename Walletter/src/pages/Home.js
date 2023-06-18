@@ -1,41 +1,41 @@
-import { useState, useEffect, createContext } from 'react';
-import { IonContent, IonPage, IonNav, IonApp, IonHeader, IonToolbar, IonTitle, IonIcon } from '@ionic/react';
+import { useState, useEffect, createContext, useRef } from 'react';
+import { IonContent, IonPage, IonNav, IonHeader, IonToolbar, IonTitle, IonIcon, IonFab, IonFabButton } from '@ionic/react';
 import { Storage } from '@ionic/storage';
 import Dashboard from '../components/Dashboard';
 import Login from "../components/Login";
 import { bodyUser, doRequest } from '../ServerTalker';
-import MonthlyRecap from '../components/widgets/MonthlyRecap';
-import { personCircleSharp } from 'ionicons/icons';
+import { add, personCircleSharp } from 'ionicons/icons';
 import MenuProfile from '../components/MenuProfile';
+import TransactionModal from '../components/TransactionModal';
 
-const MyContext = createContext();
+export const MyContext = createContext();
 
 export default function Home(){
   let [User, setUser] = useState(null); //user credentials
+  let [AllTransactions, setAllTransactions] = useState([]); //all transaction of the user
+  let transactionHandler = useRef();
   const store = new Storage();
 
 
-  let [AllTransactions, setAllTransactions] = useState([]); //all transaction of the user
-
+  /**
+   * return all the transaction of a user
+   * @param {string} Email of user
+   * @param {string} Password is the hash of user's psw (MD5)
+   */
   function loadAllTransactions(Email, Password) {
-    //create an array with the transaction, sorted by date desc
     doRequest("getAllTransaction", bodyUser(Email, Password)).then(res => res.json()).then(res => {
-      let tmp = res.transactions.map(s => s).sort((a, b) => { //sort the transaction by date
-        if (a.Date > b.Date) {
-          return -1
-        } else {
-          return 1
-        }
-      });
-      setAllTransactions(tmp);
+      setAllTransactions(
+        res.transactions.sort((a,b) => (a.Date>b.Date)?-1 : 1 ) //sort the transaction by date and return an array of them
+      );
     }).catch(err => {
       console.log(err);
     })
   }
 
-
-
-  useEffect(()=>{ //se if there are the credentials in cache then set it
+  /**
+   * check if the credentials are stored in the bowser's cache
+   */
+  function checkCredentials(){
     store.create();
     store.get('User').then(res=>{
       if(res!=null){
@@ -43,22 +43,26 @@ export default function Home(){
         setUser(res)
       }
     })
+  }
+
+  useEffect(()=>{ //se if there are the credentials in cache then set it
+    checkCredentials();
   },[]);
+
 
   return (
     <IonPage className="Home">
       <IonHeader mode='ios'>
         <IonToolbar color="dark" className="walletterHeader">
-
           <IonTitle>Walletter</IonTitle>
-          { //user menu
-            (User != null) ?
-              <div>
-                <IonIcon icon={personCircleSharp} id="AccountIcon" size="large" style={{ float: "right", marginRight: '5px' }} />
-                <MenuProfile doLogout={() => setUser(null)} User={User} />
-              </div>
-              :
-              null
+          {
+            (User!=null)? //user is logged
+            <div>
+              <IonIcon icon={personCircleSharp} id="AccountIcon" size="large" style={{ float: "right", marginRight: '5px' }} />
+              <MenuProfile User={User} setUser={(obj)=>setUser(obj)}/>
+            </div>
+            :
+            null
           }
         </IonToolbar>
       </IonHeader>
@@ -76,34 +80,17 @@ export default function Home(){
           }>
               
             <IonNav animated="true" swipeGesture="true" root={() => <Dashboard/> }></IonNav>
+            
+            <IonFab slot="fixed" horizontal="end" vertical="bottom" mode='ios'>
+              <IonFabButton onClick={()=>transactionHandler.current?.present()} color="dark" mode='ios'>
+                <IonIcon icon={add}></IonIcon>
+              </IonFabButton>
+            </IonFab>
+            <TransactionModal modalHandler={transactionHandler}/>
+
           </MyContext.Provider>
         }
       </IonContent>
     </IonPage>
   );
 }
-
-export { MyContext };
-
-
-/**
- * 
- * 
- *    <IonHeader mode='ios' >
-        <IonToolbar color="dark" className="walletterHeader">
-          
-
-          <IonTitle>Walletter</IonTitle>
-          { //user menu
-            (User != null) ?
-              <div>
-                <IonIcon icon={personCircleSharp} id="AccountIcon" size="large" style={{ float: "right", marginRight: '5px' }} />
-                <MenuProfile doLogout={() => setUser(null)} User={User} />
-              </div>
-              :
-              null
-          }
-        </IonToolbar>
-      </IonHeader>
- * 
- */

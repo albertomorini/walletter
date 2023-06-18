@@ -1,6 +1,4 @@
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
-
-
+import { IonBackButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
 
 export default function MiddlewareFullScreen(props){
     return(
