@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useContext } from "react";
-import { IonGrid, IonRow, IonCol, IonItem, IonLabel, IonContent, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle } from '@ionic/react';
-import { MyContext } from "../../pages/Home"
+import { IonGrid, IonRow, IonCol, IonItem, IonLabel } from '@ionic/react';
+import { MyContext } from "../../pages/Home";
 
 // 4th widget: grouped by reference 
 export default function GroupReference(props){

@@ -1,4 +1,4 @@
-import {IonButtons,IonButton,IonModal,IonHeader, IonContent,IonToolbar,IonTitle} from '@ionic/react';
+import { IonButtons, IonButton, IonModal, IonHeader, IonContent, IonToolbar, IonTitle } from '@ionic/react';
 
 //UPLOAD A BACKUP (JSON)
 export default function UploadModal(props){

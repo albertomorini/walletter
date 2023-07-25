@@ -1,4 +1,4 @@
-import { IonLabel, IonItem, IonToggle, IonSegment, IonSegmentButton, IonInput, IonButton, IonTitle, IonHeader, IonToolbar } from "@ionic/react";
+import { IonLabel, IonItem, IonToggle, IonSegment, IonSegmentButton, IonInput, IonButton } from "@ionic/react";
 import { useState } from "react";
 import { doRequest, bodyUser } from "../ServerTalker";
 import { Storage } from '@ionic/storage';
@@ -41,12 +41,12 @@ export default function IsLogin(props){
                     });
                     storeCredentials(Email, Password)
                 }else{
-                    setMessage("User not found: "+res);
+                    setMessage("User not found");
                     setTimeout(()=>setMessage(null),2500)
                 }
             }).catch(err => {
                 console.log(err);
-                alert("Error, user not found!"+err)
+                alert("Error doing the login... retry")
             })
         }
     }
@@ -58,7 +58,9 @@ export default function IsLogin(props){
     }
 
     return(
-        <div>
+        <div style={{width: "50%", margin: "0 auto", marginTop: "20px"}}>
+
+            
             <IonSegment value={IsLogin} onClick={(ev) => setIsLogin(ev.target.value==="true")} mode="ios">
                 <IonSegmentButton value={true}>
                     <IonLabel>Login</IonLabel>
@@ -70,24 +72,41 @@ export default function IsLogin(props){
 
             <IonItem>
                 <IonLabel mode="ios" position="stacked">Email</IonLabel>
-                <IonInput placeholder="Email" type="email" onIonChange={(ev) => setEmail(ev.target.value)} onKeyDown={(ev) => enterPressed(ev)}></IonInput>
+                <IonInput 
+                    placeholder="Email" mode="ios" 
+                    fill="outline" type="email" 
+                    onIonChange={(ev) => setEmail(ev.target.value)}    
+                    onKeyDown={(ev) => enterPressed(ev)}
+                />
             </IonItem>
             <IonItem>
                 <IonLabel mode="ios" position="stacked">Password</IonLabel>
-                <IonInput placeholder={(IsLogin) ? "Password" : "Pick a strong one"} type="password" onIonChange={(ev)=>setPassword(ev.target.value)} onKeyDown={(ev)=>enterPressed(ev)}></IonInput>
+                <IonInput 
+                    placeholder={(IsLogin) ? "Password" : "Pick a strong one"}
+                    type="password" 
+                    onIonChange={(ev)=>setPassword(ev.target.value)}
+                    onKeyDown={(ev)=>enterPressed(ev)}
+                />
             </IonItem>
             <br/>
             
-            <IonToggle enableOnOffLabels="true" mode="ios" labelPlacement="end" checked={Remember} onIonChange={(ev)=>setRemember(!Remember)}>
+            <IonToggle color="dark"
+                enableOnOffLabels="true" mode="ios"
+                checked={Remember}
+                onIonChange={(ev)=>setRemember(!Remember)}
+                labelPlacement="start"
+                style={{float:"right"}}
+            >
                 Remember me
             </IonToggle>
 
             <br/>
             <br/>
-            <IonButton expand="block" onClick={()=>processCredentials()} >
+            <IonButton color="dark" expand="block" onClick={()=>processCredentials()} >
                 {(IsLogin)?"Login":"Sign up"}
             </IonButton>
             <h4 style={{color:"red", textAlign:"center"}}>{Message}</h4>
+      
         </div>
     );
 }

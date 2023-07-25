@@ -22,13 +22,13 @@ export default function TransactionModal(props){
 
     function getExistingReferences(){
         doRequest("getExistingReferences",bodyUser(ctx.User.Email,ctx.User.Password)).then(res=>res.json()).then(res=>{
-            setExistingReferences(res.singleReferences);
-            setResResearch(res.singleReferences);
+            setExistingReferences(res?.singleReferences);
+            setResResearch(res?.singleReferences);
         });
     }
 
     const searchReferences = (query) =>{
-        let results = ExistingReferences.filter(s=>s.toLowerCase().indexOf(query)>-1);
+        let results = ExistingReferences?.filter(s=>s.toLowerCase().indexOf(query)>-1);
         if(results.length==0){
             results.push(query) //TODO: optimize, if the query is a substring doesn't show the new element
         }
