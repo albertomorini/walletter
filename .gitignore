@@ -2,3 +2,5 @@
 /Walletter/node_modules
 
 /server/certs/key.pem
+
+/server/tmpExpoImpo/*

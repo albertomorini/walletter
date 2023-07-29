@@ -1,8 +1,8 @@
 import { useEffect, useState, useContext } from "react";
-import { IonButtons, IonButton, IonModal, IonHeader, IonSegment, IonSegmentButton, IonContent, IonToolbar, IonTitle, IonItem, IonLabel, IonInput, IonSearchbar, IonList } from '@ionic/react';
+import { IonButtons, IonButton, IonModal, IonHeader, IonSegment, IonSegmentButton, IonContent, IonToolbar, IonTitle, IonItem, IonLabel, IonInput, IonSearchbar, IonList, IonIcon } from '@ionic/react';
 import moment from "moment";
 import { doRequest, bodyUser } from "../ServerTalker";
-import { checkmarkCircleOutline, searchSharp } from "ionicons/icons";
+import { checkmarkCircleOutline, checkmarkSharp, closeCircle, searchSharp } from "ionicons/icons";
 import { MyContext } from "../pages/Home";
 
 //INSERT TRANSACTION MODAL
@@ -15,7 +15,7 @@ export default function TransactionModal(props){
     let [Reference, setReference] = useState("");
     //
     let [ExistingReferences,setExistingReferences] = useState([]);
-    let [ResResearch,setResResearch] = useState([...ExistingReferences]);
+    let [ResResearch,setResResearch] = useState((ExistingReferences!=null)?[...ExistingReferences]:[]);
     let [SearchIcon, setSearchIcon] = useState(searchSharp)
     //
     let ctx = useContext(MyContext);
@@ -77,12 +77,16 @@ export default function TransactionModal(props){
             <IonHeader mode="ios">
                 <IonToolbar>
                     <IonButtons slot="start">
-                        <IonButton onClick={() => props.modalHandler.current?.dismiss()}>Cancel</IonButton>
+                        <IonButton 
+                        color="dark"
+                        onClick={() => props.modalHandler.current?.dismiss()}>
+                            <IonIcon color="light" icon={closeCircle} />
+                        </IonButton>
                     </IonButtons>
                     <IonTitle>Add a transaction</IonTitle>
                     <IonButtons slot="end">
-                        <IonButton strong={true} onClick={() => insertTransaction()}>
-                            Confirm
+                        <IonButton strong={true} color="dark" onClick={() => insertTransaction()}>
+                            <IonIcon color="light" icon={checkmarkSharp}/>
                         </IonButton>
                     </IonButtons>
                 </IonToolbar>
@@ -122,7 +126,7 @@ export default function TransactionModal(props){
                         placeholder={Reference}
                     />
                     <IonList style={{width: "100%"}}>
-                        {ResResearch.map((result,index) => (
+                        {ResResearch?.map((result,index) => (
                             <IonItem onClick={()=>{ 
                                 setTimeout(() => {
                                     setSearchIcon(checkmarkCircleOutline);

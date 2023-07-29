@@ -24,22 +24,23 @@ export default function IsLogin(props){
         }
     }
 
-    function processCredentials(){
-        if(Email!=null && Password!=null){
-            let scope="getAuth"
-            if(!IsLogin){ //sign up
-                scope="user";
-            }
-            
-            doRequest(scope,
-                bodyUser(Email, MD5(Password).toString())
+    /**
+     * do the login or sing up
+     * @param {string} emailP 
+     * @param {psw} passwordP 
+     * @param {boolean} isLoginP if is login or sign up
+     */
+    function processCredentials(emailP,passwordP,isLoginP){
+        if (emailP != null && passwordP !=null){
+            doRequest((isLoginP) ? "getAuth" :"user", //login or sign up
+                bodyUser(emailP, MD5(passwordP).toString())
             ).then(res => res.json()).then(res => {
                 if(res.usr!=null){
                     props.setUser({
-                        "Email": Email,
-                        "Password": MD5(Password).toString()
+                        "Email": emailP,
+                        "Password": MD5(passwordP).toString()
                     });
-                    storeCredentials(Email, Password)
+                    storeCredentials(emailP, passwordP)
                 }else{
                     setMessage("User not found");
                     setTimeout(()=>setMessage(null),2500)
@@ -53,15 +54,23 @@ export default function IsLogin(props){
 
     function enterPressed(ev){ 
         if (ev.key == "Enter") { //if pressend enter, process credentials
-            processCredentials()
+            //The states can be still empty (not updated yet), so we retrieve the value with javascript
+            let tmpMail = document.getElementById("inputEmail").value;
+            let tmpPsw = document.getElementById("inputPsw").value;
+            let tmpToggle = document.getElementById("inputIsLogin").value;
+            processCredentials(tmpMail,tmpPsw,tmpToggle);
         }
     }
 
     return(
         <div style={{width: "50%", margin: "0 auto", marginTop: "20px"}}>
-
             
-            <IonSegment value={IsLogin} onClick={(ev) => setIsLogin(ev.target.value==="true")} mode="ios">
+            <IonSegment
+                value={IsLogin} 
+                onClick={(ev) => setIsLogin(ev.target.value==="true")} 
+                mode="ios"
+                id="inputIsLogin"
+            >
                 <IonSegmentButton value={true}>
                     <IonLabel>Login</IonLabel>
                 </IonSegmentButton>
@@ -75,6 +84,7 @@ export default function IsLogin(props){
                 <IonInput 
                     placeholder="Email" mode="ios" 
                     fill="outline" type="email" 
+                    id="inputEmail"
                     onIonChange={(ev) => setEmail(ev.target.value)}    
                     onKeyDown={(ev) => enterPressed(ev)}
                 />
@@ -84,6 +94,7 @@ export default function IsLogin(props){
                 <IonInput 
                     placeholder={(IsLogin) ? "Password" : "Pick a strong one"}
                     type="password" 
+                    id="inputPsw"
                     onIonChange={(ev)=>setPassword(ev.target.value)}
                     onKeyDown={(ev)=>enterPressed(ev)}
                 />
@@ -102,7 +113,7 @@ export default function IsLogin(props){
 
             <br/>
             <br/>
-            <IonButton color="dark" expand="block" onClick={()=>processCredentials()} >
+            <IonButton color="dark" expand="block" onClick={()=>processCredentials(Email,Password,IsLogin)} >
                 {(IsLogin)?"Login":"Sign up"}
             </IonButton>
             <h4 style={{color:"red", textAlign:"center"}}>{Message}</h4>

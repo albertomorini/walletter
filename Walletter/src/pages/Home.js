@@ -18,7 +18,7 @@ export default function Home(){
 
 
   /**
-   * return all the transaction of a user
+   * load into the state, all the transaction of a user
    * @param {string} Email of user
    * @param {string} Password is the hash of user's psw (MD5)
    */
@@ -29,7 +29,7 @@ export default function Home(){
       );
     }).catch(err => {
       console.log(err);
-    })
+    });
   }
 
   /**
