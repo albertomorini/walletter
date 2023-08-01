@@ -1,7 +1,7 @@
 
 # Walletter
 
-~ A simple personal finance tool ~
+~ A simple and minimal, personal finance tool ~
 
 You can do two things with money: earn it or spend it.
 
