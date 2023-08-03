@@ -37,19 +37,21 @@ export default function TransactionModal(props){
 
     
     function insertTransaction() {
-    
-        doRequest("transaction",{
-            "Email": ctx.User.Email,
-            "Amount": Amount,
-            "Date": Date,
-            "IsOutcome": (IsOutcome=='false')?false:true,
-            "Reference": Reference,
-            "id": (props.data?.id!=undefined)?props.data.id : null
-        }).then(res=>res.json()).then(res=>{
-            ctx.loadAllTransaction()
-            props.modalHandler.current?.dismiss()
-            cleanInputs();
-        })
+        if(Amount!=0 && Amount!="" && Date!=null && Reference!="" && Reference!=null){
+            doRequest("transaction",{
+                "Email": ctx.User.Email,
+                "Password": ctx.User.Password,
+                "Amount": Amount,
+                "Date": Date,
+                "IsOutcome": (IsOutcome=='false')?false:true,
+                "Reference": Reference,
+                "id": (props.data?.id!=undefined)?props.data.id : null
+            }).then(res=>res.json()).then(res=>{
+                ctx.loadAllTransaction()
+                props.modalHandler.current?.dismiss()
+                cleanInputs();
+            });
+        }
     }
 
     function cleanInputs(){
@@ -62,7 +64,7 @@ export default function TransactionModal(props){
 
     useEffect(()=>{
 
-        /*
+        /* TODO: for the edit function??
         setAmount(props.data?.Amount);
         setDate(props.data?.Date);
         setIsOutcome(props.data?.IsOutcome);
@@ -78,15 +80,15 @@ export default function TransactionModal(props){
                 <IonToolbar>
                     <IonButtons slot="start">
                         <IonButton 
-                        color="dark"
+                        color="danger"
                         onClick={() => props.modalHandler.current?.dismiss()}>
-                            <IonIcon color="light" icon={closeCircle} />
+                            CANCEL
                         </IonButton>
                     </IonButtons>
                     <IonTitle>Add a transaction</IonTitle>
                     <IonButtons slot="end">
-                        <IonButton strong={true} color="dark" onClick={() => insertTransaction()}>
-                            <IonIcon color="light" icon={checkmarkSharp}/>
+                        <IonButton strong={true} color="success" onClick={() => insertTransaction()}>
+                            SAVE
                         </IonButton>
                     </IonButtons>
                 </IonToolbar>

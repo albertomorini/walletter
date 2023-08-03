@@ -12,18 +12,14 @@ const fs = require("fs"); //we need to write the export file before send it
 
 /////////////////////////////////////////////////////////////////////
 
-function createCollection(){
-    database.createCollection(COLLECTION_USERS).then(res=>{
-        database.createCollection(COLLECTION_TRANSACTIONS);
-    })
-}
 
 /**
  * Insert a new transaction
  * @param {Object} objReg 
+ * @return {Object} the result of insert/update of the transaction or null if not authenticated or error
  */
 async function saveTransaction(objReg){
-    //TODO: auth?
+    
     const dbo = database.collection(COLLECTION_TRANSACTIONS);
     // create the document to insert
     const updateDoc = {
@@ -35,7 +31,19 @@ async function saveTransaction(objReg){
             Reference: objReg.Reference,
         },
     };
-    return  dbo.updateOne({ _id: new ObjectId(objReg.id), "Email": objReg.Email }, updateDoc, { upsert: true });
+
+    console.log(objReg);
+    return getUser(objReg.Email, objReg.Password).then(resAuth => {
+        console.log(resAuth);
+        if (resAuth != null) { //user authenticated --> insert/update the new doc
+            return  dbo.updateOne({ _id: new ObjectId(objReg.id), "Email": objReg.Email }, updateDoc, { upsert: true });
+        }else{
+            return null
+        }
+    }).catch(err=>{
+        console.log(err);
+        return null;
+    })
 }
 
 async function getExistingReferences(Email,Password){
@@ -124,7 +132,7 @@ async function doImport(b64data,Email){
  */
 async function insertUser(objUsr){
     return getUser(objUsr.email,objUsr.psw).then(resAuth=>{
-        if(resAuth==null){
+        if(resAuth==null){ //if user doesn't exists, we create a new one
             return database.collection(COLLECTION_USERS).insertOne(objUsr);
         }else{
             return null;
@@ -144,7 +152,9 @@ async function getUser(email,psw){
         } else {
             return resAuth[0]
         }
-    });
+    }).catch(err=>{
+        return null;
+    })
 }
 
 
@@ -155,7 +165,6 @@ module.exports={
 	getAllTransaction:getAllTransaction,
 	getExistingReferences: getExistingReferences,
 	saveTransaction: saveTransaction,
-	createCollection:createCollection,
     doImport: doImport,
 }
 

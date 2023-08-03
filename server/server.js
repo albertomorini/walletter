@@ -28,8 +28,6 @@ function sendResponse(res, status, body, contentType = "application/json") {
     res.end();
 }
 
-
-
 https.createServer(options,(req,res)=>{
     let body="";
     req.on("data",(chunk)=>{
@@ -86,16 +84,14 @@ https.createServer(options,(req,res)=>{
             //split the second half of the body (encoded in BASE64)
             mongoExecutor.doImport(bodyDict.DataB64.split("base64,")[1],bodyDict.Email).then(resQuery=>{
                 console.log(resQuery);
-                //TODO: TO TEST
                 sendResponse(res,200,null);
             });
         }
 
         //TRANSACTIONS
         if(req.url=="/transaction"){ // update or insert new a transaction
-            console.log(bodyDict)
             mongoExecutor.saveTransaction(bodyDict).then(resQuery=>{
-                if(resQuery.acknowledged){
+                if(resQuery!=null && resQuery.acknowledged){
                     sendResponse(res, 200, { "transaction": resQuery })
                 }else{
                     sendResponse(res, 200, { "transaction": resQuery })
