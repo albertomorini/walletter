@@ -1,10 +1,10 @@
 
 # Walletter
 
-~ A simple and minimal, personal finance tool ~
+• A simple and minimal, personal finance tool <br/>
+• You can do two things with money: earn it or spend it.
 
-You can do two things with money: earn it or spend it.
-
+## IDEA: 
 Every **transaction** has the same metadata:
 
 - Amount of money (spent or earned)
@@ -55,44 +55,50 @@ You can add a new transaction and searching for existing reference or add a new 
 ![search](./docs/img/search.jpg)
 
 From my iPad (have to hide some reference, sorry)
-![search](./docs/img/from_iPad.jpg)
+![from_iPad](./docs/img/from_iPad.jpg)
 
 
 ### Various widget
 
+Sankey
+![sankey](./docs/img/sankey.png)
+
 Fullscreen of calendar, clicking a day 
-![search](./docs/img/allOfDay.jpg)
+![allday](./docs/img/allOfDay.jpg)
 
 Full screen of grouped (is from my personal account, had to hide, sorry again)
 
-![search](./docs/img/grouped.jpg)
+![grouped](./docs/img/grouped.jpg)
 
 You can export or import a backup, saved on JSON
 
-![search](./docs/img/expoimpo.jpg)
+![expoimpo](./docs/img/expoimpo.jpg)
 
 
 But first, you need to login!
 
-![search](./docs/img/login.png)
+![login](./docs/img/login.png)
 
 
 ## Usage
 
 NodeJS and MongoDB are required.
-> You can run MongoDB in docker as well.
+> (suggestion) You can run MongoDB in docker as well.
 
-Once executed the server (node server.js) and the client (npm start), go to the server port (1999) will ask you to trust of self-signed certified, than, will redict you to the app
-So -> https://10.0.0.3:1999 and boom we there.
-> 10.0.0.3 is my Mac's private IP, config yours into the ServerConfig.json into src folder of Walletter app
+Once executed the server (node server.js) and the client  go to the server port (1999) will ask you to trust of self-signed certified, than, will redict you to the web app.
+
+### Run the server
+`$ node ./walletter/server/server.js`
+> 10.0.0.3 is my Mac's private IP, config yours into the ServerConfig.json into src folder of Walletter client folder
 
 
 Runnning the client in https mode:
+1. `$ cd ./walletter/Walletter/`
+2. `npm run build` 
+3. `npx serve -s build --listen 1998 --ssl-cert cert.pem --ssl-key key.pem`
 
-1. `npm run build`
-2. `npx serve -s build --listen 3000 --ssl-cert cert.pem --ssl-key key.pem`
 
-**there's "starter.sh" a shell scriptt which start docker/client/server all in once**
+**there's "starter.sh" a shell script which start docker/client/server all in once**
 
 
 ## Certificates
@@ -104,14 +110,12 @@ Runnning the client in https mode:
 - via xcode we build the app and bring into the device
 - we need to allow the developer mode in the setting of the device (to run with a physical device)... Then trust the author on the general settings
 
-#### trust the self signed certified.
+### Trust the self signed
 
+- Import the certificate generated into the device
+- Find in "files" -> then open 
 
-### HTTPS 
-The certified and the private key (that you don't see in this repo), are self-signed, you've to generate yours.
-
-//TODO: COMPLETE
-
+> https://support.apple.com/en-us/HT204477
 
 ## TODO
 - at the server startup check if collections exists

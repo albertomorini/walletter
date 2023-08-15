@@ -5,9 +5,14 @@ import MonthlyCalendar from "./widgets/MonthlyCalendar.js";
 import GroupReference from "./widgets/GroupReference";
 import MonthlyRecap from "./widgets/MonthlyRecap.js";
 import MiddlewareFullScreen from "./MiddlewareFullScreen.js";
+import Sankey from './widgets/Sankey.js';
+
 
 
 export default function Dashboard(){
+
+    
+
     return(
         <IonContent className="Dashboard" fullscreen={true}>
             <IonGrid>
@@ -54,6 +59,17 @@ export default function Dashboard(){
                         </IonNavLink>
                         <GroupReference fullscreen={false} />
                     </IonCol>
+                </IonRow>
+                <IonRow>
+                    <IonCol className="ion-text-center ion-padding" >
+                        <IonNavLink routerDirection="forward" component={() => <MiddlewareFullScreen entity={<Sankey fullscreen={true} />} title="Sankey" />} >
+                            <IonButton color={"dark"} expand="block">Sankey
+                                <IonIcon icon={chevronForwardOutline} />
+                            </IonButton>
+                        </IonNavLink>
+                        <Sankey fullscreen={false} />
+                    </IonCol>
+
                 </IonRow>
             </IonGrid>
         </IonContent>

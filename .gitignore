@@ -1,7 +1,7 @@
 /server/node_modules
-./Walletter/node_modules
-./Walletter/build
-./Walletter/cert
+/Walletter/node_modules
+/Walletter/build
+/Walletter/cert
 
 
 /server/certs/key.pem
@@ -9,4 +9,4 @@
 /server/tmpExpoImpo/*
 
 
-./node_modules
+/node_modules
